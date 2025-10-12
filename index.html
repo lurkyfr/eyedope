@@ -675,6 +675,82 @@
             document.getElementById('nameInput').value = '';
         });
 
+        // Creepy URL and title changing
+        let urlInterval;
+        let titleInterval;
+        
+        const creepyPhrases = [
+            'we-are-here',
+            'you-cannot-hide',
+            'we-are-watching',
+            'nowhere-to-run',
+            'we-know-who-you-are',
+            'there-is-no-escape',
+            'we-see-everything',
+            'you-are-not-safe',
+            'we-are-coming',
+            'dont-look-behind-you',
+            'its-too-late',
+            'you-shouldnt-be-here',
+            'turn-back-now',
+            'this-is-your-warning',
+            'we-never-forget'
+        ];
+
+        function getRandomChar() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;:,.<>?§¶†‡°¢£¥€';
+            return chars[Math.floor(Math.random() * chars.length)];
+        }
+
+        function generateRandomTitle() {
+            let title = '';
+            const length = Math.floor(Math.random() * 20) + 10;
+            for (let i = 0; i < length; i++) {
+                title += getRandomChar();
+            }
+            return title;
+        }
+
+        function startCreepyEffects() {
+            // URL changing effect
+            urlInterval = setInterval(() => {
+                const phrase = creepyPhrases[Math.floor(Math.random() * creepyPhrases.length)];
+                const randomSuffix = Math.random().toString(36).substring(2, 8);
+                history.replaceState(null, '', `?${phrase}-${randomSuffix}`);
+            }, 300);
+
+            // Title changing effect
+            titleInterval = setInterval(() => {
+                document.title = generateRandomTitle();
+            }, 100);
+        }
+
+        function stopCreepyEffects() {
+            if (urlInterval) clearInterval(urlInterval);
+            if (titleInterval) clearInterval(titleInterval);
+            document.title = ':::CORDYCEP RESEARCH:::';
+            history.replaceState(null, '', window.location.pathname);
+        }
+
+        function checkAccess() {
+            const savedName = getCookie('accessName');
+            if (savedName && validNames.includes(savedName.toUpperCase())) {
+                stopCreepyEffects();
+                showGameScreen(savedName);
+            } else {
+                displayAscii(getRandomAscii());
+                startCreepyEffects();
+            }
+        }
+
+        function showGameScreen(name) {
+            stopCreepyEffects();
+            document.getElementById('lockScreen').style.display = 'none';
+            document.getElementById('gameScreen').style.display = 'block';
+            document.getElementById('userName').textContent = name.toUpperCase();
+            loadGames();
+        }
+
         // Initialize on load
         checkAccess();
     </script>
