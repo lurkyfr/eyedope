@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Focus</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #000;
+            color: #ff0000;
+            font-family: 'Courier New', monospace;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden; /* Prevent scrolling */
+        }
+
+        #navBar {
+            background: #000;
+            border: 2px solid #ff0000;
+            padding: 10px 20px;
+            width: 80%;
+            max-width: 1200px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+            margin-bottom: 20px;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        #navBar::before {
+            content: '╔════════════════════════════════════════════════════════════════════╗';
+            position: absolute;
+            top: -12px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            background: #000;
+            color: #ff0000;
+            font-size: 10px;
+        }
+
+        #navBar::after {
+            content: '╚════════════════════════════════════════════════════════════════════╝';
+            position: absolute;
+            bottom: -12px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            background: #000;
+            color: #ff0000;
+            font-size: 10px;
+        }
+
+        #gameTitle {
+            font-size: 24px;
+            letter-spacing: 3px;
+            text-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000;
+            animation: glow 1.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000;
+            }
+            to {
+                text-shadow: 0 0 20px #ff0000, 0 0 30px #ff0000;
+            }
+        }
+
+        #navButtons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .navButton {
+            background: #ff0000;
+            border: 2px solid #ff0000;
+            color: #000;
+            padding: 8px 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .navButton:hover {
+            background: #000;
+            color: #ff0000;
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.8);
+            transform: scale(1.05);
+        }
+
+        .navButton::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 0, 0, 0.4),
+                transparent
+            );
+            transition: left 0.5s ease;
+        }
+
+        .navButton:hover::after {
+            left: 100%;
+        }
+
+        #gameFrame {
+            width: 80%;
+            max-width: 1200px;
+            height: calc(100vh - 100px); /* Adjust height to fit screen */
+            border: 2px solid #ff0000;
+            background: #000;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
+            animation: fadeIn 0.7s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        #popupOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        #popupBox {
+            background: #1a0000;
+            border: 2px solid #ff0000;
+            padding: 20px;
+            max-width: 400px;
+            width: 90%;
+            color: #ff0000;
+            text-align: center;
+            animation: dropDown 0.5s ease-out;
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.5);
+        }
+
+        @keyframes dropDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        #popupTitle {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px #ff0000;
+        }
+
+        #popupDescription {
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .highlight {
+            color: yellow;
+        }
+
+        #popupButtons {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        #dontShowAgain {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 12px;
+        }
+
+        #okButton {
+            background: #ff0000;
+            border: 2px solid #ff0000;
+            color: #000;
+            padding: 8px 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        #okButton:hover {
+            background: #000;
+            color: #ff0000;
+        }
+
+        @media (max-width: 768px) {
+            #navBar {
+                width: 90%;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            #navButtons {
+                flex-direction: row;
+                justify-content: center;
+                gap: 10px;
+            }
+
+            .navButton {
+                padding: 6px 15px;
+                font-size: 12px;
+            }
+
+            #gameFrame {
+                width: 90%;
+                height: calc(100vh - 120px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="navBar">
+        <div id="gameTitle"></div>
+        <div id="navButtons">
+            <button class="navButton" id="homeButton">BACK HOME</button>
+            <button class="navButton" id="fullscreenButton">FULLSCREEN</button>
+            <!-- Additional buttons can be added here -->
+        </div>
+    </div>
+    <iframe id="gameFrame" src=""></iframe>
+
+    <div id="popupOverlay">
+        <div id="popupBox">
+            <div id="popupTitle">HELPFUL TIP!</div>
+            <div id="popupDescription">
+                This game defaults its language to <span class="highlight">RUSSIAN</span>. Click on the <span class="highlight">ENGLISH FLAG</span> when the game loads to switch your language to <span class="highlight">ENGLISH</span>.
+            </div>
+            <div id="popupButtons">
+                <label id="dontShowAgain">
+                    <input type="checkbox" id="dontShowCheckbox">
+                    DON'T SHOW THIS AGAIN
+                </label>
+                <button id="okButton">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let audioElementsState = [];
+
+        function getQueryParams() {
+            const params = new URLSearchParams(window.location.search);
+            return {
+                game: params.get('game'),
+                title: params.get('title')
+            };
+        }
+
+        function initializeFocusPage() {
+            const { game, title } = getQueryParams();
+            const decodedGame = decodeURIComponent(game);
+            const decodedTitle = decodeURIComponent(title);
+            if (game && title) {
+                document.getElementById('gameFrame').src = decodedGame;
+                document.getElementById('gameTitle').textContent = decodedTitle;
+            } else {
+                document.getElementById('gameFrame').src = 'files/not-found/index.html';
+                document.getElementById('gameTitle').textContent = 'GAME NOT FOUND';
+            }
+
+            const iframe = document.getElementById('gameFrame');
+            iframe.onload = function() {
+                if (decodedGame.includes('granny/index.html')) {
+                    const disableKey = 'popup_disabled_granny';
+                    if (localStorage.getItem(disableKey) !== 'true') {
+                        setTimeout(showPopup, 1000);
+                    }
+                }
+            };
+        }
+
+        function showPopup() {
+            distortAudio();
+            document.getElementById('popupOverlay').style.display = 'flex';
+        }
+
+        function closePopup() {
+            document.getElementById('popupOverlay').style.display = 'none';
+            restoreAudio();
+        }
+
+        function distortAudio() {
+            const iframe = document.getElementById('gameFrame');
+            const mediaElements = iframe.contentDocument.querySelectorAll('audio, video');
+            audioElementsState = [];
+            mediaElements.forEach(el => {
+                if (!el.paused) {
+                    audioElementsState.push({
+                        element: el,
+                        originalRate: el.playbackRate,
+                        originalVolume: el.volume
+                    });
+                    el.playbackRate = 0.5;
+                    el.volume = 0.2;
+                }
+            });
+        }
+
+        function restoreAudio() {
+            audioElementsState.forEach(state => {
+                state.element.playbackRate = state.originalRate;
+                state.element.volume = state.originalVolume;
+            });
+            audioElementsState = [];
+        }
+
+        document.getElementById('homeButton').addEventListener('click', () => {
+            window.location.href = 'index.html';
+        });
+
+        document.getElementById('fullscreenButton').addEventListener('click', () => {
+            const iframe = document.getElementById('gameFrame');
+            if (iframe.requestFullscreen) {
+                iframe.requestFullscreen();
+            } else if (iframe.webkitRequestFullscreen) {
+                iframe.webkitRequestFullscreen();
+            } else if (iframe.msRequestFullscreen) {
+                iframe.msRequestFullscreen();
+            }
+        });
+
+        document.getElementById('okButton').addEventListener('click', () => {
+            const checkbox = document.getElementById('dontShowCheckbox');
+            if (checkbox.checked) {
+                localStorage.setItem('popup_disabled_granny', 'true');
+            }
+            closePopup();
+        });
+
+        // Initialize the page
+        initializeFocusPage();
+    </script>
+</body>
+</html>
