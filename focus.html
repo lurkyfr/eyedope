@@ -261,6 +261,72 @@
             left: 100%;
         }
 
+        #notificationBox {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #000;
+            border: 2px solid #ff0000;
+            padding: 15px;
+            max-width: 400px;
+            width: 90%;
+            color: #ff0000;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+            z-index: 1001;
+            display: none;
+            animation: flickerIn 0.5s ease-out;
+        }
+
+        #notificationText {
+            font-size: 14px;
+            display: inline-block;
+        }
+
+        #notificationText span {
+            display: inline-block;
+            animation: jitter 0.2s infinite;
+        }
+
+        @keyframes jitter {
+            0% { transform: translate(0, 0); }
+            25% { transform: translate(1px, -1px); }
+            50% { transform: translate(-1px, 1px); }
+            75% { transform: translate(1px, 0); }
+            100% { transform: translate(0, 0); }
+        }
+
+        #notificationTimer {
+            position: absolute;
+            top: 5px;
+            left: 10px;
+            font-size: 12px;
+            color: #ff0000;
+            text-shadow: 0 0 5px #ff0000;
+        }
+
+        #notificationClose {
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            font-size: 16px;
+            color: #ff0000;
+            cursor: pointer;
+            text-shadow: 0 0 5px #ff0000;
+            animation: flickerClose 0.3s infinite;
+        }
+
+        @keyframes flickerClose {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+
+        @keyframes flickerOut {
+            0% { opacity: 1; transform: scale(1); filter: brightness(1); }
+            50% { opacity: 0.5; transform: scale(0.95); filter: brightness(0.8); }
+            100% { opacity: 0; transform: scale(0.9); filter: brightness(0.5); }
+        }
+
         @media (max-width: 768px) {
             #navBar {
                 width: 90%;
@@ -282,6 +348,12 @@
             #gameFrame {
                 width: 90%;
                 height: calc(100vh - 120px);
+            }
+
+            #notificationBox {
+                bottom: 10px;
+                right: 10px;
+                max-width: 300px;
             }
         }
     </style>
@@ -319,6 +391,8 @@
             <div id="cloakPopupTitle">CLOAK TAB</div>
             <div id="cloakPopupDescription">
                 Which method do you wish to use to attempt a Tab Cloak? This will prevent your screen from being visible on extensions, as well as enable more anonymity while using EyeDope.
+                <br><br>
+                WARNING: DATA:TEXT Cloak is not always reliable.
             </div>
             <div id="cloakPopupButtons">
                 <button class="cloakButton" id="aboutBlankButton">ABOUT:BLANK CLOAK</button>
@@ -327,9 +401,17 @@
         </div>
     </div>
 
+    <div id="notificationBox">
+        <span id="notificationTimer"></span>
+        <span id="notificationClose">X</span>
+        <div id="notificationText"></div>
+    </div>
+
     <script>
         let audioElementsState = [];
         let isPreventCloseEnabled = false;
+        let notificationTimeout = null;
+        let notificationInterval = null;
 
         function getQueryParams() {
             const params = new URLSearchParams(window.location.search);
@@ -406,8 +488,8 @@
         function restoreAudio() {
             audioElementsState.forEach(state => {
                 try {
-                    state.element.playbackRate = state.originalRate;
-                    state.element.volume = state.originalVolume;
+                    state.element.playbackRate = state.element.originalRate;
+                    state.element.volume = state.element.originalVolume;
                 } catch (e) {
                     console.warn('Error restoring audio for element:', e);
                 }
@@ -415,22 +497,73 @@
             audioElementsState = [];
         }
 
+        function showNotification(message) {
+            const notificationBox = document.getElementById('notificationBox');
+            const notificationText = document.getElementById('notificationText');
+            const notificationTimer = document.getElementById('notificationTimer');
+
+            // Clear any existing notification
+            clearNotification();
+
+            // Wrap each character in a span for jitter effect
+            notificationText.innerHTML = message.split('').map(char => 
+                `<span>${char === ' ' ? '&nbsp;' : char}</span>`
+            ).join('');
+
+            notificationBox.style.display = 'block';
+
+            let timeLeft = 7.0;
+            notificationTimer.textContent = timeLeft.toFixed(1);
+
+            // Update timer every 100ms
+            notificationInterval = setInterval(() => {
+                timeLeft -= 0.1;
+                if (timeLeft <= 0) {
+                    clearNotification();
+                } else {
+                    notificationTimer.textContent = Math.max(0, timeLeft.toFixed(1));
+                }
+            }, 100);
+
+            // Set timeout for automatic close
+            notificationTimeout = setTimeout(clearNotification, 7000);
+        }
+
+        function clearNotification() {
+            const notificationBox = document.getElementById('notificationBox');
+            if (notificationTimeout) {
+                clearTimeout(notificationTimeout);
+                notificationTimeout = null;
+            }
+            if (notificationInterval) {
+                clearInterval(notificationInterval);
+                notificationInterval = null;
+            }
+            notificationBox.style.animation = 'flickerOut 0.3s ease-out forwards';
+            setTimeout(() => {
+                notificationBox.style.display = 'none';
+                notificationBox.style.animation = '';
+                document.getElementById('notificationText').innerHTML = '';
+                document.getElementById('notificationTimer').textContent = '';
+            }, 300);
+        }
+
         function aboutBlankCloak() {
-            // Placeholder for about:blank cloaking function
             console.log('About:Blank Cloak activated');
-            // Implement actual cloaking logic here, e.g.:
             const win = window.open('about:blank', '_blank');
             win.document.write('<iframe src="' + window.location.href + '" style="width:100%;height:100vh;border:none;"></iframe>');
             closeCloakPopup();
         }
 
         function dataTextCloak() {
-            // Placeholder for data:text cloaking function
-            console.log('Data:Text Cloak activated');
-            // Implement actual cloaking logic here, e.g.:
-            const dataUrl = 'data:text/html,' + encodeURIComponent(document.documentElement.outerHTML);
-            window.location.href = dataUrl;
             closeCloakPopup();
+            const textToCopy = 'data:text/html,<%21DOCTYPE%20html>%0A<html>%0A<head>%0A<title>Google%20Classroom<%2Ftitle>%0A<style%20type%3D"text%2Fcss">%0Ahtml%20%7B%20overflow%3A%20auto%3B%20%7D%0Ahtml%2C%20body%2C%20div%2C%20iframe%20%7B%0Amargin%3A%200px%3B%0Apadding%3A%200px%3B%0Aheight%3A%20100%25%3B%0Aborder%3A%20none%3B%0A%7D%0Aiframe%20%7B%0Adisplay%3A%20block%3B%0Awidth%3A%20100%25%3B%0Aborder%3A%20none%3B%0Aoverflow-y%3A%20auto%3B%0Aoverflow-x%3A%20hidden%3B%0A%7D%0A%23menu%20%7B%0Aposition%3A%20fixed%3B%0Atop%3A%2010px%3B%0Aright%3A%2010px%3B%0Az-index%3A%201000%3B%0A%7D%0A%23menu-btn%20%7B%0Afont-size%3A%2024px%3B%0Apadding%3A%208px%2012px%3B%0Acursor%3A%20pointer%3B%0Abackground-color%3A%20rgba%28255%2C%20255%2C%20255%2C%200.7%29%3B%0Aborder%3A%201px%20solid%20%23ccc%3B%0Aborder-radius%3A%208px%3B%0Atransition%3A%20background-color%200.3s%20ease%3B%0A%7D%0A%23menu-btn%3Ahover%20%7B%0Abackground-color%3A%20rgba%28255%2C%20255%2C%20255%2C%200.9%29%3B%0A%7D%0A%23dropdown%20%7B%0Adisplay%3A%20none%3B%0Aposition%3A%20absolute%3B%0Atop%3A%2040px%3B%0Aright%3A%200%3B%0Abackground-color%3A%20%23ffffff%3B%0Aborder%3A%201px%20solid%20%23ddd%3B%0Aborder-radius%3A%208px%3B%0Apadding%3A%2015px%3B%0Abox-shadow%3A%200%204px%2012px%20rgba%280%2C%200%2C%200%2C%200.15%29%3B%0Awhite-space%3A%20nowrap%3B%0Az-index%3A%201001%3B%0Amin-width%3A%20200px%3B%0A%7D%0A%23menu-btn%3Ahover%20%2B%20%23dropdown%2C%20%23dropdown%3Ahover%20%7B%0Adisplay%3A%20block%3B%0A%7D%0A%23dropdown%20button%2C%20%23dropdown%20input%20%7B%0Amargin%3A%208px%200%3B%0Adisplay%3A%20block%3B%0Awidth%3A%20100%25%3B%0Apadding%3A%2010px%3B%0Afont-size%3A%2014px%3B%0Aborder%3A%201px%20solid%20%23e0e0e0%3B%0Aborder-radius%3A%205px%3B%0Abackground-color%3A%20%23f9f9f9%3B%0Acursor%3A%20pointer%3B%0Atransition%3A%20background-color%200.2s%20ease%3B%0A%7D%0A%23dropdown%20button%3Ahover%20%7B%0Abackground-color%3A%20%23e0e0e0%3B%0A%7D%0A%23dropdown%20input%20%7B%0Acursor%3A%20text%3B%0A%7D%0A%23title-input%20%7B%0Apadding%3A%208px%3B%0A%7D%0A<%2Fstyle>%0A<%2Fhead>%0A<body>%0A<div%20style%3D"position%3A%20relative%3B%20height%3A%20100%25%3B">%0A<iframe%20src%3D"https%3A%2F%2Feyedope.live%2F"%20frameborder%3D"0"%20marginheight%3D"0"%20marginwidth%3D"0"%20width%3D"100%25"%20height%3D"100%25"%20scrolling%3D"auto"%20id%3D"google"><%2Fiframe>%0A<div%20id%3D"menu">%0A<button%20id%3D"menu-btn">%E2%98%B0<%2Fbutton>%0A<div%20id%3D"dropdown">%0A<button>Placeholder%201<%2Fbutton>%0A<button>Placeholder%202<%2Fbutton>%0A<input%20type%3D"text"%20id%3D"title-input"%20placeholder%3D"Custom%20Title">%0A<button%20onclick%3D"document.title%20%3D%20document.getElementById%28%27title-input%27%29.value%20%7C%7C%20%27Google%20Classroom%27%3B">Set%20Title<%2Fbutton>%0A<button%20id%3D"prevent-close"%20onclick%3D"togglePreventClose%28this%29%3B">Enable%20Prevent%20Close<%2Fbutton>%0A<%2Fdiv>%0A<%2Fdiv>%0A<%2Fdiv>%0A<script>%0Alet%20preventClose%20%3D%20false%3B%0Afunction%20togglePreventClose%28btn%29%20%7B%0ApreventClose%20%3D%20%21preventClose%3B%0Aif%20%28preventClose%29%20%7B%0Awindow.onbeforeunload%20%3D%20function%28%29%20%7B%0Areturn%20%27Are%20you%20sure%20you%20want%20to%20close%20the%20page%3F%27%3B%0A%7D%3B%0Abtn.textContent%20%3D%20%27Disable%20Prevent%20Close%27%3B%0A%7D%20else%20%7B%0Awindow.onbeforeunload%20%3D%20null%3B%0Abtn.textContent%20%3D%20%27Enable%20Prevent%20Close%27%3B%0A%7D%0A%7D%0A<%2Fscript>%0A<%2Fbody>%0A<%2Fhtml>'; // Replace with your actual data:text URL
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                showNotification('Copied the DATA:TEXT cloaked URL. Open a new tab and paste it in the URL BAR');
+            }).catch(err => {
+                console.error('Failed to copy text:', err);
+                showNotification('Error copying DATA:TEXT URL. Please try again.');
+            });
         }
 
         document.getElementById('homeButton').addEventListener('click', () => {
@@ -440,7 +573,7 @@
         document.getElementById('preventClose').addEventListener('click', () => {
             isPreventCloseEnabled = !isPreventCloseEnabled;
             const button = document.getElementById('preventClose');
-            button.style.color = isPreventCloseEnabled ? 'limegreen' : 'red';
+            button.style.color = isPreventCloseEnabled ? 'limegreen' : 'black';
             if (isPreventCloseEnabled) {
                 window.addEventListener('beforeunload', preventClose);
             } else {
@@ -482,6 +615,10 @@
                 localStorage.setItem('popup_disabled_granny', 'true');
             }
             closePopup();
+        });
+
+        document.getElementById('notificationClose').addEventListener('click', () => {
+            clearNotification();
         });
 
         initializeFocusPage();
