@@ -19,6 +19,126 @@
             min-height: 100vh;
         }
 
+        #welcomeScreen {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #000;
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        #welcomeScreen.active {
+            display: flex;
+        }
+
+        #welcomeScreen.fadeOut {
+            animation: ghostFlicker 1s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes ghostFlicker {
+            0% { opacity: 1; }
+            10% { opacity: 0.8; transform: scale(1); }
+            20% { opacity: 0; transform: scale(0.98); }
+            25% { opacity: 0.9; transform: scale(1.02); }
+            30% { opacity: 0.1; transform: scale(0.95); }
+            35% { opacity: 0.7; transform: scale(1.01); }
+            40% { opacity: 0; transform: scale(0.97); }
+            50% { opacity: 0.5; transform: scale(1); }
+            60% { opacity: 0; transform: scale(0.99); }
+            70% { opacity: 0.3; transform: scale(1.01); }
+            80% { opacity: 0; transform: scale(0.98); }
+            90% { opacity: 0.1; }
+            100% { opacity: 0; transform: scale(0.95); display: none; }
+        }
+
+        .welcome-box {
+            border: 3px solid #ff0000;
+            padding: 60px 80px;
+            background: rgba(10, 0, 0, 0.95);
+            box-shadow: 0 0 50px rgba(255, 0, 0, 0.6), inset 0 0 30px rgba(255, 0, 0, 0.1);
+            position: relative;
+            animation: boxJitter 0.15s infinite, boxGlow 2s ease-in-out infinite;
+        }
+
+        @keyframes boxJitter {
+            0%, 100% { transform: translate(0, 0); }
+            10% { transform: translate(-2px, 2px); }
+            20% { transform: translate(2px, -2px); }
+            30% { transform: translate(-2px, -2px); }
+            40% { transform: translate(2px, 2px); }
+            50% { transform: translate(-1px, -1px); }
+            60% { transform: translate(1px, 1px); }
+            70% { transform: translate(-1px, 2px); }
+            80% { transform: translate(1px, -1px); }
+            90% { transform: translate(-2px, 1px); }
+        }
+
+        @keyframes boxGlow {
+            0%, 100% { box-shadow: 0 0 50px rgba(255, 0, 0, 0.6), inset 0 0 30px rgba(255, 0, 0, 0.1); }
+            50% { box-shadow: 0 0 80px rgba(255, 0, 0, 0.9), inset 0 0 50px rgba(255, 0, 0, 0.2); }
+        }
+
+        .welcome-box::before {
+            content: '╔════════════════════════════════════════════════════════╗';
+            position: absolute;
+            top: -15px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            background: #000;
+            color: #ff0000;
+            font-size: 12px;
+        }
+
+        .welcome-box::after {
+            content: '╚════════════════════════════════════════════════════════╝';
+            position: absolute;
+            bottom: -15px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            background: #000;
+            color: #ff0000;
+            font-size: 12px;
+        }
+
+        #welcomeText {
+            font-size: 32px;
+            font-weight: bold;
+            letter-spacing: 4px;
+            text-align: center;
+            animation: textFlicker 0.2s infinite, textGlow 1.5s ease-in-out infinite;
+            text-shadow: 0 0 20px #ff0000, 0 0 40px #ff0000;
+            white-space: nowrap;
+        }
+
+        @keyframes textFlicker {
+            0%, 100% { opacity: 1; }
+            25% { opacity: 0.85; }
+            50% { opacity: 0.95; }
+            75% { opacity: 0.8; }
+        }
+
+        @keyframes textGlow {
+            0%, 100% { 
+                text-shadow: 0 0 20px #ff0000, 0 0 40px #ff0000;
+            }
+            50% { 
+                text-shadow: 0 0 30px #ff0000, 0 0 60px #ff0000, 0 0 80px #ff0000;
+            }
+        }
+
         #lockScreen {
             display: flex;
             flex-direction: column;
@@ -106,6 +226,17 @@
         #gameScreen {
             display: none;
             padding: 20px;
+            opacity: 0;
+            animation: fadeInGameScreen 0.5s ease-in forwards;
+        }
+
+        #gameScreen.active {
+            display: block;
+        }
+
+        @keyframes fadeInGameScreen {
+            from { opacity: 0; transform: scale(0.98); }
+            to { opacity: 1; transform: scale(1); }
         }
 
         #navbar {
@@ -186,7 +317,7 @@
 
         .skittlebug {
             color: whitesmoke;
-            text-decoration:wavy;
+            text-decoration: wavy;
         }
 
         .gameCard::after {
@@ -271,10 +402,25 @@
             input[type="text"], button {
                 width: 100%;
             }
+
+            #welcomeText {
+                font-size: 20px;
+                white-space: normal;
+            }
+
+            .welcome-box {
+                padding: 40px 30px;
+            }
         }
     </style>
 </head>
 <body>
+    <div id="welcomeScreen">
+        <div class="welcome-box">
+            <div id="welcomeText">WELCOME BACK TO EYEDOPE, USER <span id="welcomeUserId"></span></div>
+        </div>
+    </div>
+
     <div id="lockScreen">
         <pre id="asciiArt"></pre>
         <form id="loginForm">
@@ -295,7 +441,7 @@
     </div>
 
     <script>
-                const asciiArts = [
+                        const asciiArts = [
             `
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀⣀⣀⣀⣠⣤⣤⣤⣀⣀⣀⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣤⣶⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣶⣦⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
@@ -522,8 +668,7 @@
 > This territory is reserved for us only.
 > Rest in piss ScuhaMeds. [Visit the Archive at https://scuhameds.xyz]
 > EYEDOPE OWNS YOU.
-`
-];
+`];
 
         const validNames = ['13870', '16569', '15590', '17682', '14966', '17656', '20990', '17717', '16559', '15744'];
 
@@ -584,41 +729,28 @@
             },
             {
                 title: 'A DAY IN THE OFFICE',
-                description: 'Indie Story Horror game taking place in an office, experience in 2D.  ',
+                description: 'Indie Story Horror game taking place in an office, experience in 2D.',
                 image: './files/a day in the office/logo.png',
                 path: './files/a day in the office/'
             },
             {
                 title: 'STATION 141',
-                description: 'Indie Story Horror game taking place in an office, experience in 2D.  ',
-                image: './files/station 141/logo.png',
-                path: './files/station 141/'
-            },
-            {
-                title: 'STATION 141',
-                description: 'Indie Story Horror game taking place in an office, experience in 2D.  ',
+                description: 'Indie Story Horror game taking place in a station, experience the terror.',
                 image: './files/station 141/logo.png',
                 path: './files/station 141/'
             },
             {
                 title: 'STEAL BRAINROT',
-                description: 'Steal Brainrot. A ripoff of steal a brainrot? Idk. It\'s stupid but its here.  ',
+                description: 'Steal Brainrot. A ripoff of steal a brainrot? Idk. It\'s stupid but its here.',
                 image: './files/steal brainrot/logo.png',
                 path: './files/steal brainrot/'
             },
             {
-                title: 'STATION 141',
-                description: 'Indie Story Horror game taking place in an office, experience in 2D.  ',
-                image: './files/station 141/logo.png',
-                path: './files/station 141/'
-            },
-            {
                 title: 'BAD PARENTING',
-                description: 'A popular story horror game, now actually functioning.  ',
+                description: 'A popular story horror game, now actually functioning.',
                 image: './files/bad-parenting/logo.png',
                 path: './files/bad-parenting/'
             }
-
         ];
 
         function getRandomAscii() {
@@ -628,15 +760,6 @@
         function displayAscii(art) {
             const asciiElement = document.getElementById('asciiArt');
             asciiElement.textContent = art;
-        }
-
-        function checkAccess() {
-            const savedName = getCookie('accessName');
-            if (savedName && validNames.includes(savedName.toUpperCase())) {
-                showGameScreen(savedName);
-            } else {
-                displayAscii(getRandomAscii());
-            }
         }
 
         function setCookie(name, value, days) {
@@ -657,9 +780,25 @@
             return null;
         }
 
+        function showWelcomeScreen(name) {
+            document.getElementById('welcomeUserId').textContent = name.toUpperCase();
+            const welcomeScreen = document.getElementById('welcomeScreen');
+            welcomeScreen.classList.add('active');
+
+            setTimeout(() => {
+                welcomeScreen.classList.add('fadeOut');
+                setTimeout(() => {
+                    welcomeScreen.classList.remove('active', 'fadeOut');
+                    showGameScreen(name);
+                }, 1000);
+            }, 2000);
+        }
+
         function showGameScreen(name) {
+            stopCreepyEffects();
             document.getElementById('lockScreen').style.display = 'none';
-            document.getElementById('gameScreen').style.display = 'block';
+            const gameScreen = document.getElementById('gameScreen');
+            gameScreen.classList.add('active');
             document.getElementById('userName').textContent = name.toUpperCase();
             loadGames();
         }
@@ -687,7 +826,7 @@
             
             if (validNames.includes(input)) {
                 setCookie('accessName', input, 365);
-                showGameScreen(input);
+                showWelcomeScreen(input);
             } else {
                 const asciiElement = document.getElementById('asciiArt');
                 asciiElement.classList.add('jitter');
@@ -743,14 +882,12 @@
         }
 
         function startCreepyEffects() {
-            // URL changing effect
             urlInterval = setInterval(() => {
                 const phrase = creepyPhrases[Math.floor(Math.random() * creepyPhrases.length)];
                 const randomSuffix = Math.random().toString(36).substring(2, 8);
                 history.replaceState(null, '', `?${phrase}-${randomSuffix}`);
             }, 300);
 
-            // Title changing effect
             titleInterval = setInterval(() => {
                 document.title = generateRandomTitle();
             }, 100);
@@ -759,27 +896,18 @@
         function stopCreepyEffects() {
             if (urlInterval) clearInterval(urlInterval);
             if (titleInterval) clearInterval(titleInterval);
-            document.title = ':::CORDYCEP RESEARCH:::';
+            document.title = ':::EYE_DWL:::';
             history.replaceState(null, '', window.location.pathname);
         }
 
         function checkAccess() {
             const savedName = getCookie('accessName');
             if (savedName && validNames.includes(savedName.toUpperCase())) {
-                stopCreepyEffects();
-                showGameScreen(savedName);
+                showWelcomeScreen(savedName);
             } else {
                 displayAscii(getRandomAscii());
                 startCreepyEffects();
             }
-        }
-
-        function showGameScreen(name) {
-            stopCreepyEffects();
-            document.getElementById('lockScreen').style.display = 'none';
-            document.getElementById('gameScreen').style.display = 'block';
-            document.getElementById('userName').textContent = name.toUpperCase();
-            loadGames();
         }
 
         // Initialize on load
