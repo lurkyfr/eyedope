@@ -20,7 +20,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            overflow: hidden; /* Prevent scrolling */
+            overflow: hidden;
         }
 
         #navBar {
@@ -139,7 +139,7 @@
         #gameFrame {
             width: 80%;
             max-width: 1200px;
-            height: calc(100vh - 100px); /* Adjust height to fit screen */
+            height: calc(100vh - 100px);
             border: 2px solid #ff0000;
             background: #000;
             box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
@@ -157,50 +157,46 @@
             }
         }
 
-        #popupOverlay {
+        #popupOverlay, #cloakPopupOverlay {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
             background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
             display: none;
             align-items: center;
             justify-content: center;
             z-index: 1000;
         }
 
-        #popupBox {
+        #popupBox, #cloakPopupBox {
             background: #1a0000;
             border: 2px solid #ff0000;
             padding: 20px;
-            max-width: 400px;
+            max-width: 500px;
             width: 90%;
             color: #ff0000;
             text-align: center;
-            animation: dropDown 0.5s ease-out;
+            animation: flickerIn 0.5s ease-out;
             box-shadow: 0 0 30px rgba(255, 0, 0, 0.5);
         }
 
-        @keyframes dropDown {
-            from {
-                transform: translateY(-100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
+        @keyframes flickerIn {
+            0% { opacity: 0; transform: scale(0.8); filter: brightness(0.5); }
+            50% { opacity: 0.5; transform: scale(1.05); filter: brightness(1.2); }
+            100% { opacity: 1; transform: scale(1); filter: brightness(1); }
         }
 
-        #popupTitle {
+        #popupTitle, #cloakPopupTitle {
             font-size: 20px;
             font-weight: bold;
             margin-bottom: 10px;
             text-shadow: 0 0 10px #ff0000;
         }
 
-        #popupDescription {
+        #popupDescription, #cloakPopupDescription {
             font-size: 14px;
             margin-bottom: 20px;
         }
@@ -209,7 +205,7 @@
             color: yellow;
         }
 
-        #popupButtons {
+        #popupButtons, #cloakPopupButtons {
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -223,18 +219,46 @@
             font-size: 12px;
         }
 
-        #okButton {
+        #okButton, .cloakButton {
             background: #ff0000;
             border: 2px solid #ff0000;
             color: #000;
             padding: 8px 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            font-weight: bold;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
         }
 
-        #okButton:hover {
+        #okButton:hover, .cloakButton:hover {
             background: #000;
             color: #ff0000;
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.8);
+            transform: scale(1.05);
+        }
+
+        .cloakButton::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 0, 0, 0.4),
+                transparent
+            );
+            transition: left 0.5s ease;
+        }
+
+        .cloakButton:hover::after {
+            left: 100%;
         }
 
         @media (max-width: 768px) {
@@ -266,9 +290,10 @@
     <div id="navBar">
         <div id="gameTitle"></div>
         <div id="navButtons">
+            <button class="navButton" id="preventClose">PREVENT TAB CLOSING</button>
+            <button class="navButton" id="cloakTab">CLOAK TAB[INCOGNITO]</button>
             <button class="navButton" id="homeButton">BACK HOME</button>
             <button class="navButton" id="fullscreenButton">FULLSCREEN</button>
-            <!-- Additional buttons can be added here -->
         </div>
     </div>
     <iframe id="gameFrame" src=""></iframe>
@@ -289,8 +314,22 @@
         </div>
     </div>
 
+    <div id="cloakPopupOverlay">
+        <div id="cloakPopupBox">
+            <div id="cloakPopupTitle">CLOAK TAB</div>
+            <div id="cloakPopupDescription">
+                Which method do you wish to use to attempt a Tab Cloak? This will prevent your screen from being visible on extensions, as well as enable more anonymity while using EyeDope.
+            </div>
+            <div id="cloakPopupButtons">
+                <button class="cloakButton" id="aboutBlankButton">ABOUT:BLANK CLOAK</button>
+                <button class="cloakButton" id="dataTextButton">DATA:TEXT CLOAK</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         let audioElementsState = [];
+        let isPreventCloseEnabled = false;
 
         function getQueryParams() {
             const params = new URLSearchParams(window.location.search);
@@ -333,33 +372,97 @@
             restoreAudio();
         }
 
+        function showCloakPopup() {
+            distortAudio();
+            document.getElementById('cloakPopupOverlay').style.display = 'flex';
+        }
+
+        function closeCloakPopup() {
+            document.getElementById('cloakPopupOverlay').style.display = 'none';
+            restoreAudio();
+        }
+
         function distortAudio() {
             const iframe = document.getElementById('gameFrame');
-            const mediaElements = iframe.contentDocument.querySelectorAll('audio, video');
-            audioElementsState = [];
-            mediaElements.forEach(el => {
-                if (!el.paused) {
-                    audioElementsState.push({
-                        element: el,
-                        originalRate: el.playbackRate,
-                        originalVolume: el.volume
-                    });
-                    el.playbackRate = 0.5;
-                    el.volume = 0.2;
-                }
-            });
+            try {
+                const mediaElements = iframe.contentDocument?.querySelectorAll('audio, video') || [];
+                audioElementsState = [];
+                mediaElements.forEach(el => {
+                    if (!el.paused) {
+                        audioElementsState.push({
+                            element: el,
+                            originalRate: el.playbackRate,
+                            originalVolume: el.volume
+                        });
+                        el.playbackRate = 0.5;
+                        el.volume = 0.2;
+                    }
+                });
+            } catch (e) {
+                console.warn('Unable to access iframe audio elements:', e);
+            }
         }
 
         function restoreAudio() {
             audioElementsState.forEach(state => {
-                state.element.playbackRate = state.originalRate;
-                state.element.volume = state.originalVolume;
+                try {
+                    state.element.playbackRate = state.originalRate;
+                    state.element.volume = state.originalVolume;
+                } catch (e) {
+                    console.warn('Error restoring audio for element:', e);
+                }
             });
             audioElementsState = [];
         }
 
+        function aboutBlankCloak() {
+            // Placeholder for about:blank cloaking function
+            console.log('About:Blank Cloak activated');
+            // Implement actual cloaking logic here, e.g.:
+            const win = window.open('about:blank', '_blank');
+            win.document.write('<iframe src="' + window.location.href + '" style="width:100%;height:100vh;border:none;"></iframe>');
+            closeCloakPopup();
+        }
+
+        function dataTextCloak() {
+            // Placeholder for data:text cloaking function
+            console.log('Data:Text Cloak activated');
+            // Implement actual cloaking logic here, e.g.:
+            const dataUrl = 'data:text/html,' + encodeURIComponent(document.documentElement.outerHTML);
+            window.location.href = dataUrl;
+            closeCloakPopup();
+        }
+
         document.getElementById('homeButton').addEventListener('click', () => {
             window.location.href = 'index.html';
+        });
+
+        document.getElementById('preventClose').addEventListener('click', () => {
+            isPreventCloseEnabled = !isPreventCloseEnabled;
+            const button = document.getElementById('preventClose');
+            button.style.color = isPreventCloseEnabled ? 'limegreen' : 'red';
+            if (isPreventCloseEnabled) {
+                window.addEventListener('beforeunload', preventClose);
+            } else {
+                window.removeEventListener('beforeunload', preventClose);
+            }
+        });
+
+        function preventClose(event) {
+            event.preventDefault();
+            event.returnValue = '';
+        }
+
+        document.getElementById('cloakTab').addEventListener('click', () => {
+            showCloakPopup();
+        });
+
+        document.getElementById('aboutBlankButton').addEventListener('click', () => {
+            aboutBlankCloak();
+        });
+
+        document.getElementById('dataTextButton').addEventListener('click', () => {
+            dataTextCloak();
         });
 
         document.getElementById('fullscreenButton').addEventListener('click', () => {
@@ -381,7 +484,6 @@
             closePopup();
         });
 
-        // Initialize the page
         initializeFocusPage();
     </script>
 </body>
