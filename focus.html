@@ -905,10 +905,10 @@
             isPreventCloseEnabled = !isPreventCloseEnabled;
             if (isPreventCloseEnabled) {
                 window.addEventListener('beforeunload', preventClose);
-                showNotification('🔒 Prevent Tab Closing ENABLED');
+                showNotification('ꄗ Prevent Tab Closing ENABLED');
             } else {
                 window.removeEventListener('beforeunload', preventClose);
-                showNotification('🔓 Prevent Tab Closing DISABLED');
+                showNotification('ꗃ Prevent Tab Closing DISABLED');
             }
             updatePreventCloseStatus();
         });
