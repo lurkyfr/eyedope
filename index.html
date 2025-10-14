@@ -378,7 +378,7 @@
             display: flex;
             flex-direction: column;
             gap: 15px;
-            height: 300px;
+            height: 300px; /* Match game card height */
         }
 
         .card:hover {
@@ -406,6 +406,15 @@
             text-align: center;
             background: #000;
             font-size: 10px;
+        }
+
+        .gameImage {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border: 3px double #ff0000;
+            margin-bottom: 15px;
+            background: #000;
         }
 
         .card-title {
@@ -520,7 +529,7 @@
     <div id="lockScreen" style="display: none;">
         <pre id="asciiArt"></pre>
         <form id="loginForm">
-            <input type-="text" id="nameInput" placeholder="YOU KNOW WHAT TO PUT HERE" autocomplete="off">
+            <input type="text" id="nameInput" placeholder="YOU KNOW WHAT TO PUT HERE" autocomplete="off">
             <button type="submit">SUBMIT</button>
         </form>
     </div>
@@ -998,8 +1007,9 @@
             `
         ];
 
+
         const mainAsciiFrames = [
-            //d
+           
         ];
 
         const wrongAscii = [
@@ -1200,8 +1210,8 @@
             {
                 title: 'TRAFFIC JAM 3D',
                 description: 'A fun \'traffic swimming\' simulator, swerve through traffic and upgrade.',
-                image: './files/traffic jam 3d/logo.png',
-                path: './files/traffic jam 3d/'
+                image: './files/ultimate car driving/logo.png',
+                path: './files/ultimate car driving/'
             },
             {
                 title: 'STACKTRIS',
@@ -1214,15 +1224,18 @@
         const proxies = [
             {
                 title: 'SHADOW PROXY',
-                description: 'High-speed proxy server for anonymous browsing. Supports HTTP/HTTPS protocols with minimal latency.'
+                description: 'High-speed proxy server for anonymous browsing. Supports HTTP/HTTPS protocols with minimal latency.',
+                path: './proxies/shadow/'
             },
             {
                 title: 'NIGHTSHADE PROXY',
-                description: 'Secure proxy with advanced encryption. Ideal for bypassing geo-restrictions and maintaining privacy.'
+                description: 'Secure proxy with advanced encryption. Ideal for bypassing geo-restrictions and maintaining privacy.',
+                path: './proxies/nightshade/'
             },
             {
                 title: 'GHOST PROXY',
-                description: 'Lightweight proxy solution for quick connections. Perfect for temporary anonymous access.'
+                description: 'Lightweight proxy solution for quick connections. Perfect for temporary anonymous access.',
+                path: './proxies/ghost/'
             }
         ];
 
@@ -1386,6 +1399,7 @@
                 card.innerHTML = `
                     <div class="card-title">${proxy.title}</div>
                     <div class="card-description">${proxy.description}</div>
+                    <button class="card-button" onclick="window.location.href='focus.html?game=${encodeURIComponent(proxy.path)}&title=${encodeURIComponent(proxy.title)}'">USE PROXY</button>
                 `;
                 container.appendChild(card);
             });
