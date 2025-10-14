@@ -47,7 +47,7 @@
         }
 
         @keyframes ghostFlicker {
-            0% { opacity: 1; }
+            0% { opacity: 1; transform: scale(1); }
             10% { opacity: 0.8; transform: scale(1); }
             20% { opacity: 0; transform: scale(0.98); }
             25% { opacity: 0.9; transform: scale(1.02); }
@@ -212,10 +212,36 @@
             outline: none;
             box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
             width: 200px;
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            box-shadow: 0 0 25px rgba(255, 0, 0, 0.6);
+            transform: scale(1.02);
         }
 
         input[type="text"]::placeholder {
             color: #660000;
+        }
+
+        button[type="submit"] {
+            background: #ff0000;
+            border: 2px solid #ff0000;
+            color: #000;
+            padding: 10px 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
+        }
+
+        button[type="submit"]:hover {
+            background: #000;
+            color: #ff0000;
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.8);
+            transform: scale(1.05);
         }
 
         #mainScreen {
@@ -223,7 +249,7 @@
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
-            padding: 20px;
+            padding: 10px;
             opacity: 0;
             animation: fadeInScreen 0.5s ease-in forwards;
             max-width: 1366px;
@@ -244,122 +270,207 @@
             line-height: 1;
             white-space: pre;
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 15px;
             text-shadow: 0 0 10px #ff0000;
             animation: flicker 0.15s infinite;
+            opacity: 0.9;
         }
 
+        /* SLEEK FIXED NAVBAR */
         #navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            background: rgba(0, 0, 0, 0.85);
+            border-bottom: 1px solid rgba(255, 0, 0, 0.3);
+            box-shadow: 
+                0 8px 32px rgba(255, 0, 0, 0.1),
+                inset 0 1px 0 rgba(255, 0, 0, 0.1);
+            padding: 0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: navbarSlideIn 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        #navbar.scrolled {
+            backdrop-filter: blur(30px);
+            background: rgba(0, 0, 0, 0.95);
+            border-bottom: 2px solid #ff0000;
+            box-shadow: 
+                0 12px 40px rgba(255, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 0, 0, 0.2);
+            transform: translateY(-2px);
+        }
+
+        @keyframes navbarSlideIn {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .navbar-inner {
+            max-width: 1366px;
+            margin: 0 auto;
             display: flex;
-            justify-content: center;
             align-items: center;
-            border: 2px solid #ff0000;
-            padding: 15px;
-            margin-bottom: 20px;
-            position: relative;
-            width: 100%;
-            max-width: 1200px;
+            justify-content: space-between;
+            padding: 12px 20px;
+            gap: 20px;
         }
 
-        #navbar::before {
-            content: '╔════════════════════════════════════════════════════════════════════╗';
-            position: absolute;
-            top: -12px;
-            left: 0;
-            right: 0;
-            text-align: center;
-            background: #000;
-            color: #ff0000;
-            font-size: 10px;
-        }
-
-        #navbar::after {
-            content: '╚════════════════════════════════════════════════════════════════════╝';
-            position: absolute;
-            bottom: -12px;
-            left: 0;
-            right: 0;
-            text-align: center;
-            background: #000;
-            color: #ff0000;
-            font-size: 10px;
-        }
-
-        .navbar-content {
+        .navbar-brand {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 10px;
-        }
-
-        .tab-buttons {
-            display: flex;
-            gap: 30px;
+            gap: 4px;
+            min-width: 200px;
+            flex-shrink: 0;
         }
 
         #navbarTitle {
-            font-size: 24px;
-            letter-spacing: 4px;
-            text-shadow: 0 0 15px #ff0000;
+            font-size: 18px;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px #ff0000;
             text-align: center;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        #navbarTitle::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 0, 0, 0.1), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
         }
 
         #navbarDesc {
-            margin-top: 8px;
-            font-size: 12px;
+            font-size: 10px;
             color: #990000;
             text-align: center;
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+            line-height: 1.2;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 8px;
+            flex: 1;
+            justify-content: center;
+            max-width: 400px;
         }
 
         .tab-button {
-            background: #ff0000;
-            border: 2px solid #ff0000;
-            color: #000;
-            padding: 10px 25px;
+            background: transparent;
+            border: 1px solid rgba(255, 0, 0, 0.5);
+            color: #ff0000;
+            padding: 8px 16px;
             font-family: 'Courier New', monospace;
-            font-size: 14px;
+            font-size: 12px;
             font-weight: bold;
             cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
-            animation: buttonFlicker 0.2s infinite;
-            min-width: 120px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            min-width: 100px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            animation: pulse 2s infinite;
+        }
+
+        .tab-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 0, 0, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .tab-button:hover::before {
+            left: 100%;
         }
 
         .tab-button:hover {
-            background: #000;
+            background: rgba(255, 0, 0, 0.1);
+            border-color: #ff0000;
+            box-shadow: 
+                0 0 20px rgba(255, 0, 0, 0.3),
+                inset 0 0 10px rgba(255, 0, 0, 0.05);
+            transform: translateY(-2px);
             color: #ff0000;
-            box-shadow: 0 0 30px rgba(255, 0, 0, 0.8);
-            animation: buttonGlitch 0.1s infinite;
-        }
-
-        .tab-button.dim {
-            opacity: 0.5;
             animation: none;
         }
 
-        @keyframes buttonFlicker {
-            0%, 100% { opacity: 1; }
-            25% { opacity: 0.85; }
-            50% { opacity: 0.95; }
-            75% { opacity: 0.8; }
+        .tab-button.active {
+            background: rgba(255, 0, 0, 0.15);
+            border-color: #ff0000;
+            box-shadow: 
+                0 0 25px rgba(255, 0, 0, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            transform: translateY(-1px);
+            color: #fff;
+            text-shadow: 0 0 10px #ff0000;
+            animation: none;
         }
 
-        @keyframes buttonGlitch {
-            0%, 100% { transform: translate(0, 0); }
-            20% { transform: translate(-3px, 3px); }
-            40% { transform: translate(3px, -3px); }
-            60% { transform: translate(-2px, 2px); }
-            80% { transform: translate(2px, -2px); }
+        .tab-button.active::before {
+            left: 100%;
+            animation: none;
+        }
+
+        .tab-button.dim {
+            opacity: 0.4;
+            transform: scale(0.95);
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                box-shadow: 0 0 5px rgba(255, 0, 0, 0.2);
+            }
+            50% {
+                box-shadow: 0 0 15px rgba(255, 0, 0, 0.4);
+            }
+        }
+
+        /* MAIN CONTENT */
+        .main-content {
+            margin-top: 80px;
+            width: 100%;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 20px;
         }
 
         .tab-content {
             display: none;
             width: 100%;
-            padding: 15px;
             opacity: 0;
             transform: translateY(20px);
-            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
 
         .tab-content.active {
@@ -372,11 +483,10 @@
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 20px;
-            max-height: calc(100vh - 250px);
-            overflow-y: auto;
             width: 100%;
-            max-width: 1200px;
-            padding: 10px;
+            padding: 10px 0;
+            max-height: calc(100vh - 200px);
+            overflow-y: auto;
         }
 
         .card {
@@ -385,7 +495,7 @@
             position: relative;
             border: 2px solid #ff0000;
             box-shadow: 0 0 15px rgba(255, 0, 0, 0.2);
-            transition: all 0.3s;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             flex-direction: column;
             gap: 10px;
@@ -393,11 +503,18 @@
             width: 100%;
             max-width: 300px;
             margin: 0 auto;
+            animation: cardFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes cardFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
         }
 
         .card:hover {
+            animation-play-state: paused;
             box-shadow: 0 0 30px rgba(255, 0, 0, 0.5);
-            transform: scale(1.03);
+            transform: scale(1.02) translateY(-10px);
         }
 
         .card::before {
@@ -409,6 +526,7 @@
             text-align: center;
             background: #000;
             font-size: 8px;
+            color: #ff0000;
         }
 
         .card::after {
@@ -420,6 +538,7 @@
             text-align: center;
             background: #000;
             font-size: 8px;
+            color: #ff0000;
         }
 
         .gameImage {
@@ -430,6 +549,12 @@
             margin-bottom: 10px;
             background: #000;
             max-width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .gameImage:hover {
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+            transform: scale(1.02);
         }
 
         .card-title {
@@ -437,6 +562,7 @@
             text-align: center;
             letter-spacing: 2px;
             text-shadow: 0 0 8px #ff0000;
+            margin-bottom: 5px;
         }
 
         .card-title::before {
@@ -455,6 +581,9 @@
             flex-grow: 1;
             overflow: hidden;
             text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 4;
+            -webkit-box-orient: vertical;
         }
 
         .card-button {
@@ -466,14 +595,10 @@
             font-family: 'Courier New', monospace;
             font-size: 12px;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
             min-height: 40px;
-        }
-
-        .card-button:hover {
-            background: #ff0000;
-            color: #000;
-            box-shadow: 0 0 15px rgba(255, 0, 0, 0.8);
+            position: relative;
+            overflow: hidden;
         }
 
         .card-button::before {
@@ -484,11 +609,25 @@
             content: ' ◀';
         }
 
+        .card-button:hover {
+            background: #ff0000;
+            color: #000;
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.8);
+            transform: translateY(-2px);
+        }
+
         .skittlebug {
             color: whitesmoke;
             text-decoration: wavy;
+            animation: skittleWave 2s ease-in-out infinite;
         }
 
+        @keyframes skittleWave {
+            0%, 100% { text-decoration: wavy; }
+            50% { text-decoration: underline wavy #ff0000; }
+        }
+
+        /* MOBILE RESPONSIVENESS */
         @media (max-width: 1366px) {
             #gamesContainer, #proxiesContainer, #exploitsContainer {
                 grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -505,7 +644,7 @@
         }
 
         @media (max-width: 768px) {
-            #asciiArt, #mainAscii {
+            #mainAscii {
                 font-size: 8px;
             }
 
@@ -520,43 +659,48 @@
                 font-size: 12px;
             }
 
-            .tab-button {
-                font-size: 12px;
-                padding: 8px 20px;
-                min-width: 100px;
-            }
-
-            #welcomeAscii {
-                font-size: 6px;
-            }
-
-            #welcomeText {
-                font-size: 20px;
-                white-space: normal;
-            }
-
-            .welcome-box {
-                padding: 30px 20px;
-            }
-
-            #navbar {
+            .navbar-inner {
+                padding: 10px 15px;
                 flex-direction: column;
                 gap: 10px;
             }
 
-            .tab-buttons {
-                flex-direction: column;
+            .navbar-brand {
+                min-width: auto;
+                order: 2;
+            }
+
+            #navbarTitle {
+                font-size: 16px;
+                letter-spacing: 1px;
+            }
+
+            #navbarDesc {
+                font-size: 9px;
+            }
+
+            .nav-tabs {
+                order: 1;
                 width: 100%;
-                gap: 15px;
+                justify-content: center;
+                gap: 6px;
+                max-width: none;
             }
 
             .tab-button {
-                width: 100%;
-                max-width: 250px;
+                font-size: 11px;
+                padding: 6px 12px;
+                min-width: 80px;
+            }
+
+            .main-content {
+                margin-top: 100px;
+                padding: 10px;
             }
 
             #gamesContainer, #proxiesContainer, #exploitsContainer {
                 grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+                gap: 15px;
             }
 
             .card {
@@ -583,28 +727,41 @@
         }
 
         @media (max-width: 480px) {
-            #asciiArt, #mainAscii {
+            #mainAscii {
                 font-size: 6px;
             }
 
-            #welcomeText {
-                font-size: 16px;
-            }
-
-            .welcome-box {
-                padding: 20px 15px;
+            .navbar-inner {
+                padding: 8px 10px;
             }
 
             #navbarTitle {
-                font-size: 20px;
+                font-size: 14px;
             }
 
             #navbarDesc {
+                font-size: 8px;
+            }
+
+            .nav-tabs {
+                flex-wrap: wrap;
+                gap: 4px;
+            }
+
+            .tab-button {
                 font-size: 10px;
+                padding: 5px 10px;
+                min-width: 70px;
+            }
+
+            .main-content {
+                margin-top: 90px;
+                padding: 5px;
             }
 
             #gamesContainer, #proxiesContainer, #exploitsContainer {
                 grid-template-columns: 1fr;
+                gap: 15px;
             }
 
             .card {
@@ -616,18 +773,36 @@
                 height: 120px;
             }
         }
+
+        /* Smooth scroll behavior */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Accessibility improvements */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
     </style>
 </head>
 <body>
     <div id="welcomeScreen">
         <div class="welcome-box">
-            <pre id="welcomeAscii"></pre>
+            <pre id="welcomeAscii">
+            <!-- PASTE YOUR WELCOME ASCII FRAMES HERE -->
+            </pre>
             <div id="welcomeText">WELCOME BACK TO EYEDOPE, USER <span id="welcomeUserId"></span></div>
         </div>
     </div>
 
     <div id="lockScreen" style="display: none;">
-        <pre id="asciiArt"></pre>
+        <pre id="asciiArt">
+        <!-- PASTE YOUR ASCII ARTS HERE -->
+        </pre>
         <form id="loginForm">
             <input type="text" id="nameInput" placeholder="YOU KNOW WHAT TO PUT HERE" autocomplete="off">
             <button type="submit">SUBMIT</button>
@@ -635,25 +810,34 @@
     </div>
 
     <div id="mainScreen">
-        <pre id="mainAscii"></pre>
-        <div id="navbar">
-            <div class="navbar-content">
-                <h1 id="navbarTitle"></h1>
-                <p id="navbarDesc"></p>
-                <div class="tab-buttons">
+        <pre id="mainAscii">
+        <!-- PASTE YOUR MAIN ASCII HERE -->
+        </pre>
+        
+        <nav id="navbar">
+            <div class="navbar-inner">
+                <div class="nav-tabs">
                     <button id="leftTabButton" class="tab-button"></button>
                     <button id="rightTabButton" class="tab-button"></button>
                 </div>
+                
+                <div class="navbar-brand">
+                    <h1 id="navbarTitle">LOADING...</h1>
+                    <p id="navbarDesc">Initializing systems...</p>
+                </div>
             </div>
-        </div>
-        <div id="games" class="tab-content">
-            <div id="gamesContainer"></div>
-        </div>
-        <div id="proxies" class="tab-content">
-            <div id="proxiesContainer"></div>
-        </div>
-        <div id="exploits" class="tab-content">
-            <div id="exploitsContainer"></div>
+        </nav>
+
+        <div class="main-content">
+            <div id="games" class="tab-content active">
+                <div id="gamesContainer"></div>
+            </div>
+            <div id="proxies" class="tab-content">
+                <div id="proxiesContainer"></div>
+            </div>
+            <div id="exploits" class="tab-content">
+                <div id="exploitsContainer"></div>
+            </div>
         </div>
     </div>
 
@@ -1107,9 +1291,8 @@
             `
         ];
 
-
         const mainAsciiFrames = [
-            // Your main ASCII frames here
+            // PASTE YOUR MAIN ASCII FRAMES HERE
         ];
 
         const wrongAscii = [
@@ -1192,132 +1375,6 @@
                 description: 'Indie Story Horror game taking place in an office, experience in 2D.',
                 image: './files/a day in the office/logo.png',
                 path: './files/a day in the office/'
-            },
-            {
-                title: 'STATION 141',
-                description: 'Indie Story Horror game taking place in a station, experience the terror.',
-                image: './files/station 141/logo.png',
-                path: './files/station 141/'
-            },
-            {
-                title: 'STEAL BRAINROT',
-                description: 'Steal Brainrot. A ripoff of steal a brainrot? Idk. It\'s stupid but its here.',
-                image: './files/steal brainrot/logo.png',
-                path: './files/steal brainrot/'
-            },
-            {
-                title: 'BAD PARENTING',
-                description: 'A popular story horror game, now actually functioning.',
-                image: './files/bad-parenting/logo.png',
-                path: './files/bad-parenting/'
-            },
-            {
-                title: 'SLENDER [MAYBE BROKEN]',
-                description: 'Slenderman horror experience multiplayr edition',
-                image: './files/slender multiplayer/logo.png',
-                path: './files/slender multiplayer/'
-            },
-            {
-                title: 'EDY\'S CAR SIMULATOR',
-                description: 'Driving/Car simulator.',
-                image: './files/slender multiplayer/logo.png',
-                path: './files/slender multiplayer/'
-            },
-            {
-                title: 'PICO 8 GAMES',
-                description: 'An experience list of pico 8\'s games.',
-                image: './files/pico 8 games/logo.png',
-                path: './files/pico 8 games/'
-            },
-            {
-                title: 'FLIGHT SIM',
-                description: 'Take your skills to the pilot seat in an airplane.',
-                image: './files/flight sim/logo.png',
-                path: './files/flight sim/'
-            },
-            {
-                title: 'OBBY BUT YOU\'RE ON A BIKE',
-                description: 'Self Explanatory.',
-                image: './files/obby but your on a bike/logo.png',
-                path: './files/obby but your on a bike/'
-            },
-            {
-                title: 'OBBY ROBBY: ONLY UP',
-                description: 'Only up gameplay in an Obby Robby game.',
-                image: './files/obby robby only up/logo.png',
-                path: './files/obby robby only up/'
-            },
-            {
-                title: 'STACKBALL.IO',
-                description: 'Break through the tiles, and beat each level.',
-                image: './files/stackball.io/logo.png',
-                path: './files/stackball.io/'
-            },
-            {
-                title: 'SPRUNKED',
-                description: 'No clue what this is. Sorry.',
-                image: './files/sprunked/logo.png',
-                path: './files/sprunked/'
-            },
-            {
-                title: 'STICKMAN GTA',
-                description: 'Cheap & Horrible Stickman style GTA ripoff.',
-                image: './files/STICKMAN GTA/logo.png',
-                path: './files/STICKMAN GTA/'
-            },
-            {
-                title: 'MARIO',
-                description: 'Yep.',
-                image: './files/mari0/logo.png',
-                path: './files/mari0/'
-            },
-            {
-                title: 'HALF LIFE',
-                description: 'Half Life Game I hope..',
-                image: './files/half life/logo.png',
-                path: './files/half life/'
-            },
-            {
-                title: 'BASEBALL BROS',
-                description: 'Take your skills out on the baseball diamond.',
-                image: './files/baseball bros/logo.png',
-                path: './files/baseball bros/'
-            },
-            {
-                title: 'BOUNCE BACK',
-                description: 'Focus on your boomerang and win the game.',
-                image: './files/bounce back/logo.png',
-                path: './files/bounce back/'
-            },
-            {
-                title: 'PIXEL COMBAT 2',
-                description: 'FPS Game, pixel based similar to pixel gun 3D.',
-                image: './files/pixel combat 2/logo.png',
-                path: './files/pixel combat 2k/'
-            },
-            {
-                title: 'ROOFTOP SNIPERS 2',
-                description: 'Two - One player fun battle game with snipers/weapons and unique movement.',
-                image: './files/rooftop snipers 2/logo.png',
-                path: './files/rooftop snipers 2/'
-            },
-            {
-                title: 'ULTIMATE CAR DRIVING',
-                description: 'A Miscellanious Car Driving Simulator.',
-                image: './files/ultimate car driving/logo.png',
-                path: './files/ultimate car driving/'
-            },
-            {
-                title: 'TRAFFIC JAM 3D',
-                description: 'A fun \'traffic swimming\' simulator, swerve through traffic and upgrade.',
-                image: './files/ultimate car driving/logo.png',
-                path: './files/ultimate car driving/'
-            },
-            {
-                title: 'STACKTRIS',
-                description: 'A tetris styled game, drop and aim. Accuracy is key.',
-                image: './files/stacktris/logo.png',
-                path: './files/stacktris/'
             }
         ];
 
@@ -1359,6 +1416,7 @@
 
         let userNameVar = '';
         let welcomeAsciiInterval;
+        let lastScrollY = window.scrollY;
 
         const tabsConfig = {
             games: {
@@ -1410,11 +1468,15 @@
 
         function displayMainAscii() {
             const asciiElement = document.getElementById('mainAscii');
-            let frameIndex = 0;
-            setInterval(() => {
-                asciiElement.textContent = mainAsciiFrames[frameIndex];
-                frameIndex = (frameIndex + 1) % mainAsciiFrames.length;
-            }, 200);
+            if (mainAsciiFrames.length > 0) {
+                let frameIndex = 0;
+                setInterval(() => {
+                    asciiElement.textContent = mainAsciiFrames[frameIndex];
+                    frameIndex = (frameIndex + 1) % mainAsciiFrames.length;
+                }, 200);
+            } else {
+                asciiElement.textContent = asciiArts[0] || '';
+            }
         }
 
         function setCookie(name, value, days) {
@@ -1436,12 +1498,14 @@
         }
 
         function animateWelcomeAscii() {
-            let frameIndex = 0;
-            const asciiElement = document.getElementById('welcomeAscii');
-            welcomeAsciiInterval = setInterval(() => {
-                asciiElement.textContent = welcomeAsciiFrames[frameIndex];
-                frameIndex = (frameIndex + 1) % welcomeAsciiFrames.length;
-            }, 200);
+            if (welcomeAsciiFrames.length > 0) {
+                let frameIndex = 0;
+                const asciiElement = document.getElementById('welcomeAscii');
+                welcomeAsciiInterval = setInterval(() => {
+                    asciiElement.textContent = welcomeAsciiFrames[frameIndex];
+                    frameIndex = (frameIndex + 1) % welcomeAsciiFrames.length;
+                }, 200);
+            }
         }
 
         function showWelcomeScreen(name) {
@@ -1467,6 +1531,10 @@
             document.getElementById('lockScreen').style.display = 'none';
             const mainScreen = document.getElementById('mainScreen');
             mainScreen.classList.add('active');
+            
+            // Initialize scroll listener for navbar effects
+            initNavbarScrollEffects();
+            
             displayMainAscii();
             loadGames();
             loadProxies();
@@ -1474,14 +1542,31 @@
             setupTabNavigation();
         }
 
+        function initNavbarScrollEffects() {
+            window.addEventListener('scroll', () => {
+                const navbar = document.getElementById('navbar');
+                if (window.scrollY > 50) {
+                    navbar.classList.add('scrolled');
+                } else {
+                    navbar.classList.remove('scrolled');
+                }
+                
+                // Parallax effect for navbar title
+                const title = document.getElementById('navbarTitle');
+                const scrollPercent = (window.scrollY / 500) * -1;
+                title.style.transform = `translateY(${Math.max(scrollPercent, -5)}px)`;
+            });
+        }
+
         function loadGames() {
             const container = document.getElementById('gamesContainer');
             container.innerHTML = '';
-            games.forEach(game => {
+            games.forEach((game, index) => {
                 const card = document.createElement('div');
                 card.className = 'card';
+                card.style.animationDelay = `${index * 0.1}s`;
                 card.innerHTML = `
-                    <img src="${game.image}" alt="${game.title}" class="gameImage">
+                    <img src="${game.image}" alt="${game.title}" class="gameImage" onerror="this.style.display='none'">
                     <div class="card-title">${game.title}</div>
                     <div class="card-description">${game.description}</div>
                     <button class="card-button" onclick="window.location.href='focus.html?game=${encodeURIComponent(game.path)}&title=${encodeURIComponent(game.title)}'">EXPERIENCE IT</button>
@@ -1493,9 +1578,10 @@
         function loadProxies() {
             const container = document.getElementById('proxiesContainer');
             container.innerHTML = '';
-            proxies.forEach(proxy => {
+            proxies.forEach((proxy, index) => {
                 const card = document.createElement('div');
                 card.className = 'card';
+                card.style.animationDelay = `${index * 0.1}s`;
                 card.innerHTML = `
                     <div class="card-title">${proxy.title}</div>
                     <div class="card-description">${proxy.description}</div>
@@ -1508,9 +1594,10 @@
         function loadExploits() {
             const container = document.getElementById('exploitsContainer');
             container.innerHTML = '';
-            exploits.forEach(exploit => {
+            exploits.forEach((exploit, index) => {
                 const card = document.createElement('div');
                 card.className = 'card';
+                card.style.animationDelay = `${index * 0.1}s`;
                 card.innerHTML = `
                     <div class="card-title">${exploit.title}</div>
                     <div class="card-description">${exploit.description}</div>
@@ -1523,7 +1610,17 @@
         function copyToClipboard(encodedCode) {
             const code = decodeURIComponent(encodedCode);
             navigator.clipboard.writeText(code).then(() => {
-                alert('Code copied to clipboard!');
+                // Visual feedback
+                const button = event.target;
+                const originalText = button.innerHTML;
+                button.innerHTML = '✓ COPIED!';
+                button.style.background = '#00ff00';
+                button.style.color = '#000';
+                setTimeout(() => {
+                    button.innerHTML = originalText;
+                    button.style.background = '#000';
+                    button.style.color = '#ff0000';
+                }, 1500);
             }).catch(err => {
                 console.error('Failed to copy: ', err);
                 alert('Failed to copy code.');
@@ -1531,9 +1628,16 @@
         }
 
         function switchTab(tabId) {
+            // Remove active from all tabs and content
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
             document.querySelectorAll('.tab-content').forEach(tab => {
                 tab.classList.remove('active');
             });
+            
+            // Add active to selected content
             document.getElementById(tabId).classList.add('active');
 
             const config = tabsConfig[tabId];
@@ -1545,12 +1649,19 @@
                 userSpan.textContent = userNameVar;
             }
 
+            // Update navigation buttons
             const leftButton = document.getElementById('leftTabButton');
             const rightButton = document.getElementById('rightTabButton');
             leftButton.textContent = config.others[0].toUpperCase();
             leftButton.dataset.tab = config.others[0];
             rightButton.textContent = config.others[1].toUpperCase();
             rightButton.dataset.tab = config.others[1];
+
+            // Add active class to current button
+            const activeButton = document.querySelector(`[data-tab="${tabId}"]`);
+            if (activeButton) {
+                activeButton.classList.add('active');
+            }
         }
 
         function setupTabNavigation() {
@@ -1560,25 +1671,39 @@
             leftButton.addEventListener('click', () => switchTab(leftButton.dataset.tab));
             rightButton.addEventListener('click', () => switchTab(rightButton.dataset.tab));
 
+            // Enhanced hover effects
             const buttons = [leftButton, rightButton];
             buttons.forEach(button => {
                 button.addEventListener('mouseenter', () => {
                     buttons.forEach(btn => {
-                        if (btn !== button) {
+                        if (btn !== button && !btn.classList.contains('active')) {
                             btn.classList.add('dim');
                         }
                     });
                 });
                 button.addEventListener('mouseleave', () => {
                     buttons.forEach(btn => {
-                        btn.classList.remove('dim');
+                        if (!btn.classList.contains('active')) {
+                            btn.classList.remove('dim');
+                        }
                     });
                 });
             });
 
+            // Keyboard navigation
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowLeft') {
+                    leftButton.click();
+                } else if (e.key === 'ArrowRight') {
+                    rightButton.click();
+                }
+            });
+
+            // Initial tab setup
             switchTab('games');
         }
 
+        // Login form handler
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const input = document.getElementById('nameInput').value.trim().toUpperCase();
@@ -1640,12 +1765,34 @@
                 showWelcomeScreen(savedName);
             } else {
                 document.getElementById('lockScreen').style.display = 'flex';
-                displayAscii(getRandomAscii());
+                displayAscii(getRandomAscii() || 'INITIALIZING...');
                 startCreepyEffects();
             }
         }
 
-        checkAccess();
+        // Initialize on DOM load
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAccess();
+            
+            // Lazy load card animations
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.animationPlayState = 'running';
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            // Observe cards after they load
+            setTimeout(() => {
+                document.querySelectorAll('.card').forEach(card => {
+                    observer.observe(card);
+                });
+            }, 1000);
+        });
+
+        // Prevent context menu on right click for aesthetic
+        document.addEventListener('contextmenu', e => e.preventDefault());
     </script>
 </body>
 </html>
