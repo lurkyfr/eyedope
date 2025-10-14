@@ -235,6 +235,16 @@
             to { opacity: 1; transform: scale(1); }
         }
 
+        #mainAscii {
+            font-size: 12px;
+            line-height: 1;
+            white-space: pre;
+            text-align: center;
+            margin-bottom: 40px;
+            text-shadow: 0 0 10px #ff0000;
+            animation: flicker 0.15s infinite;
+        }
+
         #navbar {
             display: flex;
             justify-content: space-between;
@@ -244,11 +254,10 @@
             margin-bottom: 30px;
             position: relative;
             width: 100%;
-            max-width: 800px;
         }
 
         #navbar::before {
-            content: '┌─────────────────────────────────────────────┐';
+            content: '╔════════════════════════════════════════════════════════════════════╗';
             position: absolute;
             top: -12px;
             left: 0;
@@ -256,11 +265,10 @@
             text-align: center;
             background: #000;
             color: #ff0000;
-            font-size: 12px;
         }
 
         #navbar::after {
-            content: '└─────────────────────────────────────────────┘';
+            content: '╚════════════════════════════════════════════════════════════════════╝';
             position: absolute;
             bottom: -12px;
             left: 0;
@@ -268,7 +276,6 @@
             text-align: center;
             background: #000;
             color: #ff0000;
-            font-size: 12px;
         }
 
         .center-content {
@@ -305,11 +312,11 @@
         }
 
         #leftTabButton {
-            left: 10px;
+            left: 100px;
         }
 
         #rightTabButton {
-            right: 10px;
+            right: 100px;
         }
 
         .tab-button:hover {
@@ -342,7 +349,6 @@
         .tab-content {
             display: none;
             width: 100%;
-            max-width: 800px;
             padding: 20px;
             opacity: 0;
             transform: translateY(20px);
@@ -470,7 +476,7 @@
         }
 
         @media (max-width: 768px) {
-            #asciiArt {
+            #asciiArt, #mainAscii {
                 font-size: 8px;
             }
 
@@ -533,6 +539,7 @@
     </div>
 
     <div id="mainScreen">
+        <pre id="mainAscii"></pre>
         <div id="navbar">
             <button id="leftTabButton" class="tab-button"></button>
             <div class="center-content">
@@ -1002,6 +1009,10 @@
             `
         ];
 
+        const mainAsciiFrames = [
+            // LEAVE BLANK - USER WILL PASTE MAIN ASCII ANIMATION FRAMES HERE
+        ];
+
         const wrongAscii = [`
                                                                                       
 ▀███▀▀▀██████▀   ▀███▀ ▄▄█▀▀▀█▄█████▀ ▀███▀    ▀███▀   ▀██▀ ▄▄█▀▀██▄ ▀███▀   ▀███▀
@@ -1240,6 +1251,15 @@
             asciiElement.textContent = art;
         }
 
+        function displayMainAscii() {
+            const asciiElement = document.getElementById('mainAscii');
+            let frameIndex = 0;
+            setInterval(() => {
+                asciiElement.textContent = mainAsciiFrames[frameIndex];
+                frameIndex = (frameIndex + 1) % mainAsciiFrames.length;
+            }, 200);
+        }
+
         function setCookie(name, value, days) {
             const d = new Date();
             d.setTime(d.getTime() + (days * 24 * 60 * 60 * 1000));
@@ -1290,6 +1310,7 @@
             document.getElementById('lockScreen').style.display = 'none';
             const mainScreen = document.getElementById('mainScreen');
             mainScreen.classList.add('active');
+            displayMainAscii();
             loadGames();
             setupTabNavigation();
         }
@@ -1311,14 +1332,10 @@
         }
 
         function switchTab(tabId) {
-            const tabs = document.querySelectorAll('.tab-content');
-            tabs.forEach(tab => {
-                if (tab.id === tabId) {
-                    tab.classList.add('active');
-                } else {
-                    tab.classList.remove('active');
-                }
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
             });
+            document.getElementById(tabId).classList.add('active');
 
             const config = tabsConfig[tabId];
             document.getElementById('navbarTitle').innerHTML = '▓▒░ ' + config.title + ' ░▒▓';
