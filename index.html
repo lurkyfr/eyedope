@@ -235,16 +235,6 @@
             to { opacity: 1; transform: scale(1); }
         }
 
-        #mainAscii {
-            font-size: 12px;
-            line-height: 1;
-            white-space: pre;
-            text-align: center;
-            margin-bottom: 40px;
-            text-shadow: 0 0 10px #ff0000;
-            animation: flicker 0.15s infinite;
-        }
-
         #navbar {
             display: flex;
             justify-content: space-between;
@@ -254,10 +244,11 @@
             margin-bottom: 30px;
             position: relative;
             width: 100%;
+            max-width: 800px;
         }
 
         #navbar::before {
-            content: '╔════════════════════════════════════════════════════════════════════╗';
+            content: '┌─────────────────────────────────────────────┐';
             position: absolute;
             top: -12px;
             left: 0;
@@ -265,10 +256,11 @@
             text-align: center;
             background: #000;
             color: #ff0000;
+            font-size: 12px;
         }
 
         #navbar::after {
-            content: '╚════════════════════════════════════════════════════════════════════╝';
+            content: '└─────────────────────────────────────────────┘';
             position: absolute;
             bottom: -12px;
             left: 0;
@@ -276,6 +268,7 @@
             text-align: center;
             background: #000;
             color: #ff0000;
+            font-size: 12px;
         }
 
         .center-content {
@@ -307,6 +300,16 @@
             transition: all 0.3s;
             box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
             animation: buttonFlicker 0.2s infinite;
+            position: absolute;
+            top: -22px;
+        }
+
+        #leftTabButton {
+            left: 10px;
+        }
+
+        #rightTabButton {
+            right: 10px;
         }
 
         .tab-button:hover {
@@ -339,14 +342,17 @@
         .tab-content {
             display: none;
             width: 100%;
+            max-width: 800px;
             padding: 20px;
             opacity: 0;
-            transition: opacity 0.5s ease-in-out;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
         }
 
         .tab-content.active {
             display: block;
             opacity: 1;
+            transform: translateY(0);
         }
 
         #gamesContainer {
@@ -464,7 +470,7 @@
         }
 
         @media (max-width: 768px) {
-            #asciiArt, #mainAscii {
+            #asciiArt {
                 font-size: 8px;
             }
 
@@ -500,7 +506,12 @@
             }
 
             .tab-button {
+                position: static;
                 width: 100%;
+            }
+
+            #leftTabButton, #rightTabButton {
+                margin: 10px 0;
             }
         }
     </style>
@@ -522,7 +533,6 @@
     </div>
 
     <div id="mainScreen">
-        <pre id="mainAscii"></pre>
         <div id="navbar">
             <button id="leftTabButton" class="tab-button"></button>
             <div class="center-content">
@@ -992,24 +1002,6 @@
             `
         ];
 
-        const mainAsciiFrames = [
-            `
-                                                                                      
-           ▀███▀▀▀███▀███▀   ▀██▀███▀▀▀███▀███▀▀▀██▄   ▄▄█▀▀██▄ ▀███▀▀▀██▄▀███▀▀▀███ 
-            ██    ▀█  ███   ▄█   ██    ▀█  ██    ▀██▄██▀    ▀██▄ ██   ▀██▄ ██    ▀█ 
-            ██   █     ███ ▄█    ██   █    ██     ▀███▀      ▀██ ██   ▄██  ██   █   
-            ██████      █▓██     ██████    ██      ███        ██ ███████   ██████   
-            ██   █  ▄    ▓█      ██   █  ▄ █▓     ▄███        ██ ██        ██   █  ▄
-            █▓     ▄█    ▓█      █▓     ▄█ █▓    ▄█▓▀██      ██▀ █▓        █▓     ▄█
-            ▓▓   ▓  ▓    ▓█      ▓▓   ▓  ▓ ▓▓     ▓▓▓██      ▓█▓ █▓        ▓▓   ▓  ▓
-            ▓▓     ▓▓    ▓▓      ▓▓     ▓▓ ▓▒    ▓▓▒▀█▓▓▓    ▓▓▓ ▓▓        ▓▓     ▓▓
-            ▒ ▒▒▒▓▒ ▒ ▒  ▒ ▒▒▒   ▒ ▒▒▒▓▒ ▒ ▒ ▒ ▒ ▒ ▒    ▒ ▒ ▒ ▒  ▒▓▒▓▒     ▒ ▒▒▒▓▒ ▒ ▒
-                                                                                    
-                                                                                    
-
-            `
-        ];
-
         const wrongAscii = [`
                                                                                       
 ▀███▀▀▀██████▀   ▀███▀ ▄▄█▀▀▀█▄█████▀ ▀███▀    ▀███▀   ▀██▀ ▄▄█▀▀██▄ ▀███▀   ▀███▀
@@ -1248,15 +1240,6 @@
             asciiElement.textContent = art;
         }
 
-        function displayMainAscii() {
-            const asciiElement = document.getElementById('mainAscii');
-            let frameIndex = 0;
-            setInterval(() => {
-                asciiElement.textContent = mainAsciiFrames[frameIndex];
-                frameIndex = (frameIndex + 1) % mainAsciiFrames.length;
-            }, 200);
-        }
-
         function setCookie(name, value, days) {
             const d = new Date();
             d.setTime(d.getTime() + (days * 24 * 60 * 60 * 1000));
@@ -1307,7 +1290,6 @@
             document.getElementById('lockScreen').style.display = 'none';
             const mainScreen = document.getElementById('mainScreen');
             mainScreen.classList.add('active');
-            displayMainAscii();
             loadGames();
             setupTabNavigation();
         }
@@ -1329,10 +1311,14 @@
         }
 
         function switchTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.classList.remove('active');
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => {
+                if (tab.id === tabId) {
+                    tab.classList.add('active');
+                } else {
+                    tab.classList.remove('active');
+                }
             });
-            document.getElementById(tabId).classList.add('active');
 
             const config = tabsConfig[tabId];
             document.getElementById('navbarTitle').innerHTML = '▓▒░ ' + config.title + ' ░▒▓';
