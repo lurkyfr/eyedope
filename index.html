@@ -162,6 +162,7 @@
         }
 
         #asciiArt {
+            display: none;
             font-size: 10px;
             line-height: 1;
             white-space: pre;
@@ -265,16 +266,7 @@
             to { opacity: 1; transform: scale(1); }
         }
 
-        #mainAscii {
-            font-size: 10px;
-            line-height: 1;
-            white-space: pre;
-            text-align: center;
-            margin-bottom: 15px;
-            text-shadow: 0 0 10px #ff0000;
-            animation: flicker 0.15s infinite;
-            opacity: 0.9;
-        }
+        /* REMOVED MAIN ASCII - NO SPACE TAKEN UP */
 
         /* SLEEK FIXED NAVBAR */
         #navbar {
@@ -455,7 +447,7 @@
             }
         }
 
-        /* MAIN CONTENT */
+        /* MAIN CONTENT - STARTS IMMEDIATELY AFTER NAVBAR */
         .main-content {
             margin-top: 80px;
             width: 100%;
@@ -644,10 +636,6 @@
         }
 
         @media (max-width: 768px) {
-            #mainAscii {
-                font-size: 8px;
-            }
-
             #loginForm {
                 flex-direction: column;
                 gap: 10px;
@@ -727,10 +715,6 @@
         }
 
         @media (max-width: 480px) {
-            #mainAscii {
-                font-size: 6px;
-            }
-
             .navbar-inner {
                 padding: 8px 10px;
             }
@@ -799,10 +783,7 @@
         </div>
     </div>
 
-    <div id="lockScreen" style="display: none;">
-        <pre id="asciiArt">
-        <!-- PASTE YOUR ASCII ARTS HERE -->
-        </pre>
+    <div id="lockScreen">
         <form id="loginForm">
             <input type="text" id="nameInput" placeholder="YOU KNOW WHAT TO PUT HERE" autocomplete="off">
             <button type="submit">SUBMIT</button>
@@ -810,9 +791,7 @@
     </div>
 
     <div id="mainScreen">
-        <pre id="mainAscii">
-        <!-- PASTE YOUR MAIN ASCII HERE -->
-        </pre>
+        <!-- NO MAIN ASCII ELEMENT - CONTENT STARTS IMMEDIATELY -->
         
         <nav id="navbar">
             <div class="navbar-inner">
@@ -842,6 +821,7 @@
     </div>
 
     <script>
+        // ASCII ARTS - ONLY FOR LOCK SCREEN AND WELCOME
                                 const asciiArts = [
             `
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀⣀⣀⣀⣠⣤⣤⣤⣀⣀⣀⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
@@ -1291,9 +1271,7 @@
             `
         ];
 
-        const mainAsciiFrames = [
-            // PASTE YOUR MAIN ASCII FRAMES HERE
-        ];
+        // REMOVED mainAsciiFrames - NO MAIN PAGE ASCII
 
         const wrongAscii = [
             `
@@ -1313,7 +1291,7 @@
             `
         ];
 
-        const validNames = ['13870', '16569', '15590', '17682', '14966', '17656', '20990', '17717', '16559', '15744', '17682'];
+        const validNames = ['13870', '16569', '15590', '17682', '14966', '17656', '20990', '17717', '16559', '15744'];
 
         const games = [
             {
@@ -1416,7 +1394,6 @@
 
         let userNameVar = '';
         let welcomeAsciiInterval;
-        let lastScrollY = window.scrollY;
 
         const tabsConfig = {
             games: {
@@ -1458,25 +1435,13 @@
         ];
 
         function getRandomAscii() {
-            return asciiArts[Math.floor(Math.random() * asciiArts.length)];
+            return asciiArts[Math.floor(Math.random() * asciiArts.length)] || '';
         }
 
         function displayAscii(art) {
             const asciiElement = document.getElementById('asciiArt');
             asciiElement.textContent = art;
-        }
-
-        function displayMainAscii() {
-            const asciiElement = document.getElementById('mainAscii');
-            if (mainAsciiFrames.length > 0) {
-                let frameIndex = 0;
-                setInterval(() => {
-                    asciiElement.textContent = mainAsciiFrames[frameIndex];
-                    frameIndex = (frameIndex + 1) % mainAsciiFrames.length;
-                }, 200);
-            } else {
-                asciiElement.textContent = asciiArts[0] || '';
-            }
+            asciiElement.style.display = 'block';
         }
 
         function setCookie(name, value, days) {
@@ -1535,7 +1500,6 @@
             // Initialize scroll listener for navbar effects
             initNavbarScrollEffects();
             
-            displayMainAscii();
             loadGames();
             loadProxies();
             loadExploits();
@@ -1716,7 +1680,7 @@
                 displayAscii(wrongAscii[0]);
                 setTimeout(() => {
                     asciiElement.classList.remove('jitter');
-                    displayAscii(getRandomAscii());
+                    asciiElement.style.display = 'none';
                     window.location.href = '/alovingfamily.html';
                 }, 3000);
             }
@@ -1765,7 +1729,7 @@
                 showWelcomeScreen(savedName);
             } else {
                 document.getElementById('lockScreen').style.display = 'flex';
-                displayAscii(getRandomAscii() || 'INITIALIZING...');
+                // No ASCII display on initial load
                 startCreepyEffects();
             }
         }
