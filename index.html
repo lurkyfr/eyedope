@@ -64,12 +64,13 @@
 
         .welcome-box {
             border: 3px solid #ff0000;
-            padding: 60px 80px;
+            padding: 40px 60px;
             background: rgba(10, 0, 0, 0.95);
             box-shadow: 0 0 50px rgba(255, 0, 0, 0.6), inset 0 0 30px rgba(255, 0, 0, 0.1);
             position: relative;
             animation: boxJitter 0.15s infinite, boxGlow 2s ease-in-out infinite;
             text-align: center;
+            max-width: 90%;
         }
 
         @keyframes boxJitter {
@@ -119,16 +120,16 @@
             line-height: 1;
             white-space: pre;
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             color: #ff0000;
             text-shadow: 0 0 10px #ff0000;
             animation: textFlicker 0.2s infinite;
         }
 
         #welcomeText {
-            font-size: 32px;
+            font-size: 28px;
             font-weight: bold;
-            letter-spacing: 4px;
+            letter-spacing: 3px;
             text-align: center;
             animation: textFlicker 0.2s infinite, textGlow 1.5s ease-in-out infinite;
             text-shadow: 0 0 20px #ff0000, 0 0 40px #ff0000;
@@ -161,11 +162,11 @@
         }
 
         #asciiArt {
-            font-size: 12px;
+            font-size: 10px;
             line-height: 1;
             white-space: pre;
             text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: 30px;
             text-shadow: 0 0 10px #ff0000;
             animation: flicker 0.15s infinite;
         }
@@ -196,7 +197,7 @@
 
         #loginForm {
             display: flex;
-            gap: 10px;
+            gap: 15px;
             align-items: center;
         }
 
@@ -204,12 +205,13 @@
             background: #1a0000;
             border: 2px solid #ff0000;
             color: #ff0000;
-            padding: 12px 20px;
+            padding: 10px 20px;
             font-family: 'Courier New', monospace;
-            font-size: 16px;
+            font-size: 14px;
             text-align: center;
             outline: none;
-            box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
+            width: 200px;
         }
 
         input[type="text"]::placeholder {
@@ -224,6 +226,8 @@
             padding: 20px;
             opacity: 0;
             animation: fadeInScreen 0.5s ease-in forwards;
+            max-width: 1366px;
+            margin: 0 auto;
         }
 
         #mainScreen.active {
@@ -236,11 +240,11 @@
         }
 
         #mainAscii {
-            font-size: 12px;
+            font-size: 10px;
             line-height: 1;
             white-space: pre;
             text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: 30px;
             text-shadow: 0 0 10px #ff0000;
             animation: flicker 0.15s infinite;
         }
@@ -250,10 +254,11 @@
             justify-content: center;
             align-items: center;
             border: 2px solid #ff0000;
-            padding: 20px;
-            margin-bottom: 30px;
+            padding: 15px;
+            margin-bottom: 20px;
             position: relative;
             width: 100%;
+            max-width: 1200px;
         }
 
         #navbar::before {
@@ -265,6 +270,7 @@
             text-align: center;
             background: #000;
             color: #ff0000;
+            font-size: 10px;
         }
 
         #navbar::after {
@@ -276,6 +282,7 @@
             text-align: center;
             background: #000;
             color: #ff0000;
+            font-size: 10px;
         }
 
         .navbar-content {
@@ -287,19 +294,19 @@
 
         .tab-buttons {
             display: flex;
-            gap: 20px;
+            gap: 30px;
         }
 
         #navbarTitle {
-            font-size: 28px;
-            letter-spacing: 5px;
-            text-shadow: 0 0 20px #ff0000;
+            font-size: 24px;
+            letter-spacing: 4px;
+            text-shadow: 0 0 15px #ff0000;
             text-align: center;
         }
 
         #navbarDesc {
-            margin-top: 10px;
-            font-size: 14px;
+            margin-top: 8px;
+            font-size: 12px;
             color: #990000;
             text-align: center;
         }
@@ -308,20 +315,21 @@
             background: #ff0000;
             border: 2px solid #ff0000;
             color: #000;
-            padding: 12px 30px;
+            padding: 10px 25px;
             font-family: 'Courier New', monospace;
-            font-size: 16px;
+            font-size: 14px;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s;
-            box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
             animation: buttonFlicker 0.2s infinite;
+            min-width: 120px;
         }
 
         .tab-button:hover {
             background: #000;
             color: #ff0000;
-            box-shadow: 0 0 40px rgba(255, 0, 0, 0.8);
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.8);
             animation: buttonGlitch 0.1s infinite;
         }
 
@@ -348,7 +356,7 @@
         .tab-content {
             display: none;
             width: 100%;
-            padding: 20px;
+            padding: 15px;
             opacity: 0;
             transform: translateY(20px);
             transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
@@ -362,28 +370,34 @@
 
         #gamesContainer, #proxiesContainer, #exploitsContainer {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 30px;
-            max-height: calc(100vh - 200px);
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            max-height: calc(100vh - 250px);
             overflow-y: auto;
+            width: 100%;
+            max-width: 1200px;
+            padding: 10px;
         }
 
         .card {
             background: #0a0000;
-            padding: 20px;
+            padding: 15px;
             position: relative;
             border: 2px solid #ff0000;
-            box-shadow: 0 0 20px rgba(255, 0, 0, 0.2);
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.2);
             transition: all 0.3s;
             display: flex;
             flex-direction: column;
-            gap: 15px;
-            height: 300px; /* Match game card height */
+            gap: 10px;
+            height: 360px;
+            width: 100%;
+            max-width: 300px;
+            margin: 0 auto;
         }
 
         .card:hover {
-            box-shadow: 0 0 40px rgba(255, 0, 0, 0.5);
-            transform: scale(1.02);
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.5);
+            transform: scale(1.03);
         }
 
         .card::before {
@@ -394,7 +408,7 @@
             right: 0;
             text-align: center;
             background: #000;
-            font-size: 10px;
+            font-size: 8px;
         }
 
         .card::after {
@@ -405,23 +419,24 @@
             right: 0;
             text-align: center;
             background: #000;
-            font-size: 10px;
+            font-size: 8px;
         }
 
         .gameImage {
             width: 100%;
-            height: 200px;
+            height: 180px;
             object-fit: cover;
-            border: 3px double #ff0000;
-            margin-bottom: 15px;
+            border: 2px solid #ff0000;
+            margin-bottom: 10px;
             background: #000;
+            max-width: 100%;
         }
 
         .card-title {
-            font-size: 20px;
+            font-size: 16px;
             text-align: center;
-            letter-spacing: 3px;
-            text-shadow: 0 0 10px #ff0000;
+            letter-spacing: 2px;
+            text-shadow: 0 0 8px #ff0000;
         }
 
         .card-title::before {
@@ -433,11 +448,13 @@
         }
 
         .card-description {
-            font-size: 12px;
-            line-height: 1.6;
+            font-size: 11px;
+            line-height: 1.4;
             color: #cc0000;
             text-align: center;
             flex-grow: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .card-button {
@@ -445,17 +462,18 @@
             background: #000;
             border: 2px solid #ff0000;
             color: #ff0000;
-            padding: 10px;
+            padding: 8px;
             font-family: 'Courier New', monospace;
-            font-size: 14px;
+            font-size: 12px;
             cursor: pointer;
             transition: all 0.3s;
+            min-height: 40px;
         }
 
         .card-button:hover {
             background: #ff0000;
             color: #000;
-            box-shadow: 0 0 20px rgba(255, 0, 0, 0.8);
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.8);
         }
 
         .card-button::before {
@@ -471,6 +489,21 @@
             text-decoration: wavy;
         }
 
+        @media (max-width: 1366px) {
+            #gamesContainer, #proxiesContainer, #exploitsContainer {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+
+            .card {
+                height: 340px;
+                max-width: 280px;
+            }
+
+            .gameImage {
+                height: 160px;
+            }
+        }
+
         @media (max-width: 768px) {
             #asciiArt, #mainAscii {
                 font-size: 8px;
@@ -478,15 +511,19 @@
 
             #loginForm {
                 flex-direction: column;
+                gap: 10px;
             }
 
             input[type="text"] {
                 width: 100%;
+                max-width: 250px;
+                font-size: 12px;
             }
 
             .tab-button {
-                font-size: 14px;
-                padding: 10px 20px;
+                font-size: 12px;
+                padding: 8px 20px;
+                min-width: 100px;
             }
 
             #welcomeAscii {
@@ -499,7 +536,7 @@
             }
 
             .welcome-box {
-                padding: 40px 30px;
+                padding: 30px 20px;
             }
 
             #navbar {
@@ -510,10 +547,73 @@
             .tab-buttons {
                 flex-direction: column;
                 width: 100%;
+                gap: 15px;
             }
 
             .tab-button {
                 width: 100%;
+                max-width: 250px;
+            }
+
+            #gamesContainer, #proxiesContainer, #exploitsContainer {
+                grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            }
+
+            .card {
+                height: 320px;
+                max-width: 240px;
+            }
+
+            .gameImage {
+                height: 140px;
+            }
+
+            .card-title {
+                font-size: 14px;
+            }
+
+            .card-description {
+                font-size: 10px;
+            }
+
+            .card-button {
+                font-size: 11px;
+                padding: 6px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            #asciiArt, #mainAscii {
+                font-size: 6px;
+            }
+
+            #welcomeText {
+                font-size: 16px;
+            }
+
+            .welcome-box {
+                padding: 20px 15px;
+            }
+
+            #navbarTitle {
+                font-size: 20px;
+            }
+
+            #navbarDesc {
+                font-size: 10px;
+            }
+
+            #gamesContainer, #proxiesContainer, #exploitsContainer {
+                grid-template-columns: 1fr;
+            }
+
+            .card {
+                height: 300px;
+                max-width: 100%;
+            }
+
+            .gameImage {
+                height: 120px;
             }
         }
     </style>
@@ -1009,7 +1109,7 @@
 
 
         const mainAsciiFrames = [
-           
+            // Your main ASCII frames here
         ];
 
         const wrongAscii = [
