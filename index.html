@@ -220,7 +220,6 @@
             display: none;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
             min-height: 100vh;
             padding: 20px;
             opacity: 0;
@@ -246,24 +245,67 @@
             animation: flicker 0.15s infinite;
         }
 
-        .button-container {
+        #navbar {
             display: flex;
-            gap: 20px;
-            justify-content: center;
+            justify-content: space-between;
+            align-items: center;
+            border: 2px solid #ff0000;
+            padding: 20px;
+            margin-bottom: 30px;
+            position: relative;
+            width: 100%;
+        }
+
+        #navbar::before {
+            content: '╔════════════════════════════════════════════════════════════════════╗';
+            position: absolute;
+            top: -12px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            background: #000;
+            color: #ff0000;
+        }
+
+        #navbar::after {
+            content: '╚════════════════════════════════════════════════════════════════════╝';
+            position: absolute;
+            bottom: -12px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            background: #000;
+            color: #ff0000;
+        }
+
+        .center-content {
+            flex: 1;
+            text-align: center;
+        }
+
+        #navbarTitle {
+            font-size: 28px;
+            letter-spacing: 5px;
+            text-shadow: 0 0 20px #ff0000;
+        }
+
+        #navbarDesc {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #990000;
         }
 
         .tab-button {
             background: #ff0000;
             border: 2px solid #ff0000;
             color: #000;
-            padding: 20px 40px;
+            padding: 12px 30px;
             font-family: 'Courier New', monospace;
-            font-size: 24px;
+            font-size: 16px;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s;
             box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
-            position: relative;
             animation: buttonFlicker 0.2s infinite;
         }
 
@@ -307,53 +349,10 @@
             opacity: 1;
         }
 
-        #navbar {
-            border: 2px solid #ff0000;
-            padding: 20px;
-            margin-bottom: 30px;
-            text-align: center;
-            position: relative;
-        }
-
-        #navbar::before {
-            content: '╔════════════════════════════════════════════════════════════════════╗';
-            position: absolute;
-            top: -12px;
-            left: 0;
-            right: 0;
-            text-align: center;
-            background: #000;
-            color: #ff0000;
-        }
-
-        #navbar::after {
-            content: '╚════════════════════════════════════════════════════════════════════╝';
-            position: absolute;
-            bottom: -12px;
-            left: 0;
-            right: 0;
-            text-align: center;
-            background: #000;
-            color: #ff0000;
-        }
-
-        #navbar h1 {
-            font-size: 28px;
-            letter-spacing: 5px;
-            text-shadow: 0 0 20px #ff0000;
-        }
-
-        #navbar p {
-            margin-top: 10px;
-            font-size: 14px;
-            color: #990000;
-        }
-
         #gamesContainer {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 30px;
-            padding: 20px;
             max-height: calc(100vh - 200px);
             overflow-y: auto;
         }
@@ -458,6 +457,12 @@
             text-decoration: wavy;
         }
 
+        .coming-soon {
+            text-align: center;
+            font-size: 18px;
+            color: #990000;
+        }
+
         @media (max-width: 768px) {
             #asciiArt, #mainAscii {
                 font-size: 8px;
@@ -467,13 +472,13 @@
                 flex-direction: column;
             }
 
-            input[type="text"], .tab-button {
+            input[type="text"] {
                 width: 100%;
             }
 
             .tab-button {
-                font-size: 18px;
-                padding: 15px 20px;
+                font-size: 14px;
+                padding: 10px 20px;
             }
 
             #welcomeAscii {
@@ -489,9 +494,13 @@
                 padding: 40px 30px;
             }
 
-            .button-container {
+            #navbar {
                 flex-direction: column;
                 gap: 10px;
+            }
+
+            .tab-button {
+                width: 100%;
             }
         }
     </style>
@@ -514,29 +523,22 @@
 
     <div id="mainScreen">
         <pre id="mainAscii"></pre>
-        <div class="button-container">
-            <button class="tab-button" data-tab="games">GAMES</button>
-            <button class="tab-button" data-tab="proxies">PROXIES</button>
-            <button class="tab-button" data-tab="exploits">EXPLOITS</button>
+        <div id="navbar">
+            <button id="leftTabButton" class="tab-button"></button>
+            <div class="center-content">
+                <h1 id="navbarTitle"></h1>
+                <p id="navbarDesc"></p>
+            </div>
+            <button id="rightTabButton" class="tab-button"></button>
         </div>
         <div id="games" class="tab-content">
-            <div id="navbar">
-                <h1>▓▒░ EYEDOPE ░▒▓</h1>
-                <p>Welcome, <span id="userName"></span> | The best crystalized <span class="skittlebug">DOPE</span> for the eyes.</p>
-            </div>
             <div id="gamesContainer"></div>
         </div>
         <div id="proxies" class="tab-content">
-            <div id="navbar">
-                <h1>▓▒░ PROXIES ░▒▓</h1>
-                <p>Explore proxy services (coming soon).</p>
-            </div>
+            <p class="coming-soon">Content coming soon...</p>
         </div>
         <div id="exploits" class="tab-content">
-            <div id="navbar">
-                <h1>▓▒░ EXPLOITS ░▒▓</h1>
-                <p>Discover exploits (coming soon).</p>
-            </div>
+            <p class="coming-soon">Content coming soon...</p>
         </div>
     </div>
 
@@ -1216,6 +1218,27 @@
             }
         ];
 
+        let userNameVar = '';
+        let welcomeAsciiInterval;
+
+        const tabsConfig = {
+            games: {
+                title: 'EYEDOPE',
+                desc: 'Welcome, <span id="userName"></span> | The best crystalized <span class="skittlebug">DOPE</span> for the eyes.',
+                others: ['proxies', 'exploits']
+            },
+            proxies: {
+                title: 'PROXIES',
+                desc: 'Explore proxy services (coming soon).',
+                others: ['games', 'exploits']
+            },
+            exploits: {
+                title: 'EXPLOITS',
+                desc: 'Discover exploits (coming soon).',
+                others: ['games', 'proxies']
+            }
+        };
+
         function getRandomAscii() {
             return asciiArts[Math.floor(Math.random() * asciiArts.length)];
         }
@@ -1279,11 +1302,11 @@
         }
 
         function showMainScreen(name) {
+            userNameVar = name.toUpperCase();
             stopCreepyEffects();
             document.getElementById('lockScreen').style.display = 'none';
             const mainScreen = document.getElementById('mainScreen');
             mainScreen.classList.add('active');
-            document.getElementById('userName').textContent = name.toUpperCase();
             displayMainAscii();
             loadGames();
             setupTabNavigation();
@@ -1305,22 +1328,38 @@
             });
         }
 
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.getElementById(tabId).classList.add('active');
+
+            const config = tabsConfig[tabId];
+            document.getElementById('navbarTitle').innerHTML = '▓▒░ ' + config.title + ' ░▒▓';
+            document.getElementById('navbarDesc').innerHTML = config.desc;
+
+            const userSpan = document.getElementById('userName');
+            if (userSpan) {
+                userSpan.textContent = userNameVar;
+            }
+
+            const leftButton = document.getElementById('leftTabButton');
+            const rightButton = document.getElementById('rightTabButton');
+            leftButton.textContent = config.others[0].toUpperCase();
+            leftButton.dataset.tab = config.others[0];
+            rightButton.textContent = config.others[1].toUpperCase();
+            rightButton.dataset.tab = config.others[1];
+        }
+
         function setupTabNavigation() {
-            const buttons = document.querySelectorAll('.tab-button');
-            const tabs = document.querySelectorAll('.tab-content');
+            const leftButton = document.getElementById('leftTabButton');
+            const rightButton = document.getElementById('rightTabButton');
 
+            leftButton.addEventListener('click', () => switchTab(leftButton.dataset.tab));
+            rightButton.addEventListener('click', () => switchTab(rightButton.dataset.tab));
+
+            const buttons = [leftButton, rightButton];
             buttons.forEach(button => {
-                button.addEventListener('click', () => {
-                    const tabId = button.getAttribute('data-tab');
-                    tabs.forEach(tab => {
-                        if (tab.id === tabId) {
-                            tab.classList.add('active');
-                        } else {
-                            tab.classList.remove('active');
-                        }
-                    });
-                });
-
                 button.addEventListener('mouseenter', () => {
                     buttons.forEach(btn => {
                         if (btn !== button) {
@@ -1328,7 +1367,6 @@
                         }
                     });
                 });
-
                 button.addEventListener('mouseleave', () => {
                     buttons.forEach(btn => {
                         btn.classList.remove('dim');
@@ -1336,8 +1374,8 @@
                 });
             });
 
-            // Set default tab
-            document.getElementById('games').classList.add('active');
+            // Initial setup
+            switchTab('games');
         }
 
         document.getElementById('loginForm').addEventListener('submit', function(e) {
