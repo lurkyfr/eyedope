@@ -614,7 +614,7 @@
         <div id="gameTitle"></div>
         <div id="navButtons">
             <div id="featuresDropdown">
-                <button id="featuresButton">OPTIONS</button>
+                <button id="featuresButton">OPTIONS & SCRIPTS</button>
                 <div id="featuresMenu">
                     <button class="toggleItem disabled" id="preventCloseToggle">
                         <div class="itemText">
@@ -625,7 +625,7 @@
                     </button>
                     <button class="menuItem" id="cloakTabToggle">
                         <div class="itemText">
-                            <div class="itemLabel">CLOAK TAB [INCOGNITO]</div>
+                            <div class="itemLabel">CLOAK TAB [HIDE SCREEN]</div>
                         </div>
                         <div class="statusIndicator enabled" style="background: #ff0000;"></div>
                     </button>
@@ -682,7 +682,6 @@
         let notificationTimeout = null;
         let notificationInterval = null;
         let isNotificationActive = false;
-        let isClosingNotification = false;
 
         function getQueryParams() {
             const params = new URLSearchParams(window.location.search);
@@ -715,34 +714,18 @@
             };
         }
 
-        // Robust dropdown functionality
-        function toggleDropdown() {
-            const menu = document.getElementById('featuresMenu');
-            const isCurrentlyOpen = menu.classList.contains('show');
-            
-            // Close if open
-            if (isCurrentlyOpen) {
-                menu.classList.remove('show');
-            } else {
-                menu.classList.add('show');
-            }
-        }
-
+        // Dropdown functionality
         document.getElementById('featuresButton').addEventListener('click', (e) => {
             e.stopPropagation();
-            toggleDropdown();
+            const menu = document.getElementById('featuresMenu');
+            menu.classList.toggle('show');
         });
 
-        // Close dropdown when clicking anywhere outside features dropdown
+        // Close dropdown when clicking outside
         document.addEventListener('click', (e) => {
             if (!e.target.closest('#featuresDropdown')) {
                 document.getElementById('featuresMenu').classList.remove('show');
             }
-        });
-
-        // Prevent dropdown from closing when clicking inside it
-        document.getElementById('featuresMenu').addEventListener('click', (e) => {
-            e.stopPropagation();
         });
 
         function showPopup() {
@@ -798,10 +781,65 @@
             audioElementsState = [];
         }
 
-        function forceClearNotification() {
+        function showNotification(message) {
+            // Prevent multiple notifications
+            if (isNotificationActive) {
+                clearNotification();
+            }
+
+            const notificationBox = document.getElementById('notificationBox');
+            const notificationText = document.getElementById('notificationText');
+            const notificationTimer = document.getElementById('notificationTimer');
+            const notificationContent = document.getElementById('notificationContent');
+
+            isNotificationActive = true;
+
+            // Clear previous content
+            notificationText.innerHTML = '';
+            notificationTimer.textContent = '';
+
+            // Set content
+            notificationText.innerHTML = message.split('').map(char => 
+                `<span>${char === ' ' ? '&nbsp;' : char}</span>`
+            ).join('');
+
+            // Reset and show notification
+            notificationBox.classList.remove('show', 'closing');
+            notificationBox.style.display = 'block';
+            
+            // Force reflow
+            notificationBox.offsetHeight;
+            
+            notificationBox.classList.add('show');
+
+            let timeLeft = 7.0;
+            notificationTimer.textContent = `⏱ ${timeLeft.toFixed(1)}s`;
+
+            // Timer interval
+            notificationInterval = setInterval(() => {
+                timeLeft -= 0.1;
+                if (timeLeft <= 0.1 && isNotificationActive) {
+                    clearNotification();
+                } else if (isNotificationActive) {
+                    notificationTimer.textContent = `⏱ ${Math.max(0, timeLeft).toFixed(1)}s`;
+                }
+            }, 100);
+
+            // Auto-close timeout
+            notificationTimeout = setTimeout(() => {
+                if (isNotificationActive) {
+                    clearNotification();
+                }
+            }, 7000);
+        }
+
+        function clearNotification() {
+            if (!isNotificationActive) return;
+
+            isNotificationActive = false;
+
             const notificationBox = document.getElementById('notificationBox');
             
-            // Clear all timers and intervals
             if (notificationTimeout) {
                 clearTimeout(notificationTimeout);
                 notificationTimeout = null;
@@ -811,72 +849,15 @@
                 notificationInterval = null;
             }
 
-            // Reset state
-            isNotificationActive = false;
-            isClosingNotification = false;
-
-            // Force hide with animation
             notificationBox.classList.remove('show');
-            if (!notificationBox.classList.contains('closing')) {
-                notificationBox.classList.add('closing');
-            }
+            notificationBox.classList.add('closing');
 
             setTimeout(() => {
-                notificationBox.classList.remove('show', 'closing');
+                notificationBox.classList.remove('closing');
                 notificationBox.style.display = 'none';
                 document.getElementById('notificationText').innerHTML = '';
                 document.getElementById('notificationTimer').textContent = '';
-                notificationBox.style.transform = 'translateX(100%)';
-            }, 350);
-        }
-
-        function showNotification(message) {
-            // Always force clear any existing notification first
-            forceClearNotification();
-
-            const notificationBox = document.getElementById('notificationBox');
-            const notificationText = document.getElementById('notificationText');
-            const notificationTimer = document.getElementById('notificationTimer');
-
-            // Set up new notification
-            isNotificationActive = true;
-            isClosingNotification = false;
-
-            // Set content
-            notificationText.innerHTML = message.split('').map(char => 
-                `<span>${char === ' ' ? '&nbsp;' : char}</span>`
-            ).join('');
-
-            // Reset and show
-            notificationBox.classList.remove('show', 'closing');
-            notificationBox.style.display = 'block';
-            
-            // Force reflow
-            void notificationBox.offsetHeight;
-            
-            notificationBox.classList.add('show');
-
-            let timeLeft = 7.0;
-            notificationTimer.textContent = `⏱ ${timeLeft.toFixed(1)}s`;
-
-            // Timer interval
-            notificationInterval = setInterval(() => {
-                if (!isNotificationActive || isClosingNotification) return;
-                
-                timeLeft -= 0.1;
-                if (timeLeft <= 0.1) {
-                    forceClearNotification();
-                } else {
-                    notificationTimer.textContent = `⏱ ${Math.max(0, timeLeft).toFixed(1)}s`;
-                }
-            }, 100);
-
-            // Auto-close timeout
-            notificationTimeout = setTimeout(() => {
-                if (isNotificationActive && !isClosingNotification) {
-                    forceClearNotification();
-                }
-            }, 7000);
+            }, 300);
         }
 
         function aboutBlankCloak() {
@@ -920,8 +901,7 @@
             window.location.href = 'index.html';
         });
 
-        document.getElementById('preventCloseToggle').addEventListener('click', (e) => {
-            e.stopPropagation(); // Prevent dropdown close
+        document.getElementById('preventCloseToggle').addEventListener('click', () => {
             isPreventCloseEnabled = !isPreventCloseEnabled;
             if (isPreventCloseEnabled) {
                 window.addEventListener('beforeunload', preventClose);
@@ -938,8 +918,7 @@
             event.returnValue = '';
         }
 
-        document.getElementById('cloakTabToggle').addEventListener('click', (e) => {
-            e.stopPropagation(); // Prevent dropdown close
+        document.getElementById('cloakTabToggle').addEventListener('click', () => {
             document.getElementById('featuresMenu').classList.remove('show');
             showCloakPopup();
         });
@@ -974,8 +953,7 @@
 
         document.getElementById('notificationClose').addEventListener('click', (e) => {
             e.stopPropagation();
-            isClosingNotification = true;
-            forceClearNotification();
+            clearNotification();
         });
 
         // Initialize status
