@@ -92,6 +92,7 @@
         #navButtons {
             display: flex;
             gap: 15px;
+            align-items: center;
         }
 
         .navButton {
@@ -134,6 +135,111 @@
 
         .navButton:hover::after {
             left: 100%;
+        }
+
+        /* Dropdown Styles */
+        #featuresDropdown {
+            position: relative;
+        }
+
+        #featuresButton {
+            background: #ff0000;
+            border: 2px solid #ff0000;
+            color: #000;
+            padding: 8px 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        #featuresButton::after {
+            content: '▼';
+            font-size: 12px;
+        }
+
+        #featuresButton:hover {
+            background: #000;
+            color: #ff0000;
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.8);
+            transform: scale(1.05);
+        }
+
+        #featuresButton:hover::after {
+            content: '▲';
+        }
+
+        #featuresMenu {
+            position: absolute;
+            top: calc(100% + 5px);
+            left: 0;
+            background: #1a0000;
+            border: 2px solid #ff0000;
+            border-radius: 5px;
+            padding: 10px;
+            min-width: 250px;
+            z-index: 1000;
+            display: none;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        #featuresMenu.show {
+            display: flex;
+        }
+
+        .toggleItem {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 5px;
+            padding: 8px;
+            background: transparent;
+            border: none;
+            color: #ff0000;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 3px;
+        }
+
+        .toggleItem:hover {
+            background: rgba(255, 0, 0, 0.2);
+            color: #ff6666;
+        }
+
+        .toggleItem.disabled {
+            color: #000;
+        }
+
+        .toggleItem.disabled:hover {
+            color: #ff0000;
+        }
+
+        .toggleLabel {
+            font-weight: bold;
+        }
+
+        .toggleStatus {
+            font-size: 10px;
+            opacity: 0.7;
+        }
+
+        .toggleStatus.enabled {
+            color: limegreen;
+        }
+
+        .toggleStatus.disabled {
+            color: #666;
         }
 
         #gameFrame {
@@ -340,9 +446,14 @@
                 gap: 10px;
             }
 
-            .navButton {
+            .navButton, #featuresButton {
                 padding: 6px 15px;
                 font-size: 12px;
+            }
+
+            #featuresMenu {
+                min-width: 200px;
+                left: -50px;
             }
 
             #gameFrame {
@@ -362,8 +473,19 @@
     <div id="navBar">
         <div id="gameTitle"></div>
         <div id="navButtons">
-            <button class="navButton" id="preventClose">PREVENT TAB CLOSING</button>
-            <button class="navButton" id="cloakTab">CLOAK TAB[INCOGNITO]</button>
+            <div id="featuresDropdown">
+                <button id="featuresButton" class="navButton">FEATURES</button>
+                <div id="featuresMenu">
+                    <button class="toggleItem" id="preventCloseToggle">
+                        <span class="toggleLabel">PREVENT TAB CLOSING</span>
+                        <span class="toggleStatus disabled" id="preventCloseStatus">DISABLED</span>
+                    </button>
+                    <button class="toggleItem" id="cloakTabToggle">
+                        <span class="toggleLabel">CLOAK TAB</span>
+                        <span class="toggleStatus disabled" id="cloakTabStatus">DISABLED</span>
+                    </button>
+                </div>
+            </div>
             <button class="navButton" id="homeButton">BACK HOME</button>
             <button class="navButton" id="fullscreenButton">FULLSCREEN</button>
         </div>
@@ -410,6 +532,7 @@
     <script>
         let audioElementsState = [];
         let isPreventCloseEnabled = false;
+        let isCloakEnabled = false;
         let notificationTimeout = null;
         let notificationInterval = null;
 
@@ -443,6 +566,18 @@
                 }
             };
         }
+
+        // Dropdown functionality
+        document.getElementById('featuresButton').addEventListener('click', (e) => {
+            e.stopPropagation();
+            const menu = document.getElementById('featuresMenu');
+            menu.classList.toggle('show');
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', () => {
+            document.getElementById('featuresMenu').classList.remove('show');
+        });
 
         function showPopup() {
             distortAudio();
@@ -502,10 +637,8 @@
             const notificationText = document.getElementById('notificationText');
             const notificationTimer = document.getElementById('notificationTimer');
 
-            // Clear any existing notification
             clearNotification();
 
-            // Wrap each character in a span for jitter effect
             notificationText.innerHTML = message.split('').map(char => 
                 `<span>${char === ' ' ? '&nbsp;' : char}</span>`
             ).join('');
@@ -515,7 +648,6 @@
             let timeLeft = 7.0;
             notificationTimer.textContent = timeLeft.toFixed(1);
 
-            // Update timer every 100ms
             notificationInterval = setInterval(() => {
                 timeLeft -= 0.1;
                 if (timeLeft <= 0) {
@@ -525,7 +657,6 @@
                 }
             }, 100);
 
-            // Set timeout for automatic close
             notificationTimeout = setTimeout(clearNotification, 7000);
         }
 
@@ -553,32 +684,69 @@
             const win = window.open('about:blank', '_blank');
             win.document.write('<iframe src="' + window.location.href + '" style="width:100%;height:100vh;border:none;"></iframe>');
             closeCloakPopup();
+            isCloakEnabled = true;
+            updateCloakStatus();
         }
 
         function dataTextCloak() {
             closeCloakPopup();
-            const textToCopy = 'data:text/html,<%21DOCTYPE%20html>%0A<html>%0A<head>%0A<title>Google%20Classroom<%2Ftitle>%0A<style%20type%3D"text%2Fcss">%0Ahtml%20%7B%20overflow%3A%20auto%3B%20%7D%0Ahtml%2C%20body%2C%20div%2C%20iframe%20%7B%0Amargin%3A%200px%3B%0Apadding%3A%200px%3B%0Aheight%3A%20100%25%3B%0Aborder%3A%20none%3B%0A%7D%0Aiframe%20%7B%0Adisplay%3A%20block%3B%0Awidth%3A%20100%25%3B%0Aborder%3A%20none%3B%0Aoverflow-y%3A%20auto%3B%0Aoverflow-x%3A%20hidden%3B%0A%7D%0A%23menu%20%7B%0Aposition%3A%20fixed%3B%0Atop%3A%2010px%3B%0Aright%3A%2010px%3B%0Az-index%3A%201000%3B%0A%7D%0A%23menu-btn%20%7B%0Afont-size%3A%2024px%3B%0Apadding%3A%208px%2012px%3B%0Acursor%3A%20pointer%3B%0Abackground-color%3A%20rgba%28255%2C%20255%2C%20255%2C%200.7%29%3B%0Aborder%3A%201px%20solid%20%23ccc%3B%0Aborder-radius%3A%208px%3B%0Atransition%3A%20background-color%200.3s%20ease%3B%0A%7D%0A%23menu-btn%3Ahover%20%7B%0Abackground-color%3A%20rgba%28255%2C%20255%2C%20255%2C%200.9%29%3B%0A%7D%0A%23dropdown%20%7B%0Adisplay%3A%20none%3B%0Aposition%3A%20absolute%3B%0Atop%3A%2040px%3B%0Aright%3A%200%3B%0Abackground-color%3A%20%23ffffff%3B%0Aborder%3A%201px%20solid%20%23ddd%3B%0Aborder-radius%3A%208px%3B%0Apadding%3A%2015px%3B%0Abox-shadow%3A%200%204px%2012px%20rgba%280%2C%200%2C%200%2C%200.15%29%3B%0Awhite-space%3A%20nowrap%3B%0Az-index%3A%201001%3B%0Amin-width%3A%20200px%3B%0A%7D%0A%23menu-btn%3Ahover%20%2B%20%23dropdown%2C%20%23dropdown%3Ahover%20%7B%0Adisplay%3A%20block%3B%0A%7D%0A%23dropdown%20button%2C%20%23dropdown%20input%20%7B%0Amargin%3A%208px%200%3B%0Adisplay%3A%20block%3B%0Awidth%3A%20100%25%3B%0Apadding%3A%2010px%3B%0Afont-size%3A%2014px%3B%0Aborder%3A%201px%20solid%20%23e0e0e0%3B%0Aborder-radius%3A%205px%3B%0Abackground-color%3A%20%23f9f9f9%3B%0Acursor%3A%20pointer%3B%0Atransition%3A%20background-color%200.2s%20ease%3B%0A%7D%0A%23dropdown%20button%3Ahover%20%7B%0Abackground-color%3A%20%23e0e0e0%3B%0A%7D%0A%23dropdown%20input%20%7B%0Acursor%3A%20text%3B%0A%7D%0A%23title-input%20%7B%0Apadding%3A%208px%3B%0A%7D%0A<%2Fstyle>%0A<%2Fhead>%0A<body>%0A<div%20style%3D"position%3A%20relative%3B%20height%3A%20100%25%3B">%0A<iframe%20src%3D"https%3A%2F%2Feyedope.live%2F"%20frameborder%3D"0"%20marginheight%3D"0"%20marginwidth%3D"0"%20width%3D"100%25"%20height%3D"100%25"%20scrolling%3D"auto"%20id%3D"google"><%2Fiframe>%0A<div%20id%3D"menu">%0A<button%20id%3D"menu-btn">%E2%98%B0<%2Fbutton>%0A<div%20id%3D"dropdown">%0A<button>Placeholder%201<%2Fbutton>%0A<button>Placeholder%202<%2Fbutton>%0A<input%20type%3D"text"%20id%3D"title-input"%20placeholder%3D"Custom%20Title">%0A<button%20onclick%3D"document.title%20%3D%20document.getElementById%28%27title-input%27%29.value%20%7C%7C%20%27Google%20Classroom%27%3B">Set%20Title<%2Fbutton>%0A<button%20id%3D"prevent-close"%20onclick%3D"togglePreventClose%28this%29%3B">Enable%20Prevent%20Close<%2Fbutton>%0A<%2Fdiv>%0A<%2Fdiv>%0A<%2Fdiv>%0A<script>%0Alet%20preventClose%20%3D%20false%3B%0Afunction%20togglePreventClose%28btn%29%20%7B%0ApreventClose%20%3D%20%21preventClose%3B%0Aif%20%28preventClose%29%20%7B%0Awindow.onbeforeunload%20%3D%20function%28%29%20%7B%0Areturn%20%27Are%20you%20sure%20you%20want%20to%20close%20the%20page%3F%27%3B%0A%7D%3B%0Abtn.textContent%20%3D%20%27Disable%20Prevent%20Close%27%3B%0A%7D%20else%20%7B%0Awindow.onbeforeunload%20%3D%20null%3B%0Abtn.textContent%20%3D%20%27Enable%20Prevent%20Close%27%3B%0A%7D%0A%7D%0A<%2Fscript>%0A<%2Fbody>%0A<%2Fhtml>'; // Replace with your actual data:text URL
+            const textToCopy = 'data:text/html,<!DOCTYPE%20html><html><head><title>Google%20Classroom</title><style%20type="text/css">html%20{overflow:auto;}html,body,div,iframe{margin:0px;padding:0px;height:100%;border:none;}iframe{display:block;width:100%;border:none;overflow-y:auto;overflow-x:hidden;}</style></head><body><iframe%20src="https://eyedope.live/"%20frameborder="0"%20marginheight="0"%20marginwidth="0"%20width="100%"%20height="100%"%20scrolling="auto"></iframe></body></html>';
             navigator.clipboard.writeText(textToCopy).then(() => {
                 showNotification('Copied the DATA:TEXT cloaked URL. Open a new tab and paste it in the URL BAR');
+                isCloakEnabled = true;
+                updateCloakStatus();
             }).catch(err => {
                 console.error('Failed to copy text:', err);
                 showNotification('Error copying DATA:TEXT URL. Please try again.');
             });
         }
 
+        function updatePreventCloseStatus() {
+            const button = document.getElementById('preventCloseToggle');
+            const status = document.getElementById('preventCloseStatus');
+            if (isPreventCloseEnabled) {
+                button.classList.remove('disabled');
+                status.textContent = 'ENABLED';
+                status.classList.add('enabled');
+                status.classList.remove('disabled');
+            } else {
+                button.classList.add('disabled');
+                status.textContent = 'DISABLED';
+                status.classList.remove('enabled');
+                status.classList.add('disabled');
+            }
+        }
+
+        function updateCloakStatus() {
+            const button = document.getElementById('cloakTabToggle');
+            const status = document.getElementById('cloakTabStatus');
+            if (isCloakEnabled) {
+                button.classList.remove('disabled');
+                status.textContent = 'ENABLED';
+                status.classList.add('enabled');
+                status.classList.remove('disabled');
+            } else {
+                button.classList.add('disabled');
+                status.textContent = 'DISABLED';
+                status.classList.remove('enabled');
+                status.classList.add('disabled');
+            }
+        }
+
         document.getElementById('homeButton').addEventListener('click', () => {
             window.location.href = 'index.html';
         });
 
-        document.getElementById('preventClose').addEventListener('click', () => {
+        document.getElementById('preventCloseToggle').addEventListener('click', () => {
             isPreventCloseEnabled = !isPreventCloseEnabled;
-            const button = document.getElementById('preventClose');
-            button.style.color = isPreventCloseEnabled ? 'limegreen' : 'black';
             if (isPreventCloseEnabled) {
                 window.addEventListener('beforeunload', preventClose);
+                showNotification('Prevent Tab Closing ENABLED');
             } else {
                 window.removeEventListener('beforeunload', preventClose);
+                showNotification('Prevent Tab Closing DISABLED');
             }
+            updatePreventCloseStatus();
         });
 
         function preventClose(event) {
@@ -586,7 +754,7 @@
             event.returnValue = '';
         }
 
-        document.getElementById('cloakTab').addEventListener('click', () => {
+        document.getElementById('cloakTabToggle').addEventListener('click', () => {
             showCloakPopup();
         });
 
@@ -620,6 +788,10 @@
         document.getElementById('notificationClose').addEventListener('click', () => {
             clearNotification();
         });
+
+        // Initialize status
+        updatePreventCloseStatus();
+        updateCloakStatus();
 
         initializeFocusPage();
     </script>
