@@ -137,109 +137,195 @@
             left: 100%;
         }
 
-        /* Dropdown Styles */
+        /* Enhanced Dropdown Styles */
         #featuresDropdown {
             position: relative;
         }
 
         #featuresButton {
-            background: #ff0000;
+            background: #000;
             border: 2px solid #ff0000;
-            color: #000;
+            color: #ff0000;
             padding: 8px 20px;
             font-family: 'Courier New', monospace;
             font-size: 14px;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.8);
             position: relative;
             overflow: hidden;
             display: flex;
             align-items: center;
             gap: 5px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        #featuresButton::before {
+            content: '▦';
+            margin-right: 5px;
+            font-size: 16px;
         }
 
         #featuresButton::after {
             content: '▼';
             font-size: 12px;
+            margin-left: 5px;
+            transition: transform 0.3s ease;
         }
 
         #featuresButton:hover {
-            background: #000;
-            color: #ff0000;
-            box-shadow: 0 0 30px rgba(255, 0, 0, 0.8);
+            background: #ff0000;
+            color: #000;
+            box-shadow: 0 0 30px rgba(255, 0, 0, 1);
             transform: scale(1.05);
         }
 
         #featuresButton:hover::after {
-            content: '▲';
+            transform: rotate(180deg);
         }
 
         #featuresMenu {
             position: absolute;
-            top: calc(100% + 5px);
+            top: calc(100% + 10px);
             left: 0;
-            background: #1a0000;
+            background: linear-gradient(145deg, #1a0000, #000);
             border: 2px solid #ff0000;
-            border-radius: 5px;
-            padding: 10px;
-            min-width: 250px;
+            border-radius: 0;
+            padding: 0;
+            min-width: 280px;
             z-index: 1000;
             display: none;
-            box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+            box-shadow: 
+                0 0 30px rgba(255, 0, 0, 0.6),
+                inset 0 0 20px rgba(255, 0, 0, 0.1);
             flex-direction: column;
-            gap: 10px;
+        }
+
+        #featuresMenu::before {
+            content: '╔══════════════════════════════════════════════╗';
+            position: absolute;
+            top: -12px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            background: linear-gradient(145deg, #1a0000, #000);
+            color: #ff0000;
+            font-size: 10px;
+            padding: 0 10px;
+        }
+
+        #featuresMenu::after {
+            content: '╚══════════════════════════════════════════════╝';
+            position: absolute;
+            bottom: -12px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            background: linear-gradient(145deg, #1a0000, #000);
+            color: #ff0000;
+            font-size: 10px;
+            padding: 0 10px;
         }
 
         #featuresMenu.show {
             display: flex;
+            animation: dropdownSlide 0.3s ease-out;
         }
 
-        .toggleItem {
+        @keyframes dropdownSlide {
+            from {
+                opacity: 0;
+                transform: translateY(-10px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .toggleItem, .menuItem {
             display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 5px;
-            padding: 8px;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 15px;
             background: transparent;
             border: none;
             color: #ff0000;
             font-family: 'Courier New', monospace;
-            font-size: 12px;
+            font-size: 13px;
             cursor: pointer;
             transition: all 0.3s ease;
-            border-radius: 3px;
+            border-bottom: 1px solid rgba(255, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
         }
 
-        .toggleItem:hover {
-            background: rgba(255, 0, 0, 0.2);
+        .toggleItem:hover, .menuItem:hover {
+            background: rgba(255, 0, 0, 0.15);
             color: #ff6666;
+            text-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
+        }
+
+        .toggleItem:last-child, .menuItem:last-child {
+            border-bottom: none;
         }
 
         .toggleItem.disabled {
-            color: #000;
+            color: #666;
+            opacity: 0.6;
         }
 
         .toggleItem.disabled:hover {
             color: #ff0000;
+            background: rgba(255, 0, 0, 0.2);
         }
 
-        .toggleLabel {
+        .itemText {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            flex: 1;
+        }
+
+        .itemLabel {
             font-weight: bold;
+            font-size: 13px;
         }
 
-        .toggleStatus {
-            font-size: 10px;
-            opacity: 0.7;
+        .itemStatus {
+            font-size: 11px;
+            opacity: 0.8;
         }
 
-        .toggleStatus.enabled {
+        .itemStatus.enabled {
             color: limegreen;
         }
 
-        .toggleStatus.disabled {
+        .itemStatus.disabled {
             color: #666;
+        }
+
+        .statusIndicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #666;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .statusIndicator.enabled {
+            background: limegreen;
+            box-shadow: 0 0 10px limegreen;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
         }
 
         #gameFrame {
@@ -373,7 +459,7 @@
             right: 20px;
             background: #000;
             border: 2px solid #ff0000;
-            padding: 15px;
+            padding: 20px;
             max-width: 400px;
             width: 90%;
             color: #ff0000;
@@ -381,11 +467,20 @@
             z-index: 1001;
             display: none;
             animation: flickerIn 0.5s ease-out;
+            position: relative;
+            min-height: 60px;
+        }
+
+        #notificationContent {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            margin-top: 20px;
         }
 
         #notificationText {
             font-size: 14px;
-            display: inline-block;
+            line-height: 1.4;
         }
 
         #notificationText span {
@@ -408,6 +503,7 @@
             font-size: 12px;
             color: #ff0000;
             text-shadow: 0 0 5px #ff0000;
+            font-weight: bold;
         }
 
         #notificationClose {
@@ -419,6 +515,15 @@
             cursor: pointer;
             text-shadow: 0 0 5px #ff0000;
             animation: flickerClose 0.3s infinite;
+            background: none;
+            border: none;
+            padding: 5px;
+            border-radius: 3px;
+            transition: background 0.2s ease;
+        }
+
+        #notificationClose:hover {
+            background: rgba(255, 0, 0, 0.2);
         }
 
         @keyframes flickerClose {
@@ -452,8 +557,8 @@
             }
 
             #featuresMenu {
-                min-width: 200px;
-                left: -50px;
+                min-width: 250px;
+                left: -30px;
             }
 
             #gameFrame {
@@ -465,6 +570,7 @@
                 bottom: 10px;
                 right: 10px;
                 max-width: 300px;
+                padding: 15px;
             }
         }
     </style>
@@ -474,15 +580,20 @@
         <div id="gameTitle"></div>
         <div id="navButtons">
             <div id="featuresDropdown">
-                <button id="featuresButton" class="navButton">FEATURES</button>
+                <button id="featuresButton">FEATURES</button>
                 <div id="featuresMenu">
-                    <button class="toggleItem" id="preventCloseToggle">
-                        <span class="toggleLabel">PREVENT TAB CLOSING</span>
-                        <span class="toggleStatus disabled" id="preventCloseStatus">DISABLED</span>
+                    <button class="toggleItem disabled" id="preventCloseToggle">
+                        <div class="itemText">
+                            <div class="itemLabel">PREVENT TAB CLOSING</div>
+                            <div class="itemStatus disabled" id="preventCloseStatus">DISABLED</div>
+                        </div>
+                        <div class="statusIndicator" id="preventCloseIndicator"></div>
                     </button>
-                    <button class="toggleItem" id="cloakTabToggle">
-                        <span class="toggleLabel">CLOAK TAB</span>
-                        <span class="toggleStatus disabled" id="cloakTabStatus">DISABLED</span>
+                    <button class="menuItem" id="cloakTabToggle">
+                        <div class="itemText">
+                            <div class="itemLabel">CLOAK TAB [INCOGNITO]</div>
+                        </div>
+                        <div class="statusIndicator enabled" style="background: #ff0000;"></div>
                     </button>
                 </div>
             </div>
@@ -525,14 +636,15 @@
 
     <div id="notificationBox">
         <span id="notificationTimer"></span>
-        <span id="notificationClose">X</span>
-        <div id="notificationText"></div>
+        <span id="notificationClose">✕</span>
+        <div id="notificationContent">
+            <div id="notificationText"></div>
+        </div>
     </div>
 
     <script>
         let audioElementsState = [];
         let isPreventCloseEnabled = false;
-        let isCloakEnabled = false;
         let notificationTimeout = null;
         let notificationInterval = null;
 
@@ -575,8 +687,10 @@
         });
 
         // Close dropdown when clicking outside
-        document.addEventListener('click', () => {
-            document.getElementById('featuresMenu').classList.remove('show');
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('#featuresDropdown')) {
+                document.getElementById('featuresMenu').classList.remove('show');
+            }
         });
 
         function showPopup() {
@@ -623,8 +737,8 @@
         function restoreAudio() {
             audioElementsState.forEach(state => {
                 try {
-                    state.element.playbackRate = state.element.originalRate;
-                    state.element.volume = state.element.originalVolume;
+                    state.element.playbackRate = state.originalRate;
+                    state.element.volume = state.originalVolume;
                 } catch (e) {
                     console.warn('Error restoring audio for element:', e);
                 }
@@ -636,32 +750,43 @@
             const notificationBox = document.getElementById('notificationBox');
             const notificationText = document.getElementById('notificationText');
             const notificationTimer = document.getElementById('notificationTimer');
+            const notificationContent = document.getElementById('notificationContent');
 
+            // Clear any existing notification
             clearNotification();
 
+            // Reset content
+            notificationContent.style.display = 'block';
             notificationText.innerHTML = message.split('').map(char => 
                 `<span>${char === ' ' ? '&nbsp;' : char}</span>`
             ).join('');
 
+            // Show notification
             notificationBox.style.display = 'block';
+            notificationBox.style.animation = 'flickerIn 0.5s ease-out';
 
             let timeLeft = 7.0;
-            notificationTimer.textContent = timeLeft.toFixed(1);
+            notificationTimer.textContent = `⏱ ${timeLeft.toFixed(1)}s`;
 
+            // Update timer
             notificationInterval = setInterval(() => {
                 timeLeft -= 0.1;
                 if (timeLeft <= 0) {
                     clearNotification();
                 } else {
-                    notificationTimer.textContent = Math.max(0, timeLeft.toFixed(1));
+                    notificationTimer.textContent = `⏱ ${Math.max(0, timeLeft).toFixed(1)}s`;
                 }
             }, 100);
 
-            notificationTimeout = setTimeout(clearNotification, 7000);
+            // Auto close timeout
+            notificationTimeout = setTimeout(() => {
+                clearNotification();
+            }, 7000);
         }
 
         function clearNotification() {
             const notificationBox = document.getElementById('notificationBox');
+            
             if (notificationTimeout) {
                 clearTimeout(notificationTimeout);
                 notificationTimeout = null;
@@ -670,12 +795,14 @@
                 clearInterval(notificationInterval);
                 notificationInterval = null;
             }
+            
             notificationBox.style.animation = 'flickerOut 0.3s ease-out forwards';
             setTimeout(() => {
                 notificationBox.style.display = 'none';
                 notificationBox.style.animation = '';
                 document.getElementById('notificationText').innerHTML = '';
                 document.getElementById('notificationTimer').textContent = '';
+                document.getElementById('notificationContent').style.display = 'none';
             }, 300);
         }
 
@@ -684,17 +811,14 @@
             const win = window.open('about:blank', '_blank');
             win.document.write('<iframe src="' + window.location.href + '" style="width:100%;height:100vh;border:none;"></iframe>');
             closeCloakPopup();
-            isCloakEnabled = true;
-            updateCloakStatus();
+            showNotification('About:Blank Cloak activated in new tab!');
         }
 
         function dataTextCloak() {
             closeCloakPopup();
             const textToCopy = 'data:text/html,<!DOCTYPE%20html><html><head><title>Google%20Classroom</title><style%20type="text/css">html%20{overflow:auto;}html,body,div,iframe{margin:0px;padding:0px;height:100%;border:none;}iframe{display:block;width:100%;border:none;overflow-y:auto;overflow-x:hidden;}</style></head><body><iframe%20src="https://eyedope.live/"%20frameborder="0"%20marginheight="0"%20marginwidth="0"%20width="100%"%20height="100%"%20scrolling="auto"></iframe></body></html>';
             navigator.clipboard.writeText(textToCopy).then(() => {
-                showNotification('Copied the DATA:TEXT cloaked URL. Open a new tab and paste it in the URL BAR');
-                isCloakEnabled = true;
-                updateCloakStatus();
+                showNotification('DATA:TEXT cloaked URL copied! Paste in new tab URL bar.');
             }).catch(err => {
                 console.error('Failed to copy text:', err);
                 showNotification('Error copying DATA:TEXT URL. Please try again.');
@@ -704,32 +828,18 @@
         function updatePreventCloseStatus() {
             const button = document.getElementById('preventCloseToggle');
             const status = document.getElementById('preventCloseStatus');
+            const indicator = document.getElementById('preventCloseIndicator');
+            
             if (isPreventCloseEnabled) {
                 button.classList.remove('disabled');
                 status.textContent = 'ENABLED';
-                status.classList.add('enabled');
-                status.classList.remove('disabled');
+                status.className = 'itemStatus enabled';
+                indicator.className = 'statusIndicator enabled';
             } else {
                 button.classList.add('disabled');
                 status.textContent = 'DISABLED';
-                status.classList.remove('enabled');
-                status.classList.add('disabled');
-            }
-        }
-
-        function updateCloakStatus() {
-            const button = document.getElementById('cloakTabToggle');
-            const status = document.getElementById('cloakTabStatus');
-            if (isCloakEnabled) {
-                button.classList.remove('disabled');
-                status.textContent = 'ENABLED';
-                status.classList.add('enabled');
-                status.classList.remove('disabled');
-            } else {
-                button.classList.add('disabled');
-                status.textContent = 'DISABLED';
-                status.classList.remove('enabled');
-                status.classList.add('disabled');
+                status.className = 'itemStatus disabled';
+                indicator.className = 'statusIndicator';
             }
         }
 
@@ -741,10 +851,10 @@
             isPreventCloseEnabled = !isPreventCloseEnabled;
             if (isPreventCloseEnabled) {
                 window.addEventListener('beforeunload', preventClose);
-                showNotification('Prevent Tab Closing ENABLED');
+                showNotification('🔒 Prevent Tab Closing ENABLED');
             } else {
                 window.removeEventListener('beforeunload', preventClose);
-                showNotification('Prevent Tab Closing DISABLED');
+                showNotification('🔓 Prevent Tab Closing DISABLED');
             }
             updatePreventCloseStatus();
         });
@@ -755,6 +865,7 @@
         }
 
         document.getElementById('cloakTabToggle').addEventListener('click', () => {
+            document.getElementById('featuresMenu').classList.remove('show');
             showCloakPopup();
         });
 
@@ -775,6 +886,7 @@
             } else if (iframe.msRequestFullscreen) {
                 iframe.msRequestFullscreen();
             }
+            showNotification('⛶ Fullscreen activated!');
         });
 
         document.getElementById('okButton').addEventListener('click', () => {
@@ -791,8 +903,6 @@
 
         // Initialize status
         updatePreventCloseStatus();
-        updateCloakStatus();
-
         initializeFocusPage();
     </script>
 </body>
