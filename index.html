@@ -480,6 +480,94 @@
             overflow-y: auto;
         }
 
+        /* Proxy UI Specific Styles */
+        #proxy-ui {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            width: 100%;
+            max-width: 1000px;
+            background: rgba(10, 0, 0, 0.95);
+            padding: 15px;
+            border: 2px solid #ff0000;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
+            border-radius: 5px;
+        }
+
+        #url-bar {
+            flex: 1;
+            min-width: 300px;
+            padding: 12px 20px;
+            background: #1a0000;
+            border: 2px solid #ff0000;
+            color: #ff0000;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            outline: none;
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        #url-bar:focus {
+            box-shadow: 0 0 25px rgba(255, 0, 0, 0.6);
+            transform: scale(1.02);
+        }
+
+        #url-bar::placeholder {
+            color: #660000;
+        }
+
+        #proxy-controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        #proxy-frame {
+            width: 100%;
+            min-height: 70vh;
+            border: 2px solid #ff0000;
+            background: #000;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
+            border-radius: 5px;
+        }
+
+        #options-dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: #1a0000;
+            border: 2px solid #ff0000;
+            padding: 10px;
+            z-index: 10;
+            min-width: 200px;
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
+            border-radius: 5px;
+        }
+
+        #options-dropdown div {
+            padding: 8px;
+            cursor: pointer;
+            color: #ff0000;
+            font-size: 12px;
+            transition: background 0.3s ease;
+        }
+
+        #options-dropdown div:hover {
+            background: rgba(255, 0, 0, 0.2);
+        }
+
+        #proxy-error {
+            color: #ff0000;
+            font-size: 12px;
+            text-align: center;
+            margin-top: 10px;
+            display: none;
+        }
+
         .card {
             background: #0a0000;
             padding: 15px;
@@ -592,14 +680,6 @@
             overflow: hidden;
         }
 
-        #url-bar:focus {
-            box-shadow: 0 0 25px rgba(255, 0, 0, 0.6);
-            transform: scale(1.02);
-        }
-        #options-dropdown div:hover {
-            background: rgba(255, 0, 0, 0.2);
-        }
-
         .card-button::before {
             content: '▶ ';
         }
@@ -639,6 +719,15 @@
 
             .gameImage {
                 height: 160px;
+            }
+
+            #proxy-ui {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            #url-bar {
+                min-width: 100%;
             }
         }
 
@@ -719,6 +808,19 @@
                 font-size: 11px;
                 padding: 6px;
             }
+
+            #proxy-ui {
+                padding: 10px;
+            }
+
+            #url-bar {
+                font-size: 12px;
+                padding: 10px;
+            }
+
+            #proxy-frame {
+                min-height: 50vh;
+            }
         }
 
         @media (max-width: 480px) {
@@ -763,6 +865,19 @@
             .gameImage {
                 height: 120px;
             }
+
+            #proxy-ui {
+                gap: 10px;
+            }
+
+            #url-bar {
+                min-width: 100%;
+                font-size: 11px;
+            }
+
+            #proxy-controls {
+                justify-content: center;
+            }
         }
 
         /* Smooth scroll behavior */
@@ -784,12 +899,8 @@
     window.addEventListener('error', (event) => {
         if (event.target.src && event.target.src.includes('scramjet.bundle.js')) {
             console.error('Failed to load Scramjet script. Ensure the server is running and /sj/scramjet.bundle.js is accessible.');
-            // Optionally display a fallback UI for proxies tab
-            document.getElementById('proxiesContainer').innerHTML = `
-                <div style="color: #ff0000; text-align: center;">
-                    Failed to load proxy service. Please ensure the server is running.
-                </div>
-            `;
+            document.getElementById('proxy-error').style.display = 'block';
+            document.getElementById('proxy-error').textContent = 'Failed to load proxy service. Please ensure the server is running.';
         }
     }, true);
 </script>
@@ -831,7 +942,27 @@
                 <div id="gamesContainer"></div>
             </div>
             <div id="proxies" class="tab-content">
-                <div id="proxiesContainer"></div>
+                <div id="proxiesContainer">
+                    <div id="proxy-ui">
+                        <input type="text" id="url-bar" placeholder="Enter URL (e.g., https://google.com)">
+                        <div id="proxy-controls">
+                            <button id="go" class="card-button">GO</button>
+                            <button id="back" class="card-button">&lt;</button>
+                            <button id="forward" class="card-button">&gt;</button>
+                            <button id="reload" class="card-button">RELOAD</button>
+                            <div style="position: relative;">
+                                <button id="options" class="card-button">OPTIONS</button>
+                                <div id="options-dropdown">
+                                    <div onclick="alert('Cookies view not implemented yet.')">View Cookies</div>
+                                    <div onclick="clearCache()">Clear Cache</div>
+                                    <div onclick="alert('Site details not implemented yet.')">Site Details</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="proxy-error"></div>
+                    </div>
+                    <iframe id="proxy-frame"></iframe>
+                </div>
             </div>
             <div id="exploits" class="tab-content">
                 <div id="exploitsContainer"></div>
@@ -840,8 +971,7 @@
     </div>
 
     <script>
-        // ASCII ARTS - USER NEEDS TO PASTE THESE
-                                        const asciiArts = [
+                                               const asciiArts = [
             `
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀⣀⣀⣀⣠⣤⣤⣤⣀⣀⣀⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣤⣶⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣶⣦⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
@@ -1740,22 +1870,25 @@
             const container = document.getElementById('proxiesContainer');
             container.innerHTML = '';
             container.innerHTML = `
-                <div id="proxy-ui" style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px; width: 100%;">
-                    <input type="text" id="url-bar" placeholder="Enter URL (e.g., https://google.com)" style="flex: 1; padding: 10px; background: #1a0000; border: 2px solid #ff0000; color: #ff0000; font-family: 'Courier New', monospace; font-size: 14px; outline: none; box-shadow: 0 0 15px rgba(255, 0, 0, 0.3); transition: all 0.3s ease;">
-                    <button id="go" class="card-button">GO</button>
-                    <button id="back" class="card-button">&lt;</button>
-                    <button id="forward" class="card-button">&gt;</button>
-                    <button id="reload" class="card-button">RELOAD</button>
-                    <div style="position: relative;">
-                        <button id="options" class="card-button">OPTIONS</button>
-                        <div id="options-dropdown" style="display: none; position: absolute; top: 100%; left: 0; background: #1a0000; border: 2px solid #ff0000; padding: 10px; z-index: 10; min-width: 200px; box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);">
-                            <div style="padding: 5px; cursor: pointer; color: #ff0000;">Placeholder Option 1 (e.g., View Cookies)</div>
-                            <div style="padding: 5px; cursor: pointer; color: #ff0000;">Placeholder Option 2 (e.g., Clear Cache)</div>
-                            <div style="padding: 5px; cursor: pointer; color: #ff0000;">Placeholder Option 3 (e.g., Site Details)</div>
+                <div id="proxy-ui">
+                    <input type="text" id="url-bar" placeholder="Enter URL (e.g., https://google.com)">
+                    <div id="proxy-controls">
+                        <button id="go" class="card-button">GO</button>
+                        <button id="back" class="card-button">&lt;</button>
+                        <button id="forward" class="card-button">&gt;</button>
+                        <button id="reload" class="card-button">RELOAD</button>
+                        <div style="position: relative;">
+                            <button id="options" class="card-button">OPTIONS</button>
+                            <div id="options-dropdown">
+                                <div onclick="alert('Cookies view not implemented yet.')">View Cookies</div>
+                                <div onclick="clearCache()">Clear Cache</div>
+                                <div onclick="alert('Site details not implemented yet.')">Site Details</div>
+                            </div>
                         </div>
                     </div>
+                    <div id="proxy-error"></div>
                 </div>
-                <iframe id="proxy-frame" style="width: 100%; height: 70vh; border: 2px solid #ff0000; background: #000; box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);"></iframe>
+                <iframe id="proxy-frame"></iframe>
             `;
 
             // Scramjet client config (must run before using createURL/parseURL)
