@@ -592,6 +592,14 @@
             overflow: hidden;
         }
 
+        #url-bar:focus {
+            box-shadow: 0 0 25px rgba(255, 0, 0, 0.6);
+            transform: scale(1.02);
+        }
+        #options-dropdown div:hover {
+            background: rgba(255, 0, 0, 0.2);
+        }
+
         .card-button::before {
             content: '▶ ';
         }
@@ -771,6 +779,7 @@
             }
         }
     </style>
+    
 </head>
 <body>
     <div id="welcomeScreen">
@@ -1287,53 +1296,7 @@
             `
         ];
 
-        const validNames = atob('MTM4NzAsMTY1NjksMTU1OTAsMTQ0MjEsMTc2ODIsMTQ5NjYsMTc2NTYsMjA5OTAsMTc3MTcsMTY1NTksMTU3NDQsMTgyOTA=').split(',');
-
-        // Assigned devices map - USER NEEDS TO PASTE THEIR ASSIGNED FINGERPRINTS HERE
-        // Example: '13870': 'abc123def', // Replace with actual fingerprints obtained via SHOWFP
-        const assignedDevices = {
-        };
-
-        // Function to get device fingerprint
-        function getFingerprint() {
-            const components = [
-                navigator.userAgent,
-                navigator.hardwareConcurrency || 'unknown',
-                screen.width + 'x' + screen.height + 'x' + screen.colorDepth,
-                new Date().getTimezoneOffset(),
-                // Canvas fingerprint
-                (function() {
-                    const canvas = document.createElement('canvas');
-                    const ctx = canvas.getContext('2d');
-                    ctx.fillStyle = '#f60';
-                    ctx.fillRect(10, 10, 100, 50);
-                    ctx.fillStyle = '#069';
-                    ctx.font = '16pt no-real-font-123';
-                    ctx.fillText('EYEDOPE 🦄', 10, 30);
-                    return canvas.toDataURL();
-                })(),
-                // WebGL fingerprint
-                (function() {
-                    const canvas = document.createElement('canvas');
-                    const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-                    if (gl) {
-                        const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
-                        if (debugInfo) {
-                            return gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) + gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL);
-                        }
-                    }
-                    return 'no webgl';
-                })()
-            ];
-            const data = components.join('###');
-            let hash = 0;
-            for (let i = 0; i < data.length; ++i) {
-                const char = data.charCodeAt(i);
-                hash = ((hash << 5) - hash) + char;
-                hash = hash & hash;
-            }
-            return hash.toString(36);
-        }
+        const validNames = ['13870', '16569', '15590', '14421', '17682', '14966', '17656', '20990', '17717', '16559', '15744', '18290'];
 
         // Games array - SORTED ALPHABETICALLY BY TITLE
         const games = [
@@ -1671,7 +1634,7 @@
             const d = new Date();
             d.setTime(d.getTime() + (days * 24 * 60 * 60 * 1000));
             const expires = "expires=" + d.toUTCString();
-            document.cookie = name + "=" + value + ";" + expires + ";path=/;Secure;SameSite=Strict";
+            document.cookie = name + "=" + value + ";" + expires + ";path=/";
         }
 
         function getCookie(name) {
@@ -1767,16 +1730,94 @@
         function loadProxies() {
             const container = document.getElementById('proxiesContainer');
             container.innerHTML = '';
-            proxies.forEach((proxy, index) => {
-                const card = document.createElement('div');
-                card.className = 'card';
-                card.style.animationDelay = `${index * 0.1}s`;
-                card.innerHTML = `
-                    <div class="card-title">${proxy.title}</div>
-                    <div class="card-description">${proxy.description}</div>
-                    <button class="card-button" onclick="window.location.href='focus.html?game=${encodeURIComponent(proxy.path)}&title=${encodeURIComponent(proxy.title)}'">USE PROXY</button>
-                `;
-                container.appendChild(card);
+            container.innerHTML = `
+                <div id="proxy-ui" style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px; width: 100%;">
+                    <input type="text" id="url-bar" placeholder="Enter URL (e.g., https://google.com)" style="flex: 1; padding: 10px; background: #1a0000; border: 2px solid #ff0000; color: #ff0000; font-family: 'Courier New', monospace; font-size: 14px; outline: none; box-shadow: 0 0 15px rgba(255, 0, 0, 0.3); transition: all 0.3s ease;">
+                    <button id="go" class="card-button">GO</button>
+                    <button id="back" class="card-button">&lt;</button>
+                    <button id="forward" class="card-button">&gt;</button>
+                    <button id="reload" class="card-button">RELOAD</button>
+                    <div style="position: relative;">
+                        <button id="options" class="card-button">OPTIONS</button>
+                        <div id="options-dropdown" style="display: none; position: absolute; top: 100%; left: 0; background: #1a0000; border: 2px solid #ff0000; padding: 10px; z-index: 10; min-width: 200px; box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);">
+                            <div style="padding: 5px; cursor: pointer; color: #ff0000;">Placeholder Option 1 (e.g., View Cookies)</div>
+                            <div style="padding: 5px; cursor: pointer; color: #ff0000;">Placeholder Option 2 (e.g., Clear Cache)</div>
+                            <div style="padding: 5px; cursor: pointer; color: #ff0000;">Placeholder Option 3 (e.g., Site Details)</div>
+                        </div>
+                    </div>
+                </div>
+                <iframe id="proxy-frame" style="width: 100%; height: 70vh; border: 2px solid #ff0000; background: #000; box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);"></iframe>
+            `;
+
+            // Scramjet client config (must run before using createURL/parseURL)
+            Scramjet.config({
+                prefix: "/sj/",
+                codec: "xor",
+                wisp: "wss://wisp.mercurywork.shop/"  // Public low-latency Wisp server
+            });
+
+            // Proxy controls logic
+            const iframe = document.getElementById('proxy-frame');
+            const urlBar = document.getElementById('url-bar');
+            const optionsBtn = document.getElementById('options');
+            const dropdown = document.getElementById('options-dropdown');
+
+            // Handle "Go" button: Proxy the entered URL
+            document.getElementById('go').addEventListener('click', () => {
+                let url = urlBar.value.trim();
+                if (!url) return;
+                if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                    url = 'https://' + url;  // Default to HTTPS for security and compatibility
+                }
+                const proxiedUrl = Scramjet.createURL(url);  // Encodes URL with xor codec for low-latency proxying
+                iframe.src = proxiedUrl;
+            });
+
+            // Back button: Use iframe's history
+            document.getElementById('back').addEventListener('click', () => {
+                if (iframe.contentWindow && iframe.contentWindow.history) {
+                    iframe.contentWindow.history.back();
+                }
+            });
+
+            // Forward button: Use iframe's history
+            document.getElementById('forward').addEventListener('click', () => {
+                if (iframe.contentWindow && iframe.contentWindow.history) {
+                    iframe.contentWindow.history.forward();
+                }
+            });
+
+            // Reload button: Reload iframe content
+            document.getElementById('reload').addEventListener('click', () => {
+                if (iframe.contentWindow) {
+                    iframe.contentWindow.location.reload();
+                }
+            });
+
+            // Options button: Toggle dropdown
+            optionsBtn.addEventListener('click', () => {
+                dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!optionsBtn.contains(e.target) && !dropdown.contains(e.target)) {
+                    dropdown.style.display = 'none';
+                }
+            });
+
+            // Update URL bar when iframe loads (decode proxied URL for display)
+            iframe.addEventListener('load', () => {
+                try {
+                    const currentSrc = iframe.src;
+                    if (currentSrc.startsWith(window.location.origin + '/sj/')) {
+                        const encodedPart = currentSrc.split('/sj/')[1];
+                        const decoded = Scramjet.parseURL(encodedPart);  // Decodes for user-friendly display
+                        urlBar.value = decoded;
+                    }
+                } catch (e) {
+                    console.warn('URL parse error:', e);
+                }
             });
         }
 
@@ -1895,32 +1936,15 @@
         // Login form handler
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            const input = document.getElementById('nameInput').value.trim();
+            const input = document.getElementById('nameInput').value.trim().toUpperCase();
             stopLoginAsciiFlicker();
-            if (input === 'SHOWFP') {
-                const fp = getFingerprint();
-                alert('Your device fingerprint: ' + fp);
-                navigator.clipboard.writeText(fp);
-            } else if (validNames.includes(input)) {
-                const fp = getFingerprint();
-                const assignedFp = assignedDevices[input];
-                if (assignedFp && assignedFp !== fp) {
-                    const asciiElement = document.getElementById('asciiArt');
-                    asciiElement.classList.add('jitter');
-                    asciiElement.textContent = wrongAscii[0];
-                    setTimeout(() => {
-                        asciiElement.classList.remove('jitter');
-                        asciiElement.style.display = 'none';
-                        window.location.href = '/alovingfamily.html';
-                    }, 3000);
-                } else {
-                    setCookie('accessName', input, 365);
-                    showWelcomeScreen(input);
-                }
+            if (validNames.includes(input)) {
+                setCookie('accessName', input, 365);
+                showWelcomeScreen(input);
             } else {
                 const asciiElement = document.getElementById('asciiArt');
                 asciiElement.classList.add('jitter');
-                asciiElement.textContent = wrongAscii[0];
+                displayAscii(wrongAscii[0]);
                 setTimeout(() => {
                     asciiElement.classList.remove('jitter');
                     asciiElement.style.display = 'none';
@@ -1968,20 +1992,16 @@
 
         function checkAccess() {
             const savedName = getCookie('accessName');
-            if (savedName && validNames.includes(savedName)) {
-                const fp = getFingerprint();
-                const assignedFp = assignedDevices[savedName];
-                if (!assignedFp || assignedFp === fp) {
-                    showWelcomeScreen(savedName);
-                    return;
+            if (savedName && validNames.includes(savedName.toUpperCase())) {
+                showWelcomeScreen(savedName);
+            } else {
+                document.getElementById('lockScreen').style.display = 'flex';
+                // Start random ASCII flickering for non-logged-in users
+                if (asciiArts.length > 0) {
+                    startLoginAsciiFlicker();
                 }
+                startCreepyEffects();
             }
-            document.getElementById('lockScreen').style.display = 'flex';
-            // Start random ASCII flickering for non-logged-in users
-            if (asciiArts.length > 0) {
-                startLoginAsciiFlicker();
-            }
-            startCreepyEffects();
         }
 
         // Initialize on DOM load

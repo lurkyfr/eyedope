@@ -1,0 +1,14 @@
+{
+  "name": "cordycep-research",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "@mercuryworkshop/libcurl-transport": "^1.2.1",
+    "@mercuryworkshop/scramjet": "^0.5.0",
+    "@tomphttp/bare-server-node": "^2.0.3",
+    "express": "^4.19.2"
+  }
+}
