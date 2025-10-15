@@ -780,7 +780,19 @@
         }
     </style>
     <script src="/sj/scramjet.bundle.js"></script>
-    
+    <script>
+    window.addEventListener('error', (event) => {
+        if (event.target.src && event.target.src.includes('scramjet.bundle.js')) {
+            console.error('Failed to load Scramjet script. Ensure the server is running and /sj/scramjet.bundle.js is accessible.');
+            // Optionally display a fallback UI for proxies tab
+            document.getElementById('proxiesContainer').innerHTML = `
+                <div style="color: #ff0000; text-align: center;">
+                    Failed to load proxy service. Please ensure the server is running.
+                </div>
+            `;
+        }
+    }, true);
+</script>
 </head>
 <body>
     <div id="welcomeScreen">
@@ -807,7 +819,6 @@
                     <button id="leftTabButton" class="tab-button"></button>
                     <button id="rightTabButton" class="tab-button"></button>
                 </div>
-                
                 <div class="navbar-brand">
                     <h1 id="navbarTitle">LOADING...</h1>
                     <p id="navbarDesc">Initializing systems...</p>
@@ -1685,14 +1696,11 @@
             document.getElementById('lockScreen').style.display = 'none';
             const mainScreen = document.getElementById('mainScreen');
             mainScreen.classList.add('active');
-            
-            // Initialize scroll listener for navbar effects
+
+            // Initialize navbar and load default tab
             initNavbarScrollEffects();
-            
-            loadGames();
-            loadProxies();
-            loadExploits();
-            setupTabNavigation();
+            loadGames(); // Load games content first
+            setupTabNavigation(); // Set up navigation after content is loaded
         }
 
         function initNavbarScrollEffects() {
@@ -1863,18 +1871,22 @@
             document.querySelectorAll('.tab-button').forEach(btn => {
                 btn.classList.remove('active');
             });
-            
             document.querySelectorAll('.tab-content').forEach(tab => {
                 tab.classList.remove('active');
             });
-            
-            // Add active to selected content
-            document.getElementById(tabId).classList.add('active');
 
+            // Add active to selected content
+            const targetTab = document.getElementById(tabId);
+            if (targetTab) {
+                targetTab.classList.add('active');
+            }
+
+            // Update navbar title and description
             const config = tabsConfig[tabId];
             document.getElementById('navbarTitle').innerHTML = '▓▒░ ' + config.title + ' ░▒▓';
             document.getElementById('navbarDesc').innerHTML = config.desc;
 
+            // Update user name in description
             const userSpan = document.getElementById('userName');
             if (userSpan) {
                 userSpan.textContent = userNameVar;
@@ -1888,10 +1900,22 @@
             rightButton.textContent = config.others[1].toUpperCase();
             rightButton.dataset.tab = config.others[1];
 
-            // Add active class to current button
+            // Set active button based on current tab
             const activeButton = document.querySelector(`[data-tab="${tabId}"]`);
             if (activeButton) {
                 activeButton.classList.add('active');
+            } else {
+                // Default to left button if no match (e.g., initial load)
+                leftButton.classList.add('active');
+            }
+
+            // Load content for the selected tab
+            if (tabId === 'games') {
+                loadGames();
+            } else if (tabId === 'proxies') {
+                loadProxies();
+            } else if (tabId === 'exploits') {
+                loadExploits();
             }
         }
 
@@ -1899,8 +1923,24 @@
             const leftButton = document.getElementById('leftTabButton');
             const rightButton = document.getElementById('rightTabButton');
 
-            leftButton.addEventListener('click', () => switchTab(leftButton.dataset.tab));
-            rightButton.addEventListener('click', () => switchTab(rightButton.dataset.tab));
+            // Initialize button attributes based on default tab ('games')
+            const defaultTab = 'games';
+            const config = tabsConfig[defaultTab];
+            leftButton.textContent = config.others[0].toUpperCase();
+            leftButton.dataset.tab = config.others[0];
+            rightButton.textContent = config.others[1].toUpperCase();
+            rightButton.dataset.tab = config.others[1];
+            leftButton.classList.add('tab-button'); // Ensure class is applied
+            rightButton.classList.add('tab-button'); // Ensure class is applied
+            leftButton.classList.add('active'); // Set default active tab
+
+            // Event listeners for tab switching
+            leftButton.addEventListener('click', () => {
+                switchTab(leftButton.dataset.tab);
+            });
+            rightButton.addEventListener('click', () => {
+                switchTab(rightButton.dataset.tab);
+            });
 
             // Enhanced hover effects
             const buttons = [leftButton, rightButton];
@@ -1924,14 +1964,14 @@
             // Keyboard navigation
             document.addEventListener('keydown', (e) => {
                 if (e.key === 'ArrowLeft') {
-                    leftButton.click();
+                    switchTab(leftButton.dataset.tab);
                 } else if (e.key === 'ArrowRight') {
-                    rightButton.click();
+                    switchTab(rightButton.dataset.tab);
                 }
             });
 
-            // Initial tab setup
-            switchTab('games');
+            // Initial tab load
+            switchTab(defaultTab);
         }
 
         // Login form handler
