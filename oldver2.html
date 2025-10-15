@@ -1287,53 +1287,7 @@
             `
         ];
 
-        const validNames = atob('MTM4NzAsMTY1NjksMTU1OTAsMTQ0MjEsMTc2ODIsMTQ5NjYsMTc2NTYsMjA5OTAsMTc3MTcsMTY1NTksMTU3NDQsMTgyOTA=').split(',');
-
-        // Assigned devices map - USER NEEDS TO PASTE THEIR ASSIGNED FINGERPRINTS HERE
-        // Example: '13870': 'abc123def', // Replace with actual fingerprints obtained via SHOWFP
-        const assignedDevices = {
-        };
-
-        // Function to get device fingerprint
-        function getFingerprint() {
-            const components = [
-                navigator.userAgent,
-                navigator.hardwareConcurrency || 'unknown',
-                screen.width + 'x' + screen.height + 'x' + screen.colorDepth,
-                new Date().getTimezoneOffset(),
-                // Canvas fingerprint
-                (function() {
-                    const canvas = document.createElement('canvas');
-                    const ctx = canvas.getContext('2d');
-                    ctx.fillStyle = '#f60';
-                    ctx.fillRect(10, 10, 100, 50);
-                    ctx.fillStyle = '#069';
-                    ctx.font = '16pt no-real-font-123';
-                    ctx.fillText('EYEDOPE 🦄', 10, 30);
-                    return canvas.toDataURL();
-                })(),
-                // WebGL fingerprint
-                (function() {
-                    const canvas = document.createElement('canvas');
-                    const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-                    if (gl) {
-                        const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
-                        if (debugInfo) {
-                            return gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) + gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL);
-                        }
-                    }
-                    return 'no webgl';
-                })()
-            ];
-            const data = components.join('###');
-            let hash = 0;
-            for (let i = 0; i < data.length; ++i) {
-                const char = data.charCodeAt(i);
-                hash = ((hash << 5) - hash) + char;
-                hash = hash & hash;
-            }
-            return hash.toString(36);
-        }
+        const validNames = ['13870', '16569', '15590', '14421', '17682', '14966', '17656', '20990', '17717', '16559', '15744', '18290'];
 
         // Games array - SORTED ALPHABETICALLY BY TITLE
         const games = [
@@ -1671,7 +1625,7 @@
             const d = new Date();
             d.setTime(d.getTime() + (days * 24 * 60 * 60 * 1000));
             const expires = "expires=" + d.toUTCString();
-            document.cookie = name + "=" + value + ";" + expires + ";path=/;Secure;SameSite=Strict";
+            document.cookie = name + "=" + value + ";" + expires + ";path=/";
         }
 
         function getCookie(name) {
@@ -1895,32 +1849,15 @@
         // Login form handler
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            const input = document.getElementById('nameInput').value.trim();
+            const input = document.getElementById('nameInput').value.trim().toUpperCase();
             stopLoginAsciiFlicker();
-            if (input === 'SHOWFP') {
-                const fp = getFingerprint();
-                alert('Your device fingerprint: ' + fp);
-                navigator.clipboard.writeText(fp);
-            } else if (validNames.includes(input)) {
-                const fp = getFingerprint();
-                const assignedFp = assignedDevices[input];
-                if (assignedFp && assignedFp !== fp) {
-                    const asciiElement = document.getElementById('asciiArt');
-                    asciiElement.classList.add('jitter');
-                    asciiElement.textContent = wrongAscii[0];
-                    setTimeout(() => {
-                        asciiElement.classList.remove('jitter');
-                        asciiElement.style.display = 'none';
-                        window.location.href = '/alovingfamily.html';
-                    }, 3000);
-                } else {
-                    setCookie('accessName', input, 365);
-                    showWelcomeScreen(input);
-                }
+            if (validNames.includes(input)) {
+                setCookie('accessName', input, 365);
+                showWelcomeScreen(input);
             } else {
                 const asciiElement = document.getElementById('asciiArt');
                 asciiElement.classList.add('jitter');
-                asciiElement.textContent = wrongAscii[0];
+                displayAscii(wrongAscii[0]);
                 setTimeout(() => {
                     asciiElement.classList.remove('jitter');
                     asciiElement.style.display = 'none';
@@ -1968,20 +1905,16 @@
 
         function checkAccess() {
             const savedName = getCookie('accessName');
-            if (savedName && validNames.includes(savedName)) {
-                const fp = getFingerprint();
-                const assignedFp = assignedDevices[savedName];
-                if (!assignedFp || assignedFp === fp) {
-                    showWelcomeScreen(savedName);
-                    return;
+            if (savedName && validNames.includes(savedName.toUpperCase())) {
+                showWelcomeScreen(savedName);
+            } else {
+                document.getElementById('lockScreen').style.display = 'flex';
+                // Start random ASCII flickering for non-logged-in users
+                if (asciiArts.length > 0) {
+                    startLoginAsciiFlicker();
                 }
+                startCreepyEffects();
             }
-            document.getElementById('lockScreen').style.display = 'flex';
-            // Start random ASCII flickering for non-logged-in users
-            if (asciiArts.length > 0) {
-                startLoginAsciiFlicker();
-            }
-            startCreepyEffects();
         }
 
         // Initialize on DOM load
