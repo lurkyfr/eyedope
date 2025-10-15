@@ -172,6 +172,11 @@
             animation: flicker 0.15s infinite;
         }
 
+        #asciiArt.flickering {
+            display: block;
+            animation: flicker 0.1s infinite, jitter 0.2s infinite;
+        }
+
         @keyframes flicker {
             0%, 100% { opacity: 1; }
             25% { opacity: 0.8; }
@@ -190,10 +195,6 @@
             70% { transform: translate(-1px, -2px); }
             80% { transform: translate(1px, 2px); }
             90% { transform: translate(-2px, 1px); }
-        }
-
-        .jitter {
-            animation: jitter 0.3s infinite;
         }
 
         #loginForm {
@@ -265,8 +266,6 @@
             from { opacity: 0; transform: scale(0.98); }
             to { opacity: 1; transform: scale(1); }
         }
-
-        /* REMOVED MAIN ASCII - NO SPACE TAKEN UP */
 
         /* SLEEK FIXED NAVBAR */
         #navbar {
@@ -784,6 +783,7 @@
     </div>
 
     <div id="lockScreen">
+        <pre id="asciiArt"></pre>
         <form id="loginForm">
             <input type="text" id="nameInput" placeholder="YOU KNOW WHAT TO PUT HERE" autocomplete="off">
             <button type="submit">SUBMIT</button>
@@ -791,8 +791,6 @@
     </div>
 
     <div id="mainScreen">
-        <!-- NO MAIN ASCII ELEMENT - CONTENT STARTS IMMEDIATELY -->
-        
         <nav id="navbar">
             <div class="navbar-inner">
                 <div class="nav-tabs">
@@ -821,8 +819,8 @@
     </div>
 
     <script>
-        // ASCII ARTS - ONLY FOR LOCK SCREEN AND WELCOME
-                                const asciiArts = [
+        // ASCII ARTS - USER NEEDS TO PASTE THESE
+                                        const asciiArts = [
             `
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀⣀⣀⣀⣠⣤⣤⣤⣀⣀⣀⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣤⣶⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣶⣦⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
@@ -1271,8 +1269,6 @@
             `
         ];
 
-        // REMOVED mainAsciiFrames - NO MAIN PAGE ASCII
-
         const wrongAscii = [
             `
             ▀███▀▀▀██████▀   ▀███▀ ▄▄█▀▀▀█▄█████▀ ▀███▀    ▀███▀   ▀██▀ ▄▄█▀▀██▄ ▀███▀   ▀███▀
@@ -1293,31 +1289,8 @@
 
         const validNames = ['13870', '16569', '15590', '17682', '14966', '17656', '20990', '17717', '16559', '15744', '18290'];
 
-const games = [
-            {
-                title: 'FIVE NIGHTS AT FREDDY\'S',
-                description: 'Survive 5 nights at Freddy\'s. Can you handle the animatronics?',
-                image: './files/fnaf/logo.png',
-                path: './files/fnaf/'
-            },
-            {
-                title: 'FIVE NIGHTS AT FREDDY\'S 2',
-                description: 'Survive 5 more nights with new animatronics and challenges.',
-                image: './files/fnaf2/logo.png',
-                path: './files/fnaf2/'
-            },
-            {
-                title: 'GRANNY',
-                description: 'Escape granny\'s house without getting caught.',
-                image: './files/granny/logo.png',
-                path: './files/granny/'
-            },
-            {
-                title: 'EXTREME RUN 3D',
-                description: 'Dodge obstacles and reach the finish line in this endless runner. How far can you go?',
-                image: './files/extremerun3d/logo.png',
-                path: './files/extremerun3d/'
-            },
+        // Games array - SORTED ALPHABETICALLY BY TITLE
+        const games = [
             {
                 title: '2048',
                 description: 'Combine tiles to reach 2048 in this merging puzzle game.',
@@ -1325,28 +1298,10 @@ const games = [
                 path: './files/2048/'
             },
             {
-                title: 'RETRO BOWL',
-                description: 'Play American football in this retro-style game. Lead your team to victory.',
-                image: './files/retrobowl/logo.png',
-                path: './files/retrobowl/'
-            },
-            {
-                title: 'DRIVE MAD',
-                description: 'Complete all the levels in this unique driving obstacle game.',
-                image: './files/drivemad/logo.png',
-                path: './files/drivemad/'
-            },
-            {
-                title: 'FEARS TO FATHOM',
-                description: 'Embark on the Home Alone story from the popular game series Fears To Fathom.',
-                image: './files/fearstofathom/logo.png',
-                path: './files/fearstofathom/'
-            },
-            {
-                title: 'CSGO SURF',
-                description: 'Surf the levels and try to beat the game in this CSGO themed game.',
-                image: './files/csgo surf/logo.png',
-                path: './files/csgo surf/'
+                title: '3DASH',
+                description: 'Geometry Dash Fan Game, similar concept and movement.',
+                image: './files/slide in the woods/logo.png',
+                path: './files/slide in the woods/'
             },
             {
                 title: 'A DAY IN THE OFFICE',
@@ -1355,88 +1310,10 @@ const games = [
                 path: './files/a day in the office/'
             },
             {
-                title: 'STATION 141',
-                description: 'Indie Story Horror game taking place in a station, experience the terror.',
-                image: './files/station 141/logo.png',
-                path: './files/station 141/'
-            },
-            {
-                title: 'STEAL A BRAINROT',
-                description: 'Steal A Brainrot ripoff, but offline. Still decent.',
-                image: './files/steal brainrot/logo.png',
-                path: './files/steal brainrot/'
-            },
-            {
                 title: 'BAD PARENTING',
                 description: 'A popular story horror game, now actually functioning.',
                 image: './files/bad-parenting/logo.png',
                 path: './files/bad-parenting/'
-            },
-            {
-                title: 'SLENDER [MAYBE BROKEN]',
-                description: 'Slenderman horror experience multiplayr edition',
-                image: './files/slender multiplayer/logo.png',
-                path: './files/slender multiplayer/'
-            },
-            {
-                title: 'EDY\'S CAR SIMULATOR',
-                description: 'Driving/Car simulator.',
-                image: './files/slender multiplayer/logo.png',
-                path: './files/slender multiplayer/'
-            },
-            {
-                title: 'PICO 8 GAMES',
-                description: 'An experience list of pico 8\'s games.',
-                image: './files/pico 8 games/logo.png',
-                path: './files/pico 8 games/'
-            },
-            {
-                title: 'FLIGHT SIM',
-                description: 'Take your skills to the pilot seat in an airplane.',
-                image: './files/flight sim/logo.png',
-                path: './files/flight sim/'
-            },
-            {
-                title: 'OBBY BUT YOU\'RE ON A BIKE',
-                description: 'Self Explanatory.',
-                image: './files/obby but your on a bike/logo.png',
-                path: './files/obby but your on a bike/'
-            },
-            {
-                title: 'OBBY ROBBY: ONLY UP',
-                description: 'Only up gameplay in an Obby Robby game.',
-                image: './files/obby robby only up/logo.png',
-                path: './files/obby robby only up/'
-            },
-            {
-                title: 'STACKBALL.IO',
-                description: 'Break through the tiles, and beat each level.',
-                image: './files/stackball.io/logo.png',
-                path: './files/stackball.io/'
-            },
-            {
-                title: 'SPRUNKED',
-                description: 'No clue what this is. Sorry.',
-                image: './files/sprunked/logo.png',
-                path: './files/sprunked/'
-            },
-            {
-                title: 'STICKMAN GTA',
-                description: 'Cheap & Horrible Stickman style GTA ripoff.',
-                image: './files/STICKMAN GTA/logo.png',
-                path: './files/STICKMAN GTA/'
-            },
-            {
-                title: 'MARIO',
-                description: 'Yep.',
-                image: './files/mari0/logo.png',
-                path: './files/mari0/'
-            },
-            {
-                title: 'HALF LIFE',
-                description: 'Half Life Game I hope..',
-                image: './files/half life/logo.png',
-                path: './files/half life/'
             },
             {
                 title: 'BASEBALL BROS',
@@ -1451,64 +1328,10 @@ const games = [
                 path: './files/bounce back/'
             },
             {
-                title: 'PIXEL COMBAT 2',
-                description: 'FPS Game, pixel based similar to pixel gun 3D.',
-                image: './files/pixel combat 2/logo.png',
-                path: './files/pixel combat 2/'
-            },
-            {
-                title: 'ROOFTOP SNIPERS 2',
-                description: 'Two - One player fun battle game with snipers/weapons and unique movement.',
-                image: './files/rooftop snipers 2/logo.png',
-                path: './files/rooftop snipers 2/'
-            },
-            {
-                title: 'ULTIMATE CAR DRIVING',
-                description: 'A Miscellanious Car Driving Simulator.',
-                image: './files/ultimate car driving/logo.png',
-                path: './files/ultimate car driving/'
-            },
-            {
-                title: 'TRAFFIC JAM 3D',
-                description: 'A fun \'traffic swimming\' simulator, swerve through traffic and upgrade.',
-                image: './files/traffic jam 3d/logo.png',
-                path: './files/traffic jam 3d/'
-            },
-            {
-                title: 'STACKTRIS',
-                description: 'A tetris styled game, drop and aim. Accuracy is key.',
-                image: './files/stacktris/logo.png',
-                path: './files/stacktris/'
-            },
-            {
-                title: 'THE MAN FROM THE WINDOW',
-                description: 'A tetris styled game, drop and aim. Accuracy is key.',
-                image: './files/the man from the window/logo.png',
-                path: './files/the man from the window/'
-            },
-            {
-                title: 'QWOP',
-                description: 'Something interesting',
-                image: './files/qwop/logo.png',
-                path: './files/qwop/'
-            },
-            {
-                title: 'SLIDE IN THE WOODS',
-                description: 'Just a normal slide in the woods...?',
-                image: './files/slide in the woods/logo.png',
-                path: './files/slide in the woods/'
-            },
-            {
-                title: 'RODHA',
-                description: 'jump,RUN,leap,idk',
-                image: './files/rodha/logo.png',
-                path: './files/rodha/'
-            },
-            {
-                title: '3DASH',
-                description: 'Geometry Dash Fan Game, similar concept and movement.',
-                image: './files/slide in the woods/logo.png',
-                path: './files/slide in the woods/'
+                title: 'CSGO SURF',
+                description: 'Surf the levels and try to beat the game in this CSGO themed game.',
+                image: './files/csgo surf/logo.png',
+                path: './files/csgo surf/'
             },
             {
                 title: 'DREADER',
@@ -1517,12 +1340,186 @@ const games = [
                 path: './files/slide in the woods/'
             },
             {
+                title: 'DRIVE MAD',
+                description: 'Complete all the levels in this unique driving obstacle game.',
+                image: './files/drivemad/logo.png',
+                path: './files/drivemad/'
+            },
+            {
+                title: 'EDY\'S CAR SIMULATOR',
+                description: 'Driving/Car simulator.',
+                image: './files/slender multiplayer/logo.png',
+                path: './files/slender multiplayer/'
+            },
+            {
+                title: 'EXTREME RUN 3D',
+                description: 'Dodge obstacles and reach the finish line in this endless runner. How far can you go?',
+                image: './files/extremerun3d/logo.png',
+                path: './files/extremerun3d/'
+            },
+            {
+                title: 'FEARS TO FATHOM',
+                description: 'Embark on the Home Alone story from the popular game series Fears To Fathom.',
+                image: './files/fearstofathom/logo.png',
+                path: './files/fearstofathom/'
+            },
+            {
+                title: 'FIVE NIGHTS AT FREDDY\'S',
+                description: 'Survive 5 nights at Freddy\'s. Can you handle the animatronics?',
+                image: './files/fnaf/logo.png',
+                path: './files/fnaf/'
+            },
+            {
+                title: 'FIVE NIGHTS AT FREDDY\'S 2',
+                description: 'Survive 5 more nights with new animatronics and challenges.',
+                image: './files/fnaf2/logo.png',
+                path: './files/fnaf2/'
+            },
+            {
+                title: 'FLIGHT SIM',
+                description: 'Take your skills to the pilot seat in an airplane.',
+                image: './files/flight sim/logo.png',
+                path: './files/flight sim/'
+            },
+            {
+                title: 'GRANNY',
+                description: 'Escape granny\'s house without getting caught.',
+                image: './files/granny/logo.png',
+                path: './files/granny/'
+            },
+            {
+                title: 'HALF LIFE',
+                description: 'Half Life Game I hope..',
+                image: './files/half life/logo.png',
+                path: './files/half life/'
+            },
+            {
                 title: 'JELLY DRIFT',
                 description: 'Drift around the tracks, upgrade cars, and reach new levels in this addicting drifting and driving game.',
                 image: './files/slide in the woods/logo.png',
                 path: './files/slide in the woods/'
+            },
+            {
+                title: 'MARIO',
+                description: 'Yep.',
+                image: './files/mari0/logo.png',
+                path: './files/mari0/'
+            },
+            {
+                title: 'OBBY BUT YOU\'RE ON A BIKE',
+                description: 'Self Explanatory.',
+                image: './files/obby but your on a bike/logo.png',
+                path: './files/obby but your on a bike/'
+            },
+            {
+                title: 'OBBY ROBBY: ONLY UP',
+                description: 'Only up gameplay in an Obby Robby game.',
+                image: './files/obby robby only up/logo.png',
+                path: './files/obby robby only up/'
+            },
+            {
+                title: 'PICO 8 GAMES',
+                description: 'An experience list of pico 8\'s games.',
+                image: './files/pico 8 games/logo.png',
+                path: './files/pico 8 games/'
+            },
+            {
+                title: 'PIXEL COMBAT 2',
+                description: 'FPS Game, pixel based similar to pixel gun 3D.',
+                image: './files/pixel combat 2/logo.png',
+                path: './files/pixel combat 2/'
+            },
+            {
+                title: 'QWOP',
+                description: 'Something interesting',
+                image: './files/qwop/logo.png',
+                path: './files/qwop/'
+            },
+            {
+                title: 'RETRO BOWL',
+                description: 'Play American football in this retro-style game. Lead your team to victory.',
+                image: './files/retrobowl/logo.png',
+                path: './files/retrobowl/'
+            },
+            {
+                title: 'RODHA',
+                description: 'jump,RUN,leap,idk',
+                image: './files/rodha/logo.png',
+                path: './files/rodha/'
+            },
+            {
+                title: 'ROOFTOP SNIPERS 2',
+                description: 'Two - One player fun battle game with snipers/weapons and unique movement.',
+                image: './files/rooftop snipers 2/logo.png',
+                path: './files/rooftop snipers 2/'
+            },
+            {
+                title: 'SLENDER [MAYBE BROKEN]',
+                description: 'Slenderman horror experience multiplayr edition',
+                image: './files/slender multiplayer/logo.png',
+                path: './files/slender multiplayer/'
+            },
+            {
+                title: 'SLIDE IN THE WOODS',
+                description: 'Just a normal slide in the woods...?',
+                image: './files/slide in the woods/logo.png',
+                path: './files/slide in the woods/'
+            },
+            {
+                title: 'SPRUNKED',
+                description: 'No clue what this is. Sorry.',
+                image: './files/sprunked/logo.png',
+                path: './files/sprunked/'
+            },
+            {
+                title: 'STACKBALL.IO',
+                description: 'Break through the tiles, and beat each level.',
+                image: './files/stackball.io/logo.png',
+                path: './files/stackball.io/'
+            },
+            {
+                title: 'STACKTRIS',
+                description: 'A tetris styled game, drop and aim. Accuracy is key.',
+                image: './files/stacktris/logo.png',
+                path: './files/stacktris/'
+            },
+            {
+                title: 'STATION 141',
+                description: 'Indie Story Horror game taking place in a station, experience the terror.',
+                image: './files/station 141/logo.png',
+                path: './files/station 141/'
+            },
+            {
+                title: 'STEAL A BRAINROT',
+                description: 'Steal A Brainrot ripoff, but offline. Still decent.',
+                image: './files/steal brainrot/logo.png',
+                path: './files/steal brainrot/'
+            },
+            {
+                title: 'STICKMAN GTA',
+                description: 'Cheap & Horrible Stickman style GTA ripoff.',
+                image: './files/STICKMAN GTA/logo.png',
+                path: './files/STICKMAN GTA/'
+            },
+            {
+                title: 'THE MAN FROM THE WINDOW',
+                description: 'A tetris styled game, drop and aim. Accuracy is key.',
+                image: './files/the man from the window/logo.png',
+                path: './files/the man from the window/'
+            },
+            {
+                title: 'TRAFFIC JAM 3D',
+                description: 'A fun \'traffic swimming\' simulator, swerve through traffic and upgrade.',
+                image: './files/traffic jam 3d/logo.png',
+                path: './files/traffic jam 3d/'
+            },
+            {
+                title: 'ULTIMATE CAR DRIVING',
+                description: 'A Miscellanious Car Driving Simulator.',
+                image: './files/ultimate car driving/logo.png',
+                path: './files/ultimate car driving/'
             }
-        ];
+        ].sort((a, b) => a.title.localeCompare(b.title));
 
         const proxies = [
             {
@@ -1562,6 +1559,7 @@ const games = [
 
         let userNameVar = '';
         let welcomeAsciiInterval;
+        let loginAsciiInterval;
 
         const tabsConfig = {
             games: {
@@ -1603,13 +1601,44 @@ const games = [
         ];
 
         function getRandomAscii() {
+            if (asciiArts.length === 0) return '';
             return asciiArts[Math.floor(Math.random() * asciiArts.length)] || '';
         }
 
-        function displayAscii(art) {
+        function displayRandomLoginAscii() {
+            if (asciiArts.length === 0) return;
             const asciiElement = document.getElementById('asciiArt');
-            asciiElement.textContent = art;
-            asciiElement.style.display = 'block';
+            const randomArt = getRandomAscii();
+            if (randomArt) {
+                asciiElement.textContent = randomArt;
+                asciiElement.classList.add('flickering');
+            }
+        }
+
+        function startLoginAsciiFlicker() {
+            // Initial display
+            displayRandomLoginAscii();
+            
+            // Randomly change ASCII every 2-5 seconds
+            loginAsciiInterval = setInterval(() => {
+                const asciiElement = document.getElementById('asciiArt');
+                const randomArt = getRandomAscii();
+                if (randomArt && asciiElement) {
+                    asciiElement.textContent = randomArt;
+                }
+            }, Math.random() * 3000 + 2000); // 2-5 seconds
+        }
+
+        function stopLoginAsciiFlicker() {
+            if (loginAsciiInterval) {
+                clearInterval(loginAsciiInterval);
+                loginAsciiInterval = null;
+            }
+            const asciiElement = document.getElementById('asciiArt');
+            if (asciiElement) {
+                asciiElement.classList.remove('flickering');
+                asciiElement.style.display = 'none';
+            }
         }
 
         function setCookie(name, value, days) {
@@ -1642,6 +1671,7 @@ const games = [
         }
 
         function showWelcomeScreen(name) {
+            stopLoginAsciiFlicker();
             document.getElementById('lockScreen').style.display = 'none';
             document.getElementById('welcomeUserId').textContent = name.toUpperCase();
             const welcomeScreen = document.getElementById('welcomeScreen');
@@ -1661,6 +1691,7 @@ const games = [
         function showMainScreen(name) {
             userNameVar = name.toUpperCase();
             stopCreepyEffects();
+            stopLoginAsciiFlicker();
             document.getElementById('lockScreen').style.display = 'none';
             const mainScreen = document.getElementById('mainScreen');
             mainScreen.classList.add('active');
@@ -1839,6 +1870,7 @@ const games = [
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const input = document.getElementById('nameInput').value.trim().toUpperCase();
+            stopLoginAsciiFlicker();
             if (validNames.includes(input)) {
                 setCookie('accessName', input, 365);
                 showWelcomeScreen(input);
@@ -1897,7 +1929,10 @@ const games = [
                 showWelcomeScreen(savedName);
             } else {
                 document.getElementById('lockScreen').style.display = 'flex';
-                // No ASCII display on initial load
+                // Start random ASCII flickering for non-logged-in users
+                if (asciiArts.length > 0) {
+                    startLoginAsciiFlicker();
+                }
                 startCreepyEffects();
             }
         }
