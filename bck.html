@@ -989,7 +989,7 @@
                 </div>
                 <div class="navbar-brand">
                     <h1 id="navbarTitle">LOADING...</h1>
-                    <p id="navbarDesc">Initialiing systems...</p>
+                    <p id="navbarDesc">Initializing systems...</p>
                 </div>
             </div>
         </nav>
@@ -1029,12 +1029,30 @@
         </div>
     </div>
 
-    <!-- Browser.js Script -->
-    <script src="/browser.js/static/sw.js"></script>
+    <!-- Browser.js Scripts -->
+    <script src="/static/browser.bundle.js"></script>
     <script>
+        // Register Browser.js Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/static/sw.js', { scope: '/' })
+                    .then(registration => {
+                        console.log('Browser.js Service Worker registered:', registration.scope);
+                    })
+                    .catch(err => {
+                        console.error('Service Worker registration failed:', err);
+                        const errorEl = document.getElementById('proxy-error');
+                        if (errorEl) {
+                            errorEl.classList.add('active');
+                            errorEl.textContent = '⚠ Service Worker registration failed. Check console for details.';
+                        }
+                    });
+            });
+        }
+
         window.addEventListener('error', (event) => {
-            if (event.target.src && event.target.src.includes('sw.js')) {
-                console.error('Failed to load Browser.js script. Ensure the build is complete and /browser.js/dist/browser.bundle.js is accessible.');
+            if (event.target.src && event.target.src.includes('browser.bundle.js')) {
+                console.error('Failed to load Browser.js script. Ensure /static/browser.bundle.js is accessible.');
                 const errorEl = document.getElementById('proxy-error');
                 if (errorEl) {
                     errorEl.classList.add('active');
@@ -1925,33 +1943,18 @@
         function loadProxies() {
             const container = document.getElementById('proxiesContainer');
             
-            // Check if Browser.js is loaded
-            if (typeof BrowserJS === 'undefined' && typeof window.BrowserJS === 'undefined') {
-                const errorEl = document.getElementById('proxy-error');
-                if (errorEl) {
-                    errorEl.classList.add('active');
-                    errorEl.textContent = '⚠ Browser.js library not loaded. Please ensure the build is complete and accessible.';
-                }
-                return;
-            }
-
-            // Configure Browser.js proxy
-            try {
-                // Browser.js configuration will depend on its API
-                // This is a placeholder - adjust based on actual Browser.js API
-                if (window.BrowserJS && window.BrowserJS.config) {
-                    window.BrowserJS.config({
-                        prefix: "/browser.js/",
-                        // Add other config options as needed
-                    });
-                }
-            } catch (error) {
-                console.error('Browser.js config error:', error);
-                const errorEl = document.getElementById('proxy-error');
-                if (errorEl) {
-                    errorEl.classList.add('active');
-                    errorEl.textContent = '⚠ Proxy configuration failed: ' + error.message;
-                }
+            // Wait for service worker to be ready
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.ready.then(registration => {
+                    console.log('Service Worker ready, proxy initialized');
+                }).catch(error => {
+                    console.error('Service Worker not ready:', error);
+                    const errorEl = document.getElementById('proxy-error');
+                    if (errorEl) {
+                        errorEl.classList.add('active');
+                        errorEl.textContent = '⚠ Proxy service not ready. Please refresh the page.';
+                    }
+                });
             }
 
             const iframe = document.getElementById('proxy-frame');
@@ -1977,19 +1980,16 @@
                 }
                 
                 try {
-                    // Use Browser.js URL encoding
-                    let proxiedUrl;
-                    if (window.BrowserJS && window.BrowserJS.createURL) {
-                        proxiedUrl = window.BrowserJS.createURL(url);
-                    } else {
-                        // Fallback: basic proxy path construction
-                        proxiedUrl = '/browser.js/proxy/' + encodeURIComponent(url);
-                    }
+                    // Browser.js uses the service worker to proxy requests
+                    // The URL format depends on how sw.js is configured
+                    // Typically it intercepts requests made through the iframe
+                    const proxiedUrl = '/proxy/' + encodeURIComponent(url);
                     iframe.src = proxiedUrl;
+                    urlBar.value = url;
                 } catch (error) {
                     console.error('URL encoding error:', error);
                     errorEl.classList.add('active');
-                    errorEl.textContent = '⚠ Failed to encode URL: ' + error.message;
+                    errorEl.textContent = '⚠ Failed to load URL: ' + error.message;
                 }
             });
 
@@ -2049,11 +2049,13 @@
             // Update URL bar when iframe loads
             iframe.addEventListener('load', () => {
                 try {
+                    // Try to get the current URL from the iframe
+                    // Note: This may be restricted by CORS
                     const currentSrc = iframe.src;
-                    if (currentSrc && currentSrc.includes('/browser.js/')) {
-                        // Decode the URL from Browser.js format
-                        if (window.BrowserJS && window.BrowserJS.parseURL) {
-                            const decoded = window.BrowserJS.parseURL(currentSrc);
+                    if (currentSrc && currentSrc.includes('/proxy/')) {
+                        const encoded = currentSrc.split('/proxy/')[1];
+                        if (encoded) {
+                            const decoded = decodeURIComponent(encoded);
                             urlBar.value = decoded;
                         }
                     }
