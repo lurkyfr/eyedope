@@ -386,7 +386,6 @@
             min-width: 100px;
             text-transform: uppercase;
             letter-spacing: 1px;
-            animation: pulse 2s infinite;
         }
 
         .tab-button::before {
@@ -412,7 +411,6 @@
                 inset 0 0 10px rgba(255, 0, 0, 0.05);
             transform: translateY(-2px);
             color: #ff0000;
-            animation: none;
         }
 
         .tab-button.active {
@@ -424,26 +422,15 @@
             transform: translateY(-1px);
             color: #fff;
             text-shadow: 0 0 10px #ff0000;
-            animation: none;
         }
 
         .tab-button.active::before {
             left: 100%;
-            animation: none;
         }
 
         .tab-button.dim {
             opacity: 0.4;
             transform: scale(0.95);
-        }
-
-        @keyframes pulse {
-            0%, 100% {
-                box-shadow: 0 0 5px rgba(255, 0, 0, 0.2);
-            }
-            50% {
-                box-shadow: 0 0 15px rgba(255, 0, 0, 0.4);
-            }
         }
 
         /* MAIN CONTENT - STARTS IMMEDIATELY AFTER NAVBAR */
@@ -470,7 +457,7 @@
             transform: translateY(0);
         }
 
-        #gamesContainer, #proxiesContainer, #exploitsContainer {
+        #gamesContainer, #exploitsContainer {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 20px;
@@ -480,25 +467,35 @@
             overflow-y: auto;
         }
 
-        /* Proxy UI Specific Styles */
+        /* IMPROVED PROXY UI */
+        #proxiesContainer {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
         #proxy-ui {
             display: flex;
-            flex-wrap: wrap;
-            align-items: center;
+            flex-direction: column;
             gap: 15px;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             width: 100%;
-            max-width: 1000px;
             background: rgba(10, 0, 0, 0.95);
-            padding: 15px;
+            padding: 20px;
             border: 2px solid #ff0000;
             box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
             border-radius: 5px;
+            backdrop-filter: blur(10px);
+        }
+
+        .proxy-url-row {
+            display: flex;
+            gap: 10px;
+            width: 100%;
         }
 
         #url-bar {
             flex: 1;
-            min-width: 300px;
             padding: 12px 20px;
             background: #1a0000;
             border: 2px solid #ff0000;
@@ -508,11 +505,12 @@
             outline: none;
             box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
             transition: all 0.3s ease;
+            border-radius: 3px;
         }
 
         #url-bar:focus {
             box-shadow: 0 0 25px rgba(255, 0, 0, 0.6);
-            transform: scale(1.02);
+            border-color: #ff3333;
         }
 
         #url-bar::placeholder {
@@ -523,15 +521,52 @@
             display: flex;
             gap: 10px;
             flex-wrap: wrap;
+            justify-content: center;
         }
 
-        #proxy-frame {
-            width: 100%;
-            min-height: 70vh;
-            border: 2px solid #ff0000;
+        .proxy-button {
             background: #000;
-            box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
-            border-radius: 5px;
+            border: 2px solid #ff0000;
+            color: #ff0000;
+            padding: 10px 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            min-width: 80px;
+            border-radius: 3px;
+        }
+
+        .proxy-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 0, 0, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .proxy-button:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .proxy-button:hover {
+            background: #ff0000;
+            color: #000;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.8);
+            transform: translateY(-2px);
+        }
+
+        .proxy-button:active {
+            transform: translateY(0);
         }
 
         #options-dropdown {
@@ -546,6 +581,11 @@
             min-width: 200px;
             box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
             border-radius: 5px;
+            margin-top: 5px;
+        }
+
+        #options-dropdown.active {
+            display: block;
         }
 
         #options-dropdown div {
@@ -554,6 +594,7 @@
             color: #ff0000;
             font-size: 12px;
             transition: background 0.3s ease;
+            border-radius: 3px;
         }
 
         #options-dropdown div:hover {
@@ -564,8 +605,25 @@
             color: #ff0000;
             font-size: 12px;
             text-align: center;
-            margin-top: 10px;
+            padding: 10px;
+            background: rgba(255, 0, 0, 0.1);
+            border: 1px solid #ff0000;
+            border-radius: 3px;
             display: none;
+        }
+
+        #proxy-error.active {
+            display: block;
+        }
+
+        #proxy-frame {
+            width: 100%;
+            height: calc(100vh - 300px);
+            min-height: 500px;
+            border: 2px solid #ff0000;
+            background: #000;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
+            border-radius: 5px;
         }
 
         .card {
@@ -708,7 +766,7 @@
 
         /* MOBILE RESPONSIVENESS */
         @media (max-width: 1366px) {
-            #gamesContainer, #proxiesContainer, #exploitsContainer {
+            #gamesContainer, #exploitsContainer {
                 grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             }
 
@@ -719,15 +777,6 @@
 
             .gameImage {
                 height: 160px;
-            }
-
-            #proxy-ui {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            #url-bar {
-                min-width: 100%;
             }
         }
 
@@ -782,7 +831,7 @@
                 padding: 10px;
             }
 
-            #gamesContainer, #proxiesContainer, #exploitsContainer {
+            #gamesContainer, #exploitsContainer {
                 grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
                 gap: 15px;
             }
@@ -810,7 +859,7 @@
             }
 
             #proxy-ui {
-                padding: 10px;
+                padding: 15px;
             }
 
             #url-bar {
@@ -819,7 +868,18 @@
             }
 
             #proxy-frame {
-                min-height: 50vh;
+                height: calc(100vh - 350px);
+                min-height: 400px;
+            }
+
+            #proxy-controls {
+                gap: 8px;
+            }
+
+            .proxy-button {
+                padding: 8px 15px;
+                font-size: 11px;
+                min-width: 70px;
             }
         }
 
@@ -852,7 +912,7 @@
                 padding: 5px;
             }
 
-            #gamesContainer, #proxiesContainer, #exploitsContainer {
+            #gamesContainer, #exploitsContainer {
                 grid-template-columns: 1fr;
                 gap: 15px;
             }
@@ -868,6 +928,7 @@
 
             #proxy-ui {
                 gap: 10px;
+                padding: 10px;
             }
 
             #url-bar {
@@ -877,6 +938,18 @@
 
             #proxy-controls {
                 justify-content: center;
+                gap: 6px;
+            }
+
+            .proxy-button {
+                padding: 6px 12px;
+                font-size: 10px;
+                min-width: 60px;
+            }
+
+            #proxy-frame {
+                height: calc(100vh - 380px);
+                min-height: 350px;
             }
         }
 
@@ -894,16 +967,6 @@
             }
         }
     </style>
-    <script src="/sj/scramjet.bundle.js"></script>
-    <script>
-    window.addEventListener('error', (event) => {
-        if (event.target.src && event.target.src.includes('scramjet.bundle.js')) {
-            console.error('Failed to load Scramjet script. Ensure the server is running and /sj/scramjet.bundle.js is accessible.');
-            document.getElementById('proxy-error').style.display = 'block';
-            document.getElementById('proxy-error').textContent = 'Failed to load proxy service. Please ensure the server is running.';
-        }
-    }, true);
-</script>
 </head>
 <body>
     <div id="welcomeScreen">
@@ -944,14 +1007,16 @@
             <div id="proxies" class="tab-content">
                 <div id="proxiesContainer">
                     <div id="proxy-ui">
-                        <input type="text" id="url-bar" placeholder="Enter URL (e.g., https://google.com)">
+                        <div class="proxy-url-row">
+                            <input type="text" id="url-bar" placeholder="Enter URL (e.g., https://google.com)">
+                            <button id="go" class="proxy-button">GO</button>
+                        </div>
                         <div id="proxy-controls">
-                            <button id="go" class="card-button">GO</button>
-                            <button id="back" class="card-button">&lt;</button>
-                            <button id="forward" class="card-button">&gt;</button>
-                            <button id="reload" class="card-button">RELOAD</button>
+                            <button id="back" class="proxy-button">◄ BACK</button>
+                            <button id="forward" class="proxy-button">FORWARD ►</button>
+                            <button id="reload" class="proxy-button">⟳ RELOAD</button>
                             <div style="position: relative;">
-                                <button id="options" class="card-button">OPTIONS</button>
+                                <button id="options" class="proxy-button">⚙ OPTIONS</button>
                                 <div id="options-dropdown">
                                     <div onclick="alert('Cookies view not implemented yet.')">View Cookies</div>
                                     <div onclick="clearCache()">Clear Cache</div>
@@ -970,7 +1035,19 @@
         </div>
     </div>
 
+    <script src="/sj/scramjet.bundle.js"></script>
     <script>
+        window.addEventListener('error', (event) => {
+            if (event.target.src && event.target.src.includes('scramjet.bundle.js')) {
+                console.error('Failed to load Scramjet script. Ensure the server is running and /sj/scramjet.bundle.js is accessible.');
+                const errorEl = document.getElementById('proxy-error');
+                if (errorEl) {
+                    errorEl.classList.add('active');
+                    errorEl.textContent = 'Failed to load proxy service. Please ensure the server is running.';
+                }
+            }
+        }, true);
+
                                                const asciiArts = [
             `
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀⣀⣀⣀⣠⣤⣤⣤⣀⣀⣀⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
@@ -1429,12 +1506,10 @@
               ██   █  ██       █ ██▄         ██  ███            ██    ██▄      ▄████       █  
               ██      ██▄     ▄█ ▀██▄     ▄▀ ██   ▀██▄          ██    ▀██▄    ▄██▀██▄     ▄█  
             ▄████▄     ▀██████▀▀   ▀▀█████▀▄████▄   ███▄      ▄████▄    ▀▀████▀▀   ▀██████▀▀
+
+            USE SCUHA NOT US!
                                                                                      
-            > You are not welcome at EYEDOPE.
-            > Sooo, we're gonna remove you!
-            > This territory is reserved for us only.
             > Rest in piss ScuhaMeds. [Visit the Archive at https://scuhameds.xyz]
-            > EYEDOPE OWNS YOU.
             `
         ];
 
@@ -1547,8 +1622,8 @@
             {
                 title: 'JELLY DRIFT',
                 description: 'Drift around the tracks, upgrade cars, and reach new levels in this addicting drifting and driving game.',
-                image: './files/slide in the woods/logo.png',
-                path: './files/slide in the woods/'
+                image: './files/jelly drift/logo.png',
+                path: './files/jelly drift/'
             },
             {
                 title: 'MARIO',
@@ -1672,14 +1747,6 @@
             }
         ].sort((a, b) => a.title.localeCompare(b.title));
 
-        const proxies = [
-            {
-                title: 'PlaceHolder Proxy {Soon Scramjet!}',
-                description: 'High-speed proxy server soon! Scramjet is a powerful and in testing and updating free online proxy service by the creators of UltraViolet!',
-                path: './proxies/scrammy/'
-            }
-        ];
-
         const exploits = [
             {
                 title: 'Explode your computer with the click of a button',
@@ -1747,17 +1814,14 @@
         }
 
         function startLoginAsciiFlicker() {
-            // Initial display
             displayRandomLoginAscii();
-            
-            // Randomly change ASCII every 2-5 seconds
             loginAsciiInterval = setInterval(() => {
                 const asciiElement = document.getElementById('asciiArt');
                 const randomArt = getRandomAscii();
                 if (randomArt && asciiElement) {
                     asciiElement.textContent = randomArt;
                 }
-            }, Math.random() * 3000 + 2000); // 2-5 seconds
+            }, Math.random() * 3000 + 2000);
         }
 
         function stopLoginAsciiFlicker() {
@@ -1827,10 +1891,9 @@
             const mainScreen = document.getElementById('mainScreen');
             mainScreen.classList.add('active');
 
-            // Initialize navbar and load default tab
             initNavbarScrollEffects();
-            loadGames(); // Load games content first
-            setupTabNavigation(); // Set up navigation after content is loaded
+            loadGames();
+            setupTabNavigation();
         }
 
         function initNavbarScrollEffects() {
@@ -1842,7 +1905,6 @@
                     navbar.classList.remove('scrolled');
                 }
                 
-                // Parallax effect for navbar title
                 const title = document.getElementById('navbarTitle');
                 const scrollPercent = (window.scrollY / 500) * -1;
                 title.style.transform = `translateY(${Math.max(scrollPercent, -5)}px)`;
@@ -1868,99 +1930,145 @@
 
         function loadProxies() {
             const container = document.getElementById('proxiesContainer');
-            container.innerHTML = '';
-            container.innerHTML = `
-                <div id="proxy-ui">
-                    <input type="text" id="url-bar" placeholder="Enter URL (e.g., https://google.com)">
-                    <div id="proxy-controls">
-                        <button id="go" class="card-button">GO</button>
-                        <button id="back" class="card-button">&lt;</button>
-                        <button id="forward" class="card-button">&gt;</button>
-                        <button id="reload" class="card-button">RELOAD</button>
-                        <div style="position: relative;">
-                            <button id="options" class="card-button">OPTIONS</button>
-                            <div id="options-dropdown">
-                                <div onclick="alert('Cookies view not implemented yet.')">View Cookies</div>
-                                <div onclick="clearCache()">Clear Cache</div>
-                                <div onclick="alert('Site details not implemented yet.')">Site Details</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div id="proxy-error"></div>
-                </div>
-                <iframe id="proxy-frame"></iframe>
-            `;
+            
+            // Check if Scramjet is loaded
+            if (typeof Scramjet === 'undefined') {
+                const errorEl = document.getElementById('proxy-error');
+                if (errorEl) {
+                    errorEl.classList.add('active');
+                    errorEl.textContent = '⚠ Scramjet proxy library not loaded. Please ensure /sj/scramjet.bundle.js is accessible.';
+                }
+                return;
+            }
 
-            // Scramjet client config (must run before using createURL/parseURL)
-            Scramjet.config({
-                prefix: "/sj/",
-                codec: "xor",
-                wisp: "wss://wisp.mercurywork.shop/"  // Public low-latency Wisp server
-            });
+            // Configure Scramjet
+            try {
+                Scramjet.config({
+                    prefix: "/sj/",
+                    codec: Scramjet.codecs.xor,
+                    wispUrl: "wss://wisp.mercurywork.shop/"
+                });
+            } catch (error) {
+                console.error('Scramjet config error:', error);
+                const errorEl = document.getElementById('proxy-error');
+                if (errorEl) {
+                    errorEl.classList.add('active');
+                    errorEl.textContent = '⚠ Proxy configuration failed: ' + error.message;
+                }
+            }
 
-            // Proxy controls logic
             const iframe = document.getElementById('proxy-frame');
             const urlBar = document.getElementById('url-bar');
             const optionsBtn = document.getElementById('options');
             const dropdown = document.getElementById('options-dropdown');
+            const errorEl = document.getElementById('proxy-error');
 
-            // Handle "Go" button: Proxy the entered URL
+            // Handle "Go" button
             document.getElementById('go').addEventListener('click', () => {
                 let url = urlBar.value.trim();
-                if (!url) return;
+                if (!url) {
+                    errorEl.classList.add('active');
+                    errorEl.textContent = '⚠ Please enter a URL';
+                    setTimeout(() => errorEl.classList.remove('active'), 3000);
+                    return;
+                }
+                
+                errorEl.classList.remove('active');
+                
                 if (!url.startsWith('http://') && !url.startsWith('https://')) {
-                    url = 'https://' + url;  // Default to HTTPS for security and compatibility
+                    url = 'https://' + url;
                 }
-                const proxiedUrl = Scramjet.createURL(url);  // Encodes URL with xor codec for low-latency proxying
-                iframe.src = proxiedUrl;
+                
+                try {
+                    const proxiedUrl = Scramjet.createURL(url);
+                    iframe.src = proxiedUrl;
+                } catch (error) {
+                    console.error('URL encoding error:', error);
+                    errorEl.classList.add('active');
+                    errorEl.textContent = '⚠ Failed to encode URL: ' + error.message;
+                }
             });
 
-            // Back button: Use iframe's history
+            // Handle Enter key in URL bar
+            urlBar.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    document.getElementById('go').click();
+                }
+            });
+
+            // Back button
             document.getElementById('back').addEventListener('click', () => {
-                if (iframe.contentWindow && iframe.contentWindow.history) {
-                    iframe.contentWindow.history.back();
+                try {
+                    if (iframe.contentWindow && iframe.contentWindow.history) {
+                        iframe.contentWindow.history.back();
+                    }
+                } catch (error) {
+                    console.warn('Cannot access iframe history:', error);
                 }
             });
 
-            // Forward button: Use iframe's history
+            // Forward button
             document.getElementById('forward').addEventListener('click', () => {
-                if (iframe.contentWindow && iframe.contentWindow.history) {
-                    iframe.contentWindow.history.forward();
+                try {
+                    if (iframe.contentWindow && iframe.contentWindow.history) {
+                        iframe.contentWindow.history.forward();
+                    }
+                } catch (error) {
+                    console.warn('Cannot access iframe history:', error);
                 }
             });
 
-            // Reload button: Reload iframe content
+            // Reload button
             document.getElementById('reload').addEventListener('click', () => {
-                if (iframe.contentWindow) {
-                    iframe.contentWindow.location.reload();
+                if (iframe.src) {
+                    iframe.src = iframe.src;
+                } else {
+                    errorEl.classList.add('active');
+                    errorEl.textContent = '⚠ No page loaded to reload';
+                    setTimeout(() => errorEl.classList.remove('active'), 3000);
                 }
             });
 
-            // Options button: Toggle dropdown
-            optionsBtn.addEventListener('click', () => {
-                dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+            // Options button
+            optionsBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                dropdown.classList.toggle('active');
             });
 
             // Close dropdown when clicking outside
             document.addEventListener('click', (e) => {
                 if (!optionsBtn.contains(e.target) && !dropdown.contains(e.target)) {
-                    dropdown.style.display = 'none';
+                    dropdown.classList.remove('active');
                 }
             });
 
-            // Update URL bar when iframe loads (decode proxied URL for display)
+            // Update URL bar when iframe loads
             iframe.addEventListener('load', () => {
                 try {
                     const currentSrc = iframe.src;
-                    if (currentSrc.startsWith(window.location.origin + '/sj/')) {
-                        const encodedPart = currentSrc.split('/sj/')[1];
-                        const decoded = Scramjet.parseURL(encodedPart);  // Decodes for user-friendly display
-                        urlBar.value = decoded;
+                    if (currentSrc && currentSrc.includes('/sj/')) {
+                        const encoded = currentSrc.split('/sj/')[1];
+                        if (encoded) {
+                            const decoded = Scramjet.parseURL(encoded);
+                            urlBar.value = decoded;
+                        }
                     }
-                } catch (e) {
-                    console.warn('URL parse error:', e);
+                } catch (error) {
+                    console.warn('URL parse error:', error);
                 }
             });
+
+            // Clear cache function
+            window.clearCache = function() {
+                if (confirm('This will reload the page. Continue?')) {
+                    if ('caches' in window) {
+                        caches.keys().then(names => {
+                            names.forEach(name => caches.delete(name));
+                        });
+                    }
+                    location.reload(true);
+                }
+            };
         }
 
         function loadExploits() {
@@ -1982,7 +2090,6 @@
         function copyToClipboard(encodedCode) {
             const code = decodeURIComponent(encodedCode);
             navigator.clipboard.writeText(code).then(() => {
-                // Visual feedback
                 const button = event.target;
                 const originalText = button.innerHTML;
                 button.innerHTML = '✓ COPIED!';
@@ -2000,7 +2107,6 @@
         }
 
         function switchTab(tabId) {
-            // Remove active from all tabs and content
             document.querySelectorAll('.tab-button').forEach(btn => {
                 btn.classList.remove('active');
             });
@@ -2008,24 +2114,20 @@
                 tab.classList.remove('active');
             });
 
-            // Add active to selected content
             const targetTab = document.getElementById(tabId);
             if (targetTab) {
                 targetTab.classList.add('active');
             }
 
-            // Update navbar title and description
             const config = tabsConfig[tabId];
             document.getElementById('navbarTitle').innerHTML = '▓▒░ ' + config.title + ' ░▒▓';
             document.getElementById('navbarDesc').innerHTML = config.desc;
 
-            // Update user name in description
             const userSpan = document.getElementById('userName');
             if (userSpan) {
                 userSpan.textContent = userNameVar;
             }
 
-            // Update navigation buttons
             const leftButton = document.getElementById('leftTabButton');
             const rightButton = document.getElementById('rightTabButton');
             leftButton.textContent = config.others[0].toUpperCase();
@@ -2033,16 +2135,13 @@
             rightButton.textContent = config.others[1].toUpperCase();
             rightButton.dataset.tab = config.others[1];
 
-            // Set active button based on current tab
             const activeButton = document.querySelector(`[data-tab="${tabId}"]`);
             if (activeButton) {
                 activeButton.classList.add('active');
             } else {
-                // Default to left button if no match (e.g., initial load)
                 leftButton.classList.add('active');
             }
 
-            // Load content for the selected tab
             if (tabId === 'games') {
                 loadGames();
             } else if (tabId === 'proxies') {
@@ -2056,18 +2155,16 @@
             const leftButton = document.getElementById('leftTabButton');
             const rightButton = document.getElementById('rightTabButton');
 
-            // Initialize button attributes based on default tab ('games')
             const defaultTab = 'games';
             const config = tabsConfig[defaultTab];
             leftButton.textContent = config.others[0].toUpperCase();
             leftButton.dataset.tab = config.others[0];
             rightButton.textContent = config.others[1].toUpperCase();
             rightButton.dataset.tab = config.others[1];
-            leftButton.classList.add('tab-button'); // Ensure class is applied
-            rightButton.classList.add('tab-button'); // Ensure class is applied
-            leftButton.classList.add('active'); // Set default active tab
+            leftButton.classList.add('tab-button');
+            rightButton.classList.add('tab-button');
+            leftButton.classList.add('active');
 
-            // Event listeners for tab switching
             leftButton.addEventListener('click', () => {
                 switchTab(leftButton.dataset.tab);
             });
@@ -2075,7 +2172,6 @@
                 switchTab(rightButton.dataset.tab);
             });
 
-            // Enhanced hover effects
             const buttons = [leftButton, rightButton];
             buttons.forEach(button => {
                 button.addEventListener('mouseenter', () => {
@@ -2094,7 +2190,6 @@
                 });
             });
 
-            // Keyboard navigation
             document.addEventListener('keydown', (e) => {
                 if (e.key === 'ArrowLeft') {
                     switchTab(leftButton.dataset.tab);
@@ -2103,11 +2198,9 @@
                 }
             });
 
-            // Initial tab load
             switchTab(defaultTab);
         }
 
-        // Login form handler
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const input = document.getElementById('nameInput').value.trim().toUpperCase();
@@ -2118,7 +2211,8 @@
             } else {
                 const asciiElement = document.getElementById('asciiArt');
                 asciiElement.classList.add('jitter');
-                displayAscii(wrongAscii[0]);
+                asciiElement.textContent = wrongAscii[0];
+                asciiElement.style.display = 'block';
                 setTimeout(() => {
                     asciiElement.classList.remove('jitter');
                     asciiElement.style.display = 'none';
@@ -2170,7 +2264,6 @@
                 showWelcomeScreen(savedName);
             } else {
                 document.getElementById('lockScreen').style.display = 'flex';
-                // Start random ASCII flickering for non-logged-in users
                 if (asciiArts.length > 0) {
                     startLoginAsciiFlicker();
                 }
@@ -2178,11 +2271,9 @@
             }
         }
 
-        // Initialize on DOM load
         document.addEventListener('DOMContentLoaded', function() {
             checkAccess();
             
-            // Lazy load card animations
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
@@ -2191,7 +2282,6 @@
                 });
             }, { threshold: 0.1 });
 
-            // Observe cards after they load
             setTimeout(() => {
                 document.querySelectorAll('.card').forEach(card => {
                     observer.observe(card);
@@ -2199,7 +2289,6 @@
             }, 1000);
         });
 
-        // Prevent context menu on right click for aesthetic
         document.addEventListener('contextmenu', e => e.preventDefault());
     </script>
 </body>
