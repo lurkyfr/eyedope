@@ -267,7 +267,6 @@
             to { opacity: 1; transform: scale(1); }
         }
 
-        /* SLEEK FIXED NAVBAR */
         #navbar {
             position: fixed;
             top: 0;
@@ -386,7 +385,6 @@
             min-width: 100px;
             text-transform: uppercase;
             letter-spacing: 1px;
-            animation: pulse 2s infinite;
         }
 
         .tab-button::before {
@@ -412,7 +410,6 @@
                 inset 0 0 10px rgba(255, 0, 0, 0.05);
             transform: translateY(-2px);
             color: #ff0000;
-            animation: none;
         }
 
         .tab-button.active {
@@ -424,12 +421,10 @@
             transform: translateY(-1px);
             color: #fff;
             text-shadow: 0 0 10px #ff0000;
-            animation: none;
         }
 
         .tab-button.active::before {
             left: 100%;
-            animation: none;
         }
 
         .tab-button.dim {
@@ -437,16 +432,6 @@
             transform: scale(0.95);
         }
 
-        @keyframes pulse {
-            0%, 100% {
-                box-shadow: 0 0 5px rgba(255, 0, 0, 0.2);
-            }
-            50% {
-                box-shadow: 0 0 15px rgba(255, 0, 0, 0.4);
-            }
-        }
-
-        /* MAIN CONTENT - STARTS IMMEDIATELY AFTER NAVBAR */
         .main-content {
             margin-top: 80px;
             width: 100%;
@@ -470,7 +455,7 @@
             transform: translateY(0);
         }
 
-        #gamesContainer, #proxiesContainer, #exploitsContainer {
+        #gamesContainer, #exploitsContainer {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 20px;
@@ -478,6 +463,164 @@
             padding: 10px 0;
             max-height: calc(100vh - 200px);
             overflow-y: auto;
+        }
+
+        #proxiesContainer {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        #proxy-ui {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+            width: 100%;
+            background: rgba(10, 0, 0, 0.95);
+            padding: 20px;
+            border: 2px solid #ff0000;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
+            border-radius: 5px;
+            backdrop-filter: blur(10px);
+        }
+
+        .proxy-url-row {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+        }
+
+        #url-bar {
+            flex: 1;
+            padding: 12px 20px;
+            background: #1a0000;
+            border: 2px solid #ff0000;
+            color: #ff0000;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            outline: none;
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            border-radius: 3px;
+        }
+
+        #url-bar:focus {
+            box-shadow: 0 0 25px rgba(255, 0, 0, 0.6);
+            border-color: #ff3333;
+        }
+
+        #url-bar::placeholder {
+            color: #660000;
+        }
+
+        #proxy-controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .proxy-button {
+            background: #000;
+            border: 2px solid #ff0000;
+            color: #ff0000;
+            padding: 10px 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            min-width: 80px;
+            border-radius: 3px;
+        }
+
+        .proxy-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 0, 0, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .proxy-button:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .proxy-button:hover {
+            background: #ff0000;
+            color: #000;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.8);
+            transform: translateY(-2px);
+        }
+
+        .proxy-button:active {
+            transform: translateY(0);
+        }
+
+        #options-dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: #1a0000;
+            border: 2px solid #ff0000;
+            padding: 10px;
+            z-index: 10;
+            min-width: 200px;
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
+            border-radius: 5px;
+            margin-top: 5px;
+        }
+
+        #options-dropdown.active {
+            display: block;
+        }
+
+        #options-dropdown div {
+            padding: 8px;
+            cursor: pointer;
+            color: #ff0000;
+            font-size: 12px;
+            transition: background 0.3s ease;
+            border-radius: 3px;
+        }
+
+        #options-dropdown div:hover {
+            background: rgba(255, 0, 0, 0.2);
+        }
+
+        #proxy-error {
+            color: #ff0000;
+            font-size: 12px;
+            text-align: center;
+            padding: 10px;
+            background: rgba(255, 0, 0, 0.1);
+            border: 1px solid #ff0000;
+            border-radius: 3px;
+            display: none;
+        }
+
+        #proxy-error.active {
+            display: block;
+        }
+
+        #proxy-frame {
+            width: 100%;
+            height: calc(100vh - 300px);
+            min-height: 500px;
+            border: 2px solid #ff0000;
+            background: #000;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
+            border-radius: 5px;
         }
 
         .card {
@@ -592,14 +735,6 @@
             overflow: hidden;
         }
 
-        #url-bar:focus {
-            box-shadow: 0 0 25px rgba(255, 0, 0, 0.6);
-            transform: scale(1.02);
-        }
-        #options-dropdown div:hover {
-            background: rgba(255, 0, 0, 0.2);
-        }
-
         .card-button::before {
             content: '▶ ';
         }
@@ -626,9 +761,8 @@
             50% { text-decoration: underline wavy #ff0000; }
         }
 
-        /* MOBILE RESPONSIVENESS */
         @media (max-width: 1366px) {
-            #gamesContainer, #proxiesContainer, #exploitsContainer {
+            #gamesContainer, #exploitsContainer {
                 grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             }
 
@@ -693,7 +827,7 @@
                 padding: 10px;
             }
 
-            #gamesContainer, #proxiesContainer, #exploitsContainer {
+            #gamesContainer, #exploitsContainer {
                 grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
                 gap: 15px;
             }
@@ -718,6 +852,30 @@
             .card-button {
                 font-size: 11px;
                 padding: 6px;
+            }
+
+            #proxy-ui {
+                padding: 15px;
+            }
+
+            #url-bar {
+                font-size: 12px;
+                padding: 10px;
+            }
+
+            #proxy-frame {
+                height: calc(100vh - 350px);
+                min-height: 400px;
+            }
+
+            #proxy-controls {
+                gap: 8px;
+            }
+
+            .proxy-button {
+                padding: 8px 15px;
+                font-size: 11px;
+                min-width: 70px;
             }
         }
 
@@ -750,7 +908,7 @@
                 padding: 5px;
             }
 
-            #gamesContainer, #proxiesContainer, #exploitsContainer {
+            #gamesContainer, #exploitsContainer {
                 grid-template-columns: 1fr;
                 gap: 15px;
             }
@@ -763,14 +921,38 @@
             .gameImage {
                 height: 120px;
             }
+
+            #proxy-ui {
+                gap: 10px;
+                padding: 10px;
+            }
+
+            #url-bar {
+                min-width: 100%;
+                font-size: 11px;
+            }
+
+            #proxy-controls {
+                justify-content: center;
+                gap: 6px;
+            }
+
+            .proxy-button {
+                padding: 6px 12px;
+                font-size: 10px;
+                min-width: 60px;
+            }
+
+            #proxy-frame {
+                height: calc(100vh - 380px);
+                min-height: 350px;
+            }
         }
 
-        /* Smooth scroll behavior */
         html {
             scroll-behavior: smooth;
         }
 
-        /* Accessibility improvements */
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after {
                 animation-duration: 0.01ms !important;
@@ -779,20 +961,6 @@
             }
         }
     </style>
-    <script src="/sj/scramjet.bundle.js"></script>
-    <script>
-    window.addEventListener('error', (event) => {
-        if (event.target.src && event.target.src.includes('scramjet.bundle.js')) {
-            console.error('Failed to load Scramjet script. Ensure the server is running and /sj/scramjet.bundle.js is accessible.');
-            // Optionally display a fallback UI for proxies tab
-            document.getElementById('proxiesContainer').innerHTML = `
-                <div style="color: #ff0000; text-align: center;">
-                    Failed to load proxy service. Please ensure the server is running.
-                </div>
-            `;
-        }
-    }, true);
-</script>
 </head>
 <body>
     <div id="welcomeScreen">
@@ -821,7 +989,7 @@
                 </div>
                 <div class="navbar-brand">
                     <h1 id="navbarTitle">LOADING...</h1>
-                    <p id="navbarDesc">Initializing systems...</p>
+                    <p id="navbarDesc">Initialiing systems...</p>
                 </div>
             </div>
         </nav>
@@ -831,7 +999,29 @@
                 <div id="gamesContainer"></div>
             </div>
             <div id="proxies" class="tab-content">
-                <div id="proxiesContainer"></div>
+                <div id="proxiesContainer">
+                    <div id="proxy-ui">
+                        <div class="proxy-url-row">
+                            <input type="text" id="url-bar" placeholder="Enter URL (e.g., https://google.com)">
+                            <button id="go" class="proxy-button">GO</button>
+                        </div>
+                        <div id="proxy-controls">
+                            <button id="back" class="proxy-button">◄ BACK</button>
+                            <button id="forward" class="proxy-button">FORWARD ►</button>
+                            <button id="reload" class="proxy-button">⟳ RELOAD</button>
+                            <div style="position: relative;">
+                                <button id="options" class="proxy-button">⚙ OPTIONS</button>
+                                <div id="options-dropdown">
+                                    <div onclick="alert('Cookies view not implemented yet.')">View Cookies</div>
+                                    <div onclick="clearCache()">Clear Cache</div>
+                                    <div onclick="alert('Site details not implemented yet.')">Site Details</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="proxy-error"></div>
+                    </div>
+                    <iframe id="proxy-frame"></iframe>
+                </div>
             </div>
             <div id="exploits" class="tab-content">
                 <div id="exploitsContainer"></div>
@@ -839,9 +1029,21 @@
         </div>
     </div>
 
+    <!-- Browser.js Script -->
+    <script src="/browser.js/static/sw.js"></script>
     <script>
-        // ASCII ARTS - USER NEEDS TO PASTE THESE
-                                        const asciiArts = [
+        window.addEventListener('error', (event) => {
+            if (event.target.src && event.target.src.includes('sw.js')) {
+                console.error('Failed to load Browser.js script. Ensure the build is complete and /browser.js/dist/browser.bundle.js is accessible.');
+                const errorEl = document.getElementById('proxy-error');
+                if (errorEl) {
+                    errorEl.classList.add('active');
+                    errorEl.textContent = 'Failed to load proxy service. Please ensure Browser.js is built correctly.';
+                }
+            }
+        }, true);
+
+                   const asciiArts = [
             `
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀⣀⣀⣀⣠⣤⣤⣤⣀⣀⣀⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣤⣶⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣶⣦⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
@@ -1299,18 +1501,15 @@
               ██   █  ██       █ ██▄         ██  ███            ██    ██▄      ▄████       █  
               ██      ██▄     ▄█ ▀██▄     ▄▀ ██   ▀██▄          ██    ▀██▄    ▄██▀██▄     ▄█  
             ▄████▄     ▀██████▀▀   ▀▀█████▀▄████▄   ███▄      ▄████▄    ▀▀████▀▀   ▀██████▀▀
+
+            USE SCUHA NOT US!
                                                                                      
-            > You are not welcome at EYEDOPE.
-            > Sooo, we're gonna remove you!
-            > This territory is reserved for us only.
             > Rest in piss ScuhaMeds. [Visit the Archive at https://scuhameds.xyz]
-            > EYEDOPE OWNS YOU.
             `
         ];
 
-        const validNames = ['13870', '16569', '15590', '14421', '17682', '14966', '17656', '20990', '17717', '16559', '15744', '18290'];
+        const validNames = ['6969', '16569', '15590', '14421', '17682', '14966', '17656', '20990', '17717', '16559', '15744', '18290'];
 
-        // Games array - SORTED ALPHABETICALLY BY TITLE
         const games = [
             {
                 title: '2048',
@@ -1417,8 +1616,8 @@
             {
                 title: 'JELLY DRIFT',
                 description: 'Drift around the tracks, upgrade cars, and reach new levels in this addicting drifting and driving game.',
-                image: './files/slide in the woods/logo.png',
-                path: './files/slide in the woods/'
+                image: './files/jelly drift/logo.png',
+                path: './files/jelly drift/'
             },
             {
                 title: 'MARIO',
@@ -1542,14 +1741,6 @@
             }
         ].sort((a, b) => a.title.localeCompare(b.title));
 
-        const proxies = [
-            {
-                title: 'PlaceHolder Proxy {Soon Scramjet!}',
-                description: 'High-speed proxy server soon! Scramjet is a powerful and in testing and updating free online proxy service by the creators of UltraViolet!',
-                path: './proxies/scrammy/'
-            }
-        ];
-
         const exploits = [
             {
                 title: 'Explode your computer with the click of a button',
@@ -1570,7 +1761,7 @@
             },
             proxies: {
                 title: 'EYEDOPE PROXIES',
-                desc: 'Discover the proxies. [Massive Work-In-Progress]',
+                desc: 'Discover the proxies. [Powered by Browser.js]',
                 others: ['games', 'exploits']
             },
             exploits: {
@@ -1617,17 +1808,14 @@
         }
 
         function startLoginAsciiFlicker() {
-            // Initial display
             displayRandomLoginAscii();
-            
-            // Randomly change ASCII every 2-5 seconds
             loginAsciiInterval = setInterval(() => {
                 const asciiElement = document.getElementById('asciiArt');
                 const randomArt = getRandomAscii();
                 if (randomArt && asciiElement) {
                     asciiElement.textContent = randomArt;
                 }
-            }, Math.random() * 3000 + 2000); // 2-5 seconds
+            }, Math.random() * 3000 + 2000);
         }
 
         function stopLoginAsciiFlicker() {
@@ -1697,10 +1885,9 @@
             const mainScreen = document.getElementById('mainScreen');
             mainScreen.classList.add('active');
 
-            // Initialize navbar and load default tab
             initNavbarScrollEffects();
-            loadGames(); // Load games content first
-            setupTabNavigation(); // Set up navigation after content is loaded
+            loadGames();
+            setupTabNavigation();
         }
 
         function initNavbarScrollEffects() {
@@ -1712,7 +1899,6 @@
                     navbar.classList.remove('scrolled');
                 }
                 
-                // Parallax effect for navbar title
                 const title = document.getElementById('navbarTitle');
                 const scrollPercent = (window.scrollY / 500) * -1;
                 title.style.transform = `translateY(${Math.max(scrollPercent, -5)}px)`;
@@ -1738,96 +1924,155 @@
 
         function loadProxies() {
             const container = document.getElementById('proxiesContainer');
-            container.innerHTML = '';
-            container.innerHTML = `
-                <div id="proxy-ui" style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px; width: 100%;">
-                    <input type="text" id="url-bar" placeholder="Enter URL (e.g., https://google.com)" style="flex: 1; padding: 10px; background: #1a0000; border: 2px solid #ff0000; color: #ff0000; font-family: 'Courier New', monospace; font-size: 14px; outline: none; box-shadow: 0 0 15px rgba(255, 0, 0, 0.3); transition: all 0.3s ease;">
-                    <button id="go" class="card-button">GO</button>
-                    <button id="back" class="card-button">&lt;</button>
-                    <button id="forward" class="card-button">&gt;</button>
-                    <button id="reload" class="card-button">RELOAD</button>
-                    <div style="position: relative;">
-                        <button id="options" class="card-button">OPTIONS</button>
-                        <div id="options-dropdown" style="display: none; position: absolute; top: 100%; left: 0; background: #1a0000; border: 2px solid #ff0000; padding: 10px; z-index: 10; min-width: 200px; box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);">
-                            <div style="padding: 5px; cursor: pointer; color: #ff0000;">Placeholder Option 1 (e.g., View Cookies)</div>
-                            <div style="padding: 5px; cursor: pointer; color: #ff0000;">Placeholder Option 2 (e.g., Clear Cache)</div>
-                            <div style="padding: 5px; cursor: pointer; color: #ff0000;">Placeholder Option 3 (e.g., Site Details)</div>
-                        </div>
-                    </div>
-                </div>
-                <iframe id="proxy-frame" style="width: 100%; height: 70vh; border: 2px solid #ff0000; background: #000; box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);"></iframe>
-            `;
+            
+            // Check if Browser.js is loaded
+            if (typeof BrowserJS === 'undefined' && typeof window.BrowserJS === 'undefined') {
+                const errorEl = document.getElementById('proxy-error');
+                if (errorEl) {
+                    errorEl.classList.add('active');
+                    errorEl.textContent = '⚠ Browser.js library not loaded. Please ensure the build is complete and accessible.';
+                }
+                return;
+            }
 
-            // Scramjet client config (must run before using createURL/parseURL)
-            Scramjet.config({
-                prefix: "/sj/",
-                codec: "xor",
-                wisp: "wss://wisp.mercurywork.shop/"  // Public low-latency Wisp server
-            });
+            // Configure Browser.js proxy
+            try {
+                // Browser.js configuration will depend on its API
+                // This is a placeholder - adjust based on actual Browser.js API
+                if (window.BrowserJS && window.BrowserJS.config) {
+                    window.BrowserJS.config({
+                        prefix: "/browser.js/",
+                        // Add other config options as needed
+                    });
+                }
+            } catch (error) {
+                console.error('Browser.js config error:', error);
+                const errorEl = document.getElementById('proxy-error');
+                if (errorEl) {
+                    errorEl.classList.add('active');
+                    errorEl.textContent = '⚠ Proxy configuration failed: ' + error.message;
+                }
+            }
 
-            // Proxy controls logic
             const iframe = document.getElementById('proxy-frame');
             const urlBar = document.getElementById('url-bar');
             const optionsBtn = document.getElementById('options');
             const dropdown = document.getElementById('options-dropdown');
+            const errorEl = document.getElementById('proxy-error');
 
-            // Handle "Go" button: Proxy the entered URL
+            // Handle "Go" button
             document.getElementById('go').addEventListener('click', () => {
                 let url = urlBar.value.trim();
-                if (!url) return;
+                if (!url) {
+                    errorEl.classList.add('active');
+                    errorEl.textContent = '⚠ Please enter a URL';
+                    setTimeout(() => errorEl.classList.remove('active'), 3000);
+                    return;
+                }
+                
+                errorEl.classList.remove('active');
+                
                 if (!url.startsWith('http://') && !url.startsWith('https://')) {
-                    url = 'https://' + url;  // Default to HTTPS for security and compatibility
+                    url = 'https://' + url;
                 }
-                const proxiedUrl = Scramjet.createURL(url);  // Encodes URL with xor codec for low-latency proxying
-                iframe.src = proxiedUrl;
+                
+                try {
+                    // Use Browser.js URL encoding
+                    let proxiedUrl;
+                    if (window.BrowserJS && window.BrowserJS.createURL) {
+                        proxiedUrl = window.BrowserJS.createURL(url);
+                    } else {
+                        // Fallback: basic proxy path construction
+                        proxiedUrl = '/browser.js/proxy/' + encodeURIComponent(url);
+                    }
+                    iframe.src = proxiedUrl;
+                } catch (error) {
+                    console.error('URL encoding error:', error);
+                    errorEl.classList.add('active');
+                    errorEl.textContent = '⚠ Failed to encode URL: ' + error.message;
+                }
             });
 
-            // Back button: Use iframe's history
+            // Handle Enter key in URL bar
+            urlBar.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    document.getElementById('go').click();
+                }
+            });
+
+            // Back button
             document.getElementById('back').addEventListener('click', () => {
-                if (iframe.contentWindow && iframe.contentWindow.history) {
-                    iframe.contentWindow.history.back();
+                try {
+                    if (iframe.contentWindow && iframe.contentWindow.history) {
+                        iframe.contentWindow.history.back();
+                    }
+                } catch (error) {
+                    console.warn('Cannot access iframe history:', error);
                 }
             });
 
-            // Forward button: Use iframe's history
+            // Forward button
             document.getElementById('forward').addEventListener('click', () => {
-                if (iframe.contentWindow && iframe.contentWindow.history) {
-                    iframe.contentWindow.history.forward();
+                try {
+                    if (iframe.contentWindow && iframe.contentWindow.history) {
+                        iframe.contentWindow.history.forward();
+                    }
+                } catch (error) {
+                    console.warn('Cannot access iframe history:', error);
                 }
             });
 
-            // Reload button: Reload iframe content
+            // Reload button
             document.getElementById('reload').addEventListener('click', () => {
-                if (iframe.contentWindow) {
-                    iframe.contentWindow.location.reload();
+                if (iframe.src) {
+                    iframe.src = iframe.src;
+                } else {
+                    errorEl.classList.add('active');
+                    errorEl.textContent = '⚠ No page loaded to reload';
+                    setTimeout(() => errorEl.classList.remove('active'), 3000);
                 }
             });
 
-            // Options button: Toggle dropdown
-            optionsBtn.addEventListener('click', () => {
-                dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+            // Options button
+            optionsBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                dropdown.classList.toggle('active');
             });
 
             // Close dropdown when clicking outside
             document.addEventListener('click', (e) => {
                 if (!optionsBtn.contains(e.target) && !dropdown.contains(e.target)) {
-                    dropdown.style.display = 'none';
+                    dropdown.classList.remove('active');
                 }
             });
 
-            // Update URL bar when iframe loads (decode proxied URL for display)
+            // Update URL bar when iframe loads
             iframe.addEventListener('load', () => {
                 try {
                     const currentSrc = iframe.src;
-                    if (currentSrc.startsWith(window.location.origin + '/sj/')) {
-                        const encodedPart = currentSrc.split('/sj/')[1];
-                        const decoded = Scramjet.parseURL(encodedPart);  // Decodes for user-friendly display
-                        urlBar.value = decoded;
+                    if (currentSrc && currentSrc.includes('/browser.js/')) {
+                        // Decode the URL from Browser.js format
+                        if (window.BrowserJS && window.BrowserJS.parseURL) {
+                            const decoded = window.BrowserJS.parseURL(currentSrc);
+                            urlBar.value = decoded;
+                        }
                     }
-                } catch (e) {
-                    console.warn('URL parse error:', e);
+                } catch (error) {
+                    console.warn('URL parse error:', error);
                 }
             });
+
+            // Clear cache function
+            window.clearCache = function() {
+                if (confirm('This will reload the page. Continue?')) {
+                    if ('caches' in window) {
+                        caches.keys().then(names => {
+                            names.forEach(name => caches.delete(name));
+                        });
+                    }
+                    location.reload(true);
+                }
+            };
         }
 
         function loadExploits() {
@@ -1849,7 +2094,6 @@
         function copyToClipboard(encodedCode) {
             const code = decodeURIComponent(encodedCode);
             navigator.clipboard.writeText(code).then(() => {
-                // Visual feedback
                 const button = event.target;
                 const originalText = button.innerHTML;
                 button.innerHTML = '✓ COPIED!';
@@ -1867,7 +2111,6 @@
         }
 
         function switchTab(tabId) {
-            // Remove active from all tabs and content
             document.querySelectorAll('.tab-button').forEach(btn => {
                 btn.classList.remove('active');
             });
@@ -1875,24 +2118,20 @@
                 tab.classList.remove('active');
             });
 
-            // Add active to selected content
             const targetTab = document.getElementById(tabId);
             if (targetTab) {
                 targetTab.classList.add('active');
             }
 
-            // Update navbar title and description
             const config = tabsConfig[tabId];
             document.getElementById('navbarTitle').innerHTML = '▓▒░ ' + config.title + ' ░▒▓';
             document.getElementById('navbarDesc').innerHTML = config.desc;
 
-            // Update user name in description
             const userSpan = document.getElementById('userName');
             if (userSpan) {
                 userSpan.textContent = userNameVar;
             }
 
-            // Update navigation buttons
             const leftButton = document.getElementById('leftTabButton');
             const rightButton = document.getElementById('rightTabButton');
             leftButton.textContent = config.others[0].toUpperCase();
@@ -1900,16 +2139,13 @@
             rightButton.textContent = config.others[1].toUpperCase();
             rightButton.dataset.tab = config.others[1];
 
-            // Set active button based on current tab
             const activeButton = document.querySelector(`[data-tab="${tabId}"]`);
             if (activeButton) {
                 activeButton.classList.add('active');
             } else {
-                // Default to left button if no match (e.g., initial load)
                 leftButton.classList.add('active');
             }
 
-            // Load content for the selected tab
             if (tabId === 'games') {
                 loadGames();
             } else if (tabId === 'proxies') {
@@ -1923,18 +2159,16 @@
             const leftButton = document.getElementById('leftTabButton');
             const rightButton = document.getElementById('rightTabButton');
 
-            // Initialize button attributes based on default tab ('games')
             const defaultTab = 'games';
             const config = tabsConfig[defaultTab];
             leftButton.textContent = config.others[0].toUpperCase();
             leftButton.dataset.tab = config.others[0];
             rightButton.textContent = config.others[1].toUpperCase();
             rightButton.dataset.tab = config.others[1];
-            leftButton.classList.add('tab-button'); // Ensure class is applied
-            rightButton.classList.add('tab-button'); // Ensure class is applied
-            leftButton.classList.add('active'); // Set default active tab
+            leftButton.classList.add('tab-button');
+            rightButton.classList.add('tab-button');
+            leftButton.classList.add('active');
 
-            // Event listeners for tab switching
             leftButton.addEventListener('click', () => {
                 switchTab(leftButton.dataset.tab);
             });
@@ -1942,7 +2176,6 @@
                 switchTab(rightButton.dataset.tab);
             });
 
-            // Enhanced hover effects
             const buttons = [leftButton, rightButton];
             buttons.forEach(button => {
                 button.addEventListener('mouseenter', () => {
@@ -1961,7 +2194,6 @@
                 });
             });
 
-            // Keyboard navigation
             document.addEventListener('keydown', (e) => {
                 if (e.key === 'ArrowLeft') {
                     switchTab(leftButton.dataset.tab);
@@ -1970,11 +2202,9 @@
                 }
             });
 
-            // Initial tab load
             switchTab(defaultTab);
         }
 
-        // Login form handler
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const input = document.getElementById('nameInput').value.trim().toUpperCase();
@@ -1985,7 +2215,8 @@
             } else {
                 const asciiElement = document.getElementById('asciiArt');
                 asciiElement.classList.add('jitter');
-                displayAscii(wrongAscii[0]);
+                asciiElement.textContent = wrongAscii[0];
+                asciiElement.style.display = 'block';
                 setTimeout(() => {
                     asciiElement.classList.remove('jitter');
                     asciiElement.style.display = 'none';
@@ -2037,7 +2268,6 @@
                 showWelcomeScreen(savedName);
             } else {
                 document.getElementById('lockScreen').style.display = 'flex';
-                // Start random ASCII flickering for non-logged-in users
                 if (asciiArts.length > 0) {
                     startLoginAsciiFlicker();
                 }
@@ -2045,11 +2275,9 @@
             }
         }
 
-        // Initialize on DOM load
         document.addEventListener('DOMContentLoaded', function() {
             checkAccess();
             
-            // Lazy load card animations
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
@@ -2058,7 +2286,6 @@
                 });
             }, { threshold: 0.1 });
 
-            // Observe cards after they load
             setTimeout(() => {
                 document.querySelectorAll('.card').forEach(card => {
                     observer.observe(card);
@@ -2066,7 +2293,6 @@
             }, 1000);
         });
 
-        // Prevent context menu on right click for aesthetic
         document.addEventListener('contextmenu', e => e.preventDefault());
     </script>
 </body>
