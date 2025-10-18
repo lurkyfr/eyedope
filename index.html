@@ -1124,27 +1124,8 @@
         </div>
     </div>
 
-    <!-- Browser.js Scripts -->
-    <script src="/browser.js/dist/browser.bundle.js"></script>
+    <!-- Browser.js Scripts: dynamic loader will probe candidate paths. Removed unconditional script tag and eager SW registration to avoid 404s when artifacts are missing -->
     <script>
-        // Register Browser.js Service Worker (use designated /browser.js/ folder)
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/browser.js/static/sw.js', { scope: '/' })
-                    .then(registration => {
-                        console.log('Browser.js Service Worker registered:', registration.scope);
-                    })
-                    .catch(err => {
-                        console.error('Service Worker registration failed:', err);
-                        const errorEl = document.getElementById('proxy-error');
-                        if (errorEl) {
-                            errorEl.classList.add('active');
-                            errorEl.textContent = '⚠ Service Worker registration failed. Check console for details if you\'re a skippity bum';
-                        }
-                    });
-            });
-        }
-
             (async function() {
                 // Preferred locations for Browser.js bundle and service worker
                 const bundleCandidates = [
