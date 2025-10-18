@@ -1137,16 +1137,74 @@
             });
         }
 
-        window.addEventListener('error', (event) => {
-            if (event.target && event.target.src && event.target.src.includes('browser.bundle.js')) {
-                console.error('Failed to load Browser.js script. Ensure /browser.js/dist/browser.bundle.js is accessible.');
-                const errorEl = document.getElementById('proxy-error');
-                if (errorEl) {
-                    errorEl.classList.add('active');
-                    errorEl.textContent = 'Failed to load proxy service. Please ensure Browser.js is built correctly.';
+            (async function() {
+                // Preferred locations for Browser.js bundle and service worker
+                const bundleCandidates = [
+                    '/browser.js/dist/browser.bundle.js',
+                    '/static/browser.bundle.js',
+                    '/browser.bundle.js'
+                ];
+                const swCandidates = [
+                    '/browser.js/static/sw.js',
+                    '/static/sw.js',
+                    '/sw.js'
+                ];
+
+                async function probeUrl(url) {
+                    try {
+                        const res = await fetch(url, { method: 'GET', cache: 'no-cache' });
+                        if (!res.ok) return false;
+                        const ct = (res.headers.get('content-type') || '').toLowerCase();
+                        // Accept js content-types and fall back to ok status for some static hosts
+                        if (ct.includes('javascript') || ct.includes('application/javascript') || ct.includes('text/javascript') || res.status === 200) return true;
+                    } catch (e) {
+                        // ignore
+                    }
+                    return false;
                 }
-            }
-        }, true);
+
+                // Try to load the bundle from the first candidate that exists
+                let bundleLoaded = false;
+                for (const candidate of bundleCandidates) {
+                    if (await probeUrl(candidate)) {
+                        const s = document.createElement('script');
+                        s.src = candidate;
+                        s.async = true;
+                        document.head.appendChild(s);
+                        console.log('Loaded Browser.js bundle from', candidate);
+                        bundleLoaded = true;
+                        break;
+                    }
+                }
+                if (!bundleLoaded) {
+                    // Don't show the on-screen proxy error to avoid spamming the user UI with 404s.
+                    console.warn('Browser.js bundle not found at expected locations. Proxy functionality will be reduced.');
+                }
+
+                // Register service worker only if the sw script is reachable
+                if ('serviceWorker' in navigator) {
+                    for (const sw of swCandidates) {
+                        if (!(await probeUrl(sw))) continue;
+                        try {
+                            const reg = await navigator.serviceWorker.register(sw, { scope: '/' });
+                            console.log('Service Worker registered from', sw, reg.scope);
+                            break;
+                        } catch (err) {
+                            console.warn('Service Worker registration failed for', sw, err);
+                            // try next candidate
+                        }
+                    }
+                }
+
+                // Keep error logging for failed script loads but avoid altering UI to prevent the visible notification
+                window.addEventListener('error', (event) => {
+                    try {
+                        if (event.target && event.target.src && event.target.src.includes('browser.bundle.js')) {
+                            console.error('Failed to load Browser.js script. Check that the bundle exists and server serves it with the correct MIME type.');
+                        }
+                    } catch (e) { /* ignore */ }
+                }, true);
+            })();
 
                            const asciiArts = [
             `
