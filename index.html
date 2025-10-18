@@ -1096,6 +1096,7 @@
                             <button id="back" class="proxy-button">◄ BACK</button>
                             <button id="forward" class="proxy-button">FORWARD ►</button>
                             <button id="reload" class="proxy-button">⟳ RELOAD</button>
+                            <button id="diagBtn" class="proxy-button">DIAGNOSTICS</button>
                             <div style="position: relative;">
                                 <button id="options" class="proxy-button">⚙ OPTIONS</button>
                                 <div id="options-dropdown">
@@ -1106,6 +1107,13 @@
                             </div>
                         </div>
                         <div id="proxy-error"></div>
+                        <div id="proxy-diagnostics" style="display:none; margin-top:12px; background:#0a0000; border:1px solid #ff0000; padding:10px; color:#ff6666; max-height:200px; overflow:auto;">
+                            <div id="diagResults">Diagnostics will appear here.</div>
+                            <div style="margin-top:8px; display:flex; gap:8px;">
+                                <button id="diagRetry" class="proxy-button">Retry Probe</button>
+                                <button id="diagOpenDirect" class="proxy-button">Open Direct Example</button>
+                            </div>
+                        </div>
                     </div>
                     <iframe id="proxy-frame"></iframe>
                 </div>
@@ -2107,6 +2115,78 @@
             const optionsBtn = document.getElementById('options');
             const dropdown = document.getElementById('options-dropdown');
             const errorEl = document.getElementById('proxy-error');
+            const diagBtn = document.getElementById('diagBtn');
+            const diagPanel = document.getElementById('proxy-diagnostics');
+            const diagResults = document.getElementById('diagResults');
+            const diagRetry = document.getElementById('diagRetry');
+            const diagOpenDirect = document.getElementById('diagOpenDirect');
+
+            // diagnostic helpers
+            const bundleCandidates = ['/browser.js/dist/browser.bundle.js', '/static/browser.bundle.js', '/browser.bundle.js'];
+            const swCandidates = ['/browser.js/static/sw.js', '/static/sw.js', '/sw.js'];
+
+            async function probeUrl(url) {
+                try {
+                    const res = await fetch(url, { method: 'GET', cache: 'no-cache' });
+                    return res && res.ok;
+                } catch (e) {
+                    return false;
+                }
+            }
+
+            async function runDiagnostics() {
+                diagResults.innerHTML = 'Probing...';
+                const results = [];
+                let foundBundle = null;
+                for (const b of bundleCandidates) {
+                    const ok = await probeUrl(b);
+                    results.push(`${b}: ${ok ? 'OK' : 'NOT FOUND'}`);
+                    if (ok && !foundBundle) foundBundle = b;
+                }
+                let foundSw = null;
+                for (const s of swCandidates) {
+                    const ok = await probeUrl(s);
+                    results.push(`${s}: ${ok ? 'OK' : 'NOT FOUND'}`);
+                    if (ok && !foundSw) foundSw = s;
+                }
+                diagResults.innerHTML = '<pre>' + results.join('\n') + '</pre>';
+                return { foundBundle, foundSw };
+            }
+
+            diagBtn && diagBtn.addEventListener('click', async (e) => {
+                if (diagPanel.style.display === 'none') diagPanel.style.display = 'block';
+                const { foundBundle, foundSw } = await runDiagnostics();
+                if (foundBundle) console.log('Bundle reachable at', foundBundle);
+                if (foundSw) console.log('Service worker reachable at', foundSw);
+            });
+
+            diagRetry && diagRetry.addEventListener('click', async () => {
+                diagResults.innerHTML = 'Retrying...';
+                await runDiagnostics();
+            });
+
+            diagOpenDirect && diagOpenDirect.addEventListener('click', () => {
+                // Attempt to open a direct test site via the proxy format the page expects
+                const testUrl = 'https://example.com';
+                const proxied = '/browser.js/proxy/' + encodeURIComponent(testUrl);
+                iframe.src = proxied;
+                iframe.classList.add('active');
+                urlBar.value = testUrl;
+            });
+
+            // Make iframe visible when it starts loading and show status
+            iframe.addEventListener('loadstart', () => {
+                iframe.classList.add('active');
+            });
+            iframe.addEventListener('load', () => {
+                iframe.classList.add('active');
+                const proxyStatus = document.getElementById('proxy-status');
+                if (proxyStatus) {
+                    proxyStatus.classList.add('active');
+                    proxyStatus.textContent = 'Page loaded in proxy iframe.';
+                    setTimeout(() => proxyStatus.classList.remove('active'), 3000);
+                }
+            });
 
             // Handle "Go" button
             document.getElementById('go').addEventListener('click', () => {
