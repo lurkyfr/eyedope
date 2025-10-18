@@ -803,7 +803,6 @@
             text-overflow: ellipsis;
             display: -webkit-box;
             -webkit-line-clamp: 4;
-            line-clamp: 4;
             -webkit-box-orient: vertical;
         }
 
@@ -1116,105 +1115,37 @@
         </div>
     </div>
 
-    <!-- Browser.js loader (tries multiple candidate paths and registers its service worker when available) -->
+    <!-- Browser.js Scripts -->
+    <script src="/static/browser.bundle.js"></script>
     <script>
-        (function () {
-            const bundleCandidates = [
-                '/browser.js/dist/browser.bundle.js',
-                '/static/browser.bundle.js',
-                '/browser.js/static/browser.bundle.js',
-                '/browser.bundle.js',
-                'browser.bundle.js'
-            ];
-
-            const swCandidates = [
-                '/static/sw.js',
-                '/browser.js/static/sw.js',
-                '/sw.js',
-                '../browser.js/static/sw.js'
-            ];
-
-            function loadScript(url) {
-                return new Promise((resolve, reject) => {
-                    const s = document.createElement('script');
-                    s.src = url;
-                    s.async = true;
-                    s.onload = () => resolve(url);
-                    s.onerror = () => reject(new Error('Failed to load ' + url));
-                    document.head.appendChild(s);
-                });
-            }
-
-            async function tryLoadBundle() {
-                const errorEl = document.getElementById('proxy-error');
-                for (const candidate of bundleCandidates) {
-                    try {
-                        await loadScript(candidate);
-                        console.log('Loaded Browser.js bundle from', candidate);
-                        return candidate;
-                    } catch (e) {
-                        console.debug(e.message);
-                    }
-                }
-                if (errorEl) {
-                    errorEl.classList.add('active');
-                    errorEl.textContent = 'Failed to load Browser.js bundle. Expected one of: ' + bundleCandidates.join(', ');
-                }
-                throw new Error('No Browser.js bundle available');
-            }
-
-            async function probeUrl(url) {
-                try {
-                    const res = await fetch(url, { method: 'GET', cache: 'no-cache' });
-                    if (res.ok && res.headers.get('content-type')) return true;
-                } catch (e) {
-                    // ignore
-                }
-                return false;
-            }
-
-            async function tryRegisterSW() {
-                if (!('serviceWorker' in navigator)) return;
-                const errorEl = document.getElementById('proxy-error');
-                for (const sw of swCandidates) {
-                    // quick probe to see if the file is reachable
-                    const ok = await probeUrl(sw);
-                    if (!ok) continue;
-                    try {
-                        const reg = await navigator.serviceWorker.register(sw, { scope: '/' });
-                        console.log('Browser.js Service Worker registered:', reg.scope, 'from', sw);
-                        return reg;
-                    } catch (err) {
-                        console.warn('Service Worker registration failed for', sw, err);
+        // Register Browser.js Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('../browser.js/static/sw.js', { scope: '/' })
+                    .then(registration => {
+                        console.log('Browser.js Service Worker registered:', registration.scope);
+                    })
+                    .catch(err => {
+                        console.error('Service Worker registration failed:', err);
+                        const errorEl = document.getElementById('proxy-error');
                         if (errorEl) {
                             errorEl.classList.add('active');
-                            errorEl.textContent = 'Service Worker registration failed for: ' + sw + '\nSee console for details.';
+                            errorEl.textContent = '⚠ Service Worker registration failed. Check console for details.';
                         }
-                    }
+                    });
+            });
+        }
+
+        window.addEventListener('error', (event) => {
+            if (event.target.src && event.target.src.includes('browser.bundle.js')) {
+                console.error('Failed to load Browser.js script. Ensure /static/browser.bundle.js is accessible.');
+                const errorEl = document.getElementById('proxy-error');
+                if (errorEl) {
+                    errorEl.classList.add('active');
+                    errorEl.textContent = 'Failed to load proxy service. Please ensure Browser.js is built correctly.';
                 }
-                console.warn('No service worker candidate could be registered. Proxy may have reduced functionality.');
             }
-
-            // Try to load the bundle, then attempt SW registration.
-            tryLoadBundle()
-                .then(() => tryRegisterSW())
-                .catch(() => {
-                    console.error('Browser.js bundle not found; proxy functionality will be limited.');
-                });
-
-            // Global error handler: provide a clearer message when bundle fails to load
-            window.addEventListener('error', (event) => {
-                if (event.target && event.target.src && event.target.src.includes('browser.bundle.js')) {
-                    console.error('Failed to load Browser.js script. Tried multiple candidate paths. Check that the built bundle and sw.js exist in the expected locations.');
-                    const errorEl = document.getElementById('proxy-error');
-                    if (errorEl) {
-                        errorEl.classList.add('active');
-                        errorEl.textContent = 'Failed to load proxy service. Please ensure Browser.js build artifacts (browser.bundle.js and sw.js) are present in the repository.';
-                    }
-                }
-            }, true);
-        })();
-    </script>
+        }, true);
 
                            const asciiArts = [
             `
@@ -1681,9 +1612,7 @@
             `
         ];
 
-    const validNames = ['6969', '16569', '15590', '14421', '17682', '14966', '17656', '20990', '17717', '16559', '15744', '18290'];
-    // Normalized copy for comparisons (avoid calling toUpperCase everywhere)
-    const validNamesNormalized = validNames.map(v => String(v).toUpperCase());
+        const validNames = ['6969', '16569', '15590', '14421', '17682', '14966', '17656', '20990', '17717', '16559', '15744', '18290'];
 
         const games = [
             {
@@ -2009,8 +1938,7 @@
             const d = new Date();
             d.setTime(d.getTime() + (days * 24 * 60 * 60 * 1000));
             const expires = "expires=" + d.toUTCString();
-            // encode value to be safe for cookie storage
-            document.cookie = name + "=" + encodeURIComponent(String(value)) + ";" + expires + ";path=/";
+            document.cookie = name + "=" + value + ";" + expires + ";path=/";
         }
 
         function getCookie(name) {
@@ -2019,7 +1947,7 @@
             for (let i = 0; i < ca.length; i++) {
                 let c = ca[i];
                 while (c.charAt(0) === ' ') c = c.substring(1, c.length);
-                if (c.indexOf(nameEQ) === 0) return decodeURIComponent(c.substring(nameEQ.length, c.length));
+                if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
             }
             return null;
         }
@@ -2365,42 +2293,26 @@
             switchTab(defaultTab);
         }
 
-        (function attachLoginHandler(){
-            const form = document.getElementById('loginForm');
-            const nameInput = document.getElementById('nameInput');
-            if (!form || !nameInput) {
-                console.warn('Login form or name input not found');
-                return;
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const input = document.getElementById('nameInput').value.trim().toUpperCase();
+            stopLoginAsciiFlicker();
+            if (validNames.includes(input)) {
+                setCookie('accessName', input, 365);
+                showWelcomeScreen(input);
+            } else {
+                const asciiElement = document.getElementById('asciiArt');
+                asciiElement.classList.add('jitter');
+                asciiElement.textContent = wrongAscii[0];
+                asciiElement.style.display = 'block';
+                setTimeout(() => {
+                    asciiElement.classList.remove('jitter');
+                    asciiElement.style.display = 'none';
+                    window.location.href = '/alovingfamily.html';
+                }, 3000);
             }
-
-            form.addEventListener('submit', function(e) {
-                e.preventDefault();
-                const raw = nameInput.value || '';
-                const input = String(raw).trim().toUpperCase();
-                console.log('Login attempt for:', input);
-                stopLoginAsciiFlicker();
-
-                if (validNamesNormalized.includes(input)) {
-                    setCookie('accessName', input, 365);
-                    showWelcomeScreen(input);
-                } else {
-                    const asciiElement = document.getElementById('asciiArt');
-                    if (asciiElement) {
-                        asciiElement.classList.add('jitter');
-                        asciiElement.textContent = wrongAscii[0];
-                        asciiElement.style.display = 'block';
-                    }
-                    setTimeout(() => {
-                        if (asciiElement) {
-                            asciiElement.classList.remove('jitter');
-                            asciiElement.style.display = 'none';
-                        }
-                        window.location.href = '/alovingfamily.html';
-                    }, 3000);
-                }
-                nameInput.value = '';
-            });
-        })();
+            document.getElementById('nameInput').value = '';
+        });
 
         let urlInterval;
         let titleInterval;
