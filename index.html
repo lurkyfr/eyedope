@@ -803,6 +803,7 @@
             text-overflow: ellipsis;
             display: -webkit-box;
             -webkit-line-clamp: 4;
+            line-clamp: 4;
             -webkit-box-orient: vertical;
         }
 
@@ -1116,12 +1117,12 @@
     </div>
 
     <!-- Browser.js Scripts -->
-    <script src="/static/browser.bundle.js"></script>
+    <script src="/browser.js/dist/browser.bundle.js"></script>
     <script>
-        // Register Browser.js Service Worker
+        // Register Browser.js Service Worker (use designated /browser.js/ folder)
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('browser.js/static/sw.js', { scope: '/' })
+                navigator.serviceWorker.register('/browser.js/static/sw.js', { scope: '/' })
                     .then(registration => {
                         console.log('Browser.js Service Worker registered:', registration.scope);
                     })
@@ -1137,8 +1138,8 @@
         }
 
         window.addEventListener('error', (event) => {
-            if (event.target.src && event.target.src.includes('browser.bundle.js')) {
-                console.error('Failed to load Browser.js script. Ensure /static/browser.bundle.js is accessible.');
+            if (event.target && event.target.src && event.target.src.includes('browser.bundle.js')) {
+                console.error('Failed to load Browser.js script. Ensure /browser.js/dist/browser.bundle.js is accessible.');
                 const errorEl = document.getElementById('proxy-error');
                 if (errorEl) {
                     errorEl.classList.add('active');
