@@ -2165,11 +2165,14 @@
                 await runDiagnostics();
             });
 
-            diagOpenDirect && diagOpenDirect.addEventListener('click', () => {
-                // Attempt to open a direct test site via the proxy format the page expects
+            diagOpenDirect && diagOpenDirect.addEventListener('click', async () => {
+                // Attempt to open a direct test site via Browser.js proxy if available, else use server-side /proxy/
                 const testUrl = 'https://example.com';
-                const proxied = '/browser.js/proxy/' + encodeURIComponent(testUrl);
-                iframe.src = proxied;
+                const bjsProxy = '/browser.js/proxy/' + encodeURIComponent(testUrl);
+                const serverProxy = '/proxy/' + encodeURIComponent(testUrl);
+                // probe bjsProxy script first by checking the bundle availability
+                const probeBjs = await probeUrl('/browser.js/dist/browser.bundle.js');
+                iframe.src = (probeBjs ? bjsProxy : serverProxy);
                 iframe.classList.add('active');
                 urlBar.value = testUrl;
             });
