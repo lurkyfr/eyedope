@@ -11,14 +11,80 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --primary-red: #ff0000;
+            --dark-red: #990000;
+            --blood-red: #cc0000;
+            --cyber-blue: #00ffff;
+            --neon-pink: #ff00ff;
+            --deep-black: #000000;
+            --dark-gray: #0a0a0a;
+            --border-glow: rgba(255, 0, 0, 0.6);
+        }
+
         body {
-            background: #000;
-            color: #ff0000;
+            background: linear-gradient(135deg, #000000 0%, #1a0000 50%, #000000 100%);
+            color: var(--primary-red);
             font-family: 'Courier New', monospace;
             overflow-x: hidden;
             min-height: 100vh;
+            position: relative;
         }
 
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 2px,
+                    rgba(255, 0, 0, 0.03) 2px,
+                    rgba(255, 0, 0, 0.03) 4px
+                );
+            pointer-events: none;
+            z-index: 1;
+            animation: scanlines 8s linear infinite;
+        }
+
+        @keyframes scanlines {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(10px); }
+        }
+
+        /* Particle Background */
+        #particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: var(--primary-red);
+            border-radius: 50%;
+            opacity: 0.6;
+            animation: float 20s infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) translateX(0); }
+            25% { transform: translateY(-100px) translateX(50px); }
+            50% { transform: translateY(-50px) translateX(-50px); }
+            75% { transform: translateY(-150px) translateX(100px); }
+        }
+
+        /* Welcome Screen */
         #welcomeScreen {
             display: none;
             position: fixed;
@@ -26,7 +92,7 @@
             left: 0;
             width: 100vw;
             height: 100vh;
-            background: #000;
+            background: rgba(0, 0, 0, 0.98);
             z-index: 9999;
             justify-content: center;
             align-items: center;
@@ -63,14 +129,18 @@
         }
 
         .welcome-box {
-            border: 3px solid #ff0000;
-            padding: 40px 60px;
+            border: 3px solid var(--primary-red);
+            padding: 60px 80px;
             background: rgba(10, 0, 0, 0.95);
-            box-shadow: 0 0 50px rgba(255, 0, 0, 0.6), inset 0 0 30px rgba(255, 0, 0, 0.1);
+            box-shadow: 
+                0 0 50px var(--border-glow), 
+                inset 0 0 30px rgba(255, 0, 0, 0.1),
+                0 0 100px rgba(255, 0, 0, 0.3);
             position: relative;
             animation: boxJitter 0.15s infinite, boxGlow 2s ease-in-out infinite;
             text-align: center;
             max-width: 90%;
+            border-radius: 10px;
         }
 
         @keyframes boxJitter {
@@ -87,53 +157,25 @@
         }
 
         @keyframes boxGlow {
-            0%, 100% { box-shadow: 0 0 50px rgba(255, 0, 0, 0.6), inset 0 0 30px rgba(255, 0, 0, 0.1); }
+            0%, 100% { box-shadow: 0 0 50px var(--border-glow), inset 0 0 30px rgba(255, 0, 0, 0.1); }
             50% { box-shadow: 0 0 80px rgba(255, 0, 0, 0.9), inset 0 0 50px rgba(255, 0, 0, 0.2); }
         }
 
-        .welcome-box::before {
-            content: '╔════════════════════════════════════════════════════════╗';
-            position: absolute;
-            top: -15px;
-            left: 0;
-            right: 0;
-            text-align: center;
-            background: #000;
-            color: #ff0000;
-            font-size: 12px;
-        }
-
-        .welcome-box::after {
-            content: '╚════════════════════════════════════════════════════════╝';
-            position: absolute;
-            bottom: -15px;
-            left: 0;
-            right: 0;
-            text-align: center;
-            background: #000;
-            color: #ff0000;
-            font-size: 12px;
-        }
-
-        #welcomeAscii {
-            font-size: 8px;
-            line-height: 1;
-            white-space: pre;
-            text-align: center;
-            margin-bottom: 20px;
-            color: #ff0000;
-            text-shadow: 0 0 10px #ff0000;
-            animation: textFlicker 0.2s infinite;
-        }
-
         #welcomeText {
-            font-size: 28px;
+            font-size: 32px;
             font-weight: bold;
-            letter-spacing: 3px;
+            letter-spacing: 4px;
             text-align: center;
             animation: textFlicker 0.2s infinite, textGlow 1.5s ease-in-out infinite;
-            text-shadow: 0 0 20px #ff0000, 0 0 40px #ff0000;
+            text-shadow: 0 0 20px var(--primary-red), 0 0 40px var(--primary-red);
             white-space: nowrap;
+        }
+
+        #sessionInfo {
+            margin-top: 20px;
+            font-size: 14px;
+            color: var(--blood-red);
+            opacity: 0.8;
         }
 
         @keyframes textFlicker {
@@ -145,13 +187,14 @@
 
         @keyframes textGlow {
             0%, 100% { 
-                text-shadow: 0 0 20px #ff0000, 0 0 40px #ff0000;
+                text-shadow: 0 0 20px var(--primary-red), 0 0 40px var(--primary-red);
             }
             50% { 
-                text-shadow: 0 0 30px #ff0000, 0 0 60px #ff0000, 0 0 80px #ff0000;
+                text-shadow: 0 0 30px var(--primary-red), 0 0 60px var(--primary-red), 0 0 80px var(--primary-red);
             }
         }
 
+        /* Lock Screen */
         #lockScreen {
             display: flex;
             flex-direction: column;
@@ -159,6 +202,8 @@
             justify-content: center;
             min-height: 100vh;
             padding: 20px;
+            position: relative;
+            z-index: 2;
         }
 
         #asciiArt {
@@ -168,7 +213,7 @@
             white-space: pre;
             text-align: center;
             margin-bottom: 30px;
-            text-shadow: 0 0 10px #ff0000;
+            text-shadow: 0 0 10px var(--primary-red);
             animation: flicker 0.15s infinite;
         }
 
@@ -199,53 +244,72 @@
 
         #loginForm {
             display: flex;
-            gap: 15px;
+            flex-direction: column;
+            gap: 20px;
             align-items: center;
+            background: rgba(10, 0, 0, 0.8);
+            padding: 40px;
+            border: 2px solid var(--primary-red);
+            border-radius: 15px;
+            box-shadow: 0 0 30px var(--border-glow);
+        }
+
+        #browserFingerprint {
+            font-size: 12px;
+            color: var(--dark-red);
+            margin-bottom: 10px;
+            text-align: center;
         }
 
         input[type="text"] {
-            background: #1a0000;
-            border: 2px solid #ff0000;
-            color: #ff0000;
-            padding: 10px 20px;
+            background: rgba(26, 0, 0, 0.9);
+            border: 2px solid var(--primary-red);
+            color: var(--primary-red);
+            padding: 15px 25px;
             font-family: 'Courier New', monospace;
-            font-size: 14px;
+            font-size: 16px;
             text-align: center;
             outline: none;
             box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
-            width: 200px;
+            width: 250px;
             transition: all 0.3s ease;
+            border-radius: 8px;
         }
 
         input[type="text"]:focus {
             box-shadow: 0 0 25px rgba(255, 0, 0, 0.6);
             transform: scale(1.02);
+            background: rgba(26, 0, 0, 1);
         }
 
         input[type="text"]::placeholder {
-            color: #660000;
+            color: var(--dark-red);
         }
 
         button[type="submit"] {
-            background: #ff0000;
-            border: 2px solid #ff0000;
+            background: var(--primary-red);
+            border: 2px solid var(--primary-red);
             color: #000;
-            padding: 10px 20px;
+            padding: 15px 30px;
             font-family: 'Courier New', monospace;
-            font-size: 14px;
+            font-size: 16px;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s ease;
             box-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
+            border-radius: 8px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
 
         button[type="submit"]:hover {
             background: #000;
-            color: #ff0000;
+            color: var(--primary-red);
             box-shadow: 0 0 30px rgba(255, 0, 0, 0.8);
             transform: scale(1.05);
         }
 
+        /* Main Screen */
         #mainScreen {
             display: none;
             flex-direction: column;
@@ -254,8 +318,10 @@
             padding: 10px;
             opacity: 0;
             animation: fadeInScreen 0.5s ease-in forwards;
-            max-width: 1366px;
+            max-width: 1600px;
             margin: 0 auto;
+            position: relative;
+            z-index: 2;
         }
 
         #mainScreen.active {
@@ -267,6 +333,7 @@
             to { opacity: 1; transform: scale(1); }
         }
 
+        /* Enhanced Navbar */
         #navbar {
             position: fixed;
             top: 0;
@@ -275,11 +342,11 @@
             z-index: 1000;
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            background: rgba(0, 0, 0, 0.85);
-            border-bottom: 1px solid rgba(255, 0, 0, 0.3);
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0.95) 0%, rgba(10, 0, 0, 0.85) 100%);
+            border-bottom: 2px solid var(--primary-red);
             box-shadow: 
-                0 8px 32px rgba(255, 0, 0, 0.1),
-                inset 0 1px 0 rgba(255, 0, 0, 0.1);
+                0 8px 32px rgba(255, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 0, 0, 0.2);
             padding: 0;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             animation: navbarSlideIn 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -287,12 +354,11 @@
 
         #navbar.scrolled {
             backdrop-filter: blur(30px);
-            background: rgba(0, 0, 0, 0.95);
-            border-bottom: 2px solid #ff0000;
+            background: rgba(0, 0, 0, 0.98);
+            border-bottom: 3px solid var(--primary-red);
             box-shadow: 
-                0 12px 40px rgba(255, 0, 0, 0.2),
-                inset 0 1px 0 rgba(255, 0, 0, 0.2);
-            transform: translateY(-2px);
+                0 12px 40px rgba(255, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 0, 0, 0.3);
         }
 
         @keyframes navbarSlideIn {
@@ -307,12 +373,12 @@
         }
 
         .navbar-inner {
-            max-width: 1366px;
+            max-width: 1600px;
             margin: 0 auto;
-            display: flex;
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
             align-items: center;
-            justify-content: space-between;
-            padding: 12px 20px;
+            padding: 15px 30px;
             gap: 20px;
         }
 
@@ -320,15 +386,14 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 4px;
-            min-width: 200px;
-            flex-shrink: 0;
+            gap: 5px;
+            grid-column: 2;
         }
 
         #navbarTitle {
-            font-size: 18px;
-            letter-spacing: 2px;
-            text-shadow: 0 0 10px #ff0000;
+            font-size: 24px;
+            letter-spacing: 3px;
+            text-shadow: 0 0 15px var(--primary-red), 0 0 30px var(--primary-red);
             text-align: center;
             font-weight: bold;
             transition: all 0.3s ease;
@@ -344,8 +409,8 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 0, 0, 0.1), transparent);
-            animation: shimmer 2s infinite;
+            background: linear-gradient(90deg, transparent, rgba(255, 0, 0, 0.3), transparent);
+            animation: shimmer 3s infinite;
         }
 
         @keyframes shimmer {
@@ -354,37 +419,93 @@
         }
 
         #navbarDesc {
-            font-size: 10px;
-            color: #990000;
+            font-size: 11px;
+            color: var(--dark-red);
             text-align: center;
-            opacity: 0.8;
+            opacity: 0.9;
             transition: opacity 0.3s ease;
-            line-height: 1.2;
+            line-height: 1.3;
         }
 
-        .nav-tabs {
+        /* Session Status */
+        .session-status {
+            grid-column: 1;
             display: flex;
-            gap: 8px;
-            flex: 1;
-            justify-content: center;
-            max-width: 400px;
+            align-items: center;
+            gap: 10px;
+            font-size: 12px;
+            color: var(--blood-red);
         }
 
-        .tab-button {
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #00ff00;
+            box-shadow: 0 0 10px #00ff00;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+
+        /* Logout Button */
+        .navbar-actions {
+            grid-column: 3;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .logout-btn {
             background: transparent;
-            border: 1px solid rgba(255, 0, 0, 0.5);
-            color: #ff0000;
+            border: 2px solid var(--primary-red);
+            color: var(--primary-red);
             padding: 8px 16px;
             font-family: 'Courier New', monospace;
             font-size: 12px;
             font-weight: bold;
             cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 5px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .logout-btn:hover {
+            background: var(--primary-red);
+            color: #000;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.6);
+        }
+
+        /* Tab Navigation */
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            flex: 1;
+            justify-content: center;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .tab-button {
+            background: transparent;
+            border: 2px solid rgba(255, 0, 0, 0.5);
+            color: var(--primary-red);
+            padding: 10px 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
-            min-width: 100px;
+            min-width: 120px;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 1.5px;
+            border-radius: 8px;
         }
 
         .tab-button::before {
@@ -394,7 +515,7 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 0, 0, 0.1), transparent);
+            background: linear-gradient(90deg, transparent, rgba(255, 0, 0, 0.2), transparent);
             transition: left 0.5s;
         }
 
@@ -403,42 +524,33 @@
         }
 
         .tab-button:hover {
-            background: rgba(255, 0, 0, 0.1);
-            border-color: #ff0000;
+            background: rgba(255, 0, 0, 0.15);
+            border-color: var(--primary-red);
             box-shadow: 
-                0 0 20px rgba(255, 0, 0, 0.3),
-                inset 0 0 10px rgba(255, 0, 0, 0.05);
+                0 0 25px rgba(255, 0, 0, 0.4),
+                inset 0 0 15px rgba(255, 0, 0, 0.1);
             transform: translateY(-2px);
-            color: #ff0000;
         }
 
         .tab-button.active {
-            background: rgba(255, 0, 0, 0.15);
-            border-color: #ff0000;
+            background: rgba(255, 0, 0, 0.2);
+            border-color: var(--primary-red);
             box-shadow: 
-                0 0 25px rgba(255, 0, 0, 0.4),
-                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+                0 0 30px rgba(255, 0, 0, 0.5),
+                inset 0 2px 0 rgba(255, 255, 255, 0.1);
             transform: translateY(-1px);
             color: #fff;
-            text-shadow: 0 0 10px #ff0000;
+            text-shadow: 0 0 15px var(--primary-red);
         }
 
-        .tab-button.active::before {
-            left: 100%;
-        }
-
-        .tab-button.dim {
-            opacity: 0.4;
-            transform: scale(0.95);
-        }
-
+        /* Main Content */
         .main-content {
-            margin-top: 80px;
+            margin-top: 120px;
             width: 100%;
-            max-width: 1200px;
+            max-width: 1600px;
             margin-left: auto;
             margin-right: auto;
-            padding: 20px;
+            padding: 30px;
         }
 
         .tab-content {
@@ -455,86 +567,229 @@
             transform: translateY(0);
         }
 
+        /* Games Grid */
         #gamesContainer, #exploitsContainer {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
             width: 100%;
             padding: 10px 0;
-            max-height: calc(100vh - 200px);
-            overflow-y: auto;
         }
 
+        /* Enhanced Cards */
+        .card {
+            background: linear-gradient(145deg, rgba(10, 0, 0, 0.9), rgba(0, 0, 0, 0.95));
+            padding: 20px;
+            position: relative;
+            border: 2px solid var(--primary-red);
+            box-shadow: 
+                0 0 20px rgba(255, 0, 0, 0.3),
+                inset 0 0 20px rgba(255, 0, 0, 0.05);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            height: 420px;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, var(--primary-red), transparent, var(--primary-red));
+            border-radius: 15px;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            z-index: -1;
+        }
+
+        .card:hover::before {
+            opacity: 0.3;
+            animation: borderRotate 3s linear infinite;
+        }
+
+        @keyframes borderRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .card:hover {
+            box-shadow: 
+                0 0 40px rgba(255, 0, 0, 0.6),
+                inset 0 0 30px rgba(255, 0, 0, 0.1);
+            transform: translateY(-10px) scale(1.02);
+            border-color: #ff3333;
+        }
+
+        .gameImage {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border: 2px solid var(--primary-red);
+            border-radius: 10px;
+            margin-bottom: 10px;
+            background: #000;
+            transition: all 0.3s ease;
+        }
+
+        .gameImage:hover {
+            box-shadow: 0 0 25px rgba(255, 0, 0, 0.6);
+            transform: scale(1.03);
+        }
+
+        .card-title {
+            font-size: 18px;
+            text-align: center;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px var(--primary-red);
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .card-description {
+            font-size: 12px;
+            line-height: 1.5;
+            color: var(--blood-red);
+            text-align: center;
+            flex-grow: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            line-clamp: 3;
+            -webkit-box-orient: vertical;
+        }
+
+        .card-button {
+            width: 100%;
+            background: linear-gradient(135deg, #000 0%, var(--dark-red) 100%);
+            border: 2px solid var(--primary-red);
+            color: var(--primary-red);
+            padding: 12px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-height: 45px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .card-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 0, 0, 0.4);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .card-button:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .card-button:hover {
+            background: var(--primary-red);
+            color: #000;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.8);
+            transform: translateY(-2px);
+        }
+
+        .card-button span {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Proxy Container */
         #proxiesContainer {
             width: 100%;
-            max-width: 1200px;
+            max-width: 1600px;
             margin: 0 auto;
         }
 
         #proxy-ui {
             display: flex;
             flex-direction: column;
-            gap: 15px;
-            margin-bottom: 20px;
+            gap: 20px;
+            margin-bottom: 30px;
             width: 100%;
-            background: rgba(10, 0, 0, 0.95);
-            padding: 20px;
-            border: 2px solid #ff0000;
-            box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
-            border-radius: 5px;
+            background: linear-gradient(145deg, rgba(10, 0, 0, 0.95), rgba(0, 0, 0, 0.98));
+            padding: 30px;
+            border: 2px solid var(--primary-red);
+            box-shadow: 
+                0 0 30px rgba(255, 0, 0, 0.4),
+                inset 0 0 20px rgba(255, 0, 0, 0.05);
+            border-radius: 15px;
             backdrop-filter: blur(10px);
         }
 
         .proxy-url-row {
             display: flex;
-            gap: 10px;
+            gap: 15px;
             width: 100%;
         }
 
         #url-bar {
             flex: 1;
-            padding: 12px 20px;
-            background: #1a0000;
-            border: 2px solid #ff0000;
-            color: #ff0000;
+            padding: 15px 25px;
+            background: rgba(26, 0, 0, 0.9);
+            border: 2px solid var(--primary-red);
+            color: var(--primary-red);
             font-family: 'Courier New', monospace;
-            font-size: 14px;
+            font-size: 15px;
             outline: none;
             box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
             transition: all 0.3s ease;
-            border-radius: 3px;
+            border-radius: 8px;
         }
 
         #url-bar:focus {
             box-shadow: 0 0 25px rgba(255, 0, 0, 0.6);
             border-color: #ff3333;
+            background: rgba(26, 0, 0, 1);
         }
 
         #url-bar::placeholder {
-            color: #660000;
+            color: var(--dark-red);
         }
 
         #proxy-controls {
             display: flex;
-            gap: 10px;
+            gap: 15px;
             flex-wrap: wrap;
             justify-content: center;
         }
 
         .proxy-button {
-            background: #000;
-            border: 2px solid #ff0000;
-            color: #ff0000;
-            padding: 10px 20px;
+            background: linear-gradient(135deg, #000 0%, var(--dark-red) 100%);
+            border: 2px solid var(--primary-red);
+            color: var(--primary-red);
+            padding: 12px 24px;
             font-family: 'Courier New', monospace;
-            font-size: 12px;
+            font-size: 13px;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
-            min-width: 80px;
-            border-radius: 3px;
+            min-width: 100px;
+            border-radius: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .proxy-button::before {
@@ -545,7 +800,7 @@
             width: 0;
             height: 0;
             border-radius: 50%;
-            background: rgba(255, 0, 0, 0.2);
+            background: rgba(255, 0, 0, 0.3);
             transform: translate(-50%, -50%);
             transition: width 0.6s, height 0.6s;
         }
@@ -556,112 +811,20 @@
         }
 
         .proxy-button:hover {
-            background: #ff0000;
+            background: var(--primary-red);
             color: #000;
-            box-shadow: 0 0 20px rgba(255, 0, 0, 0.8);
+            box-shadow: 0 0 25px rgba(255, 0, 0, 0.8);
             transform: translateY(-2px);
-        }
-
-        .proxy-button:active {
-            transform: translateY(0);
-        }
-
-        #options-dropdown {
-            display: none;
-            position: absolute;
-            top: 100%;
-            left: 0;
-            background: #1a0000;
-            border: 2px solid #ff0000;
-            padding: 10px;
-            z-index: 10;
-            min-width: 200px;
-            box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
-            border-radius: 5px;
-            margin-top: 5px;
-        }
-
-        #options-dropdown.active {
-            display: block;
-        }
-
-        #options-dropdown div {
-            padding: 8px;
-            cursor: pointer;
-            color: #ff0000;
-            font-size: 12px;
-            transition: background 0.3s ease;
-            border-radius: 3px;
-        }
-
-        #options-dropdown div:hover {
-            background: rgba(255, 0, 0, 0.2);
-        }
-
-        #proxy-error {
-            color: #ff0000;
-            font-size: 12px;
-            text-align: center;
-            padding: 10px;
-            background: rgba(255, 0, 0, 0.1);
-            border: 1px solid #ff0000;
-            border-radius: 3px;
-            display: none;
-            white-space: pre-wrap;
-            max-height: 200px;
-            overflow-y: auto;
-        }
-
-        #proxy-error.active {
-            display: block;
-        }
-
-        #proxy-status {
-            color: #00ff00;
-            font-size: 12px;
-            text-align: center;
-            padding: 10px;
-            background: rgba(0, 255, 0, 0.1);
-            border: 1px solid #00ff00;
-            border-radius: 3px;
-            display: none;
-        }
-
-        #proxy-status.active {
-            display: block;
-        }
-
-        .proxy-loading {
-            display: none;
-            text-align: center;
-            padding: 20px;
-            color: #ff0000;
-            font-size: 14px;
-        }
-
-        .proxy-loading.active {
-            display: block;
-        }
-
-        .proxy-loading::after {
-            content: '...';
-            animation: dots 1.5s infinite;
-        }
-
-        @keyframes dots {
-            0%, 20% { content: '.'; }
-            40% { content: '..'; }
-            60%, 100% { content: '...'; }
         }
 
         #proxy-frame {
             width: 100%;
-            height: calc(100vh - 300px);
-            min-height: 500px;
-            border: 2px solid #ff0000;
+            height: calc(100vh - 350px);
+            min-height: 600px;
+            border: 2px solid var(--primary-red);
             background: #000;
-            box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
-            border-radius: 5px;
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.4);
+            border-radius: 15px;
             display: none;
         }
 
@@ -669,377 +832,80 @@
             display: block;
         }
 
-        #proxy-home {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 500px;
-            border: 2px solid #ff0000;
-            background: rgba(10, 0, 0, 0.5);
-            border-radius: 5px;
-            padding: 40px;
-            text-align: center;
-        }
-
-        #proxy-home h2 {
-            font-size: 24px;
-            letter-spacing: 3px;
-            margin-bottom: 20px;
-            text-shadow: 0 0 10px #ff0000;
-        }
-
-        #proxy-home p {
-            font-size: 14px;
-            color: #cc0000;
-            margin-bottom: 10px;
-            line-height: 1.6;
-        }
-
-        #proxy-home .proxy-features {
-            margin-top: 30px;
-            text-align: left;
-            max-width: 600px;
-        }
-
-        #proxy-home .proxy-features div {
-            margin: 10px 0;
-            padding: 10px;
-            background: rgba(255, 0, 0, 0.05);
-            border-left: 3px solid #ff0000;
-        }
-
-        .card {
-            background: #0a0000;
-            padding: 15px;
-            position: relative;
-            border: 2px solid #ff0000;
-            box-shadow: 0 0 15px rgba(255, 0, 0, 0.2);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            height: 360px;
-            width: 100%;
-            max-width: 300px;
-            margin: 0 auto;
-            animation: cardFloat 3s ease-in-out infinite;
-        }
-
-        @keyframes cardFloat {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-5px); }
-        }
-
-        .card:hover {
-            animation-play-state: paused;
-            box-shadow: 0 0 30px rgba(255, 0, 0, 0.5);
-            transform: scale(1.02) translateY(-10px);
-        }
-
-        .card::before {
-            content: '┌─────────────────────────────────────────────┐';
-            position: absolute;
-            top: -12px;
-            left: 0;
-            right: 0;
-            text-align: center;
-            background: #000;
-            font-size: 8px;
-            color: #ff0000;
-        }
-
-        .card::after {
-            content: '└─────────────────────────────────────────────┘';
-            position: absolute;
-            bottom: -12px;
-            left: 0;
-            right: 0;
-            text-align: center;
-            background: #000;
-            font-size: 8px;
-            color: #ff0000;
-        }
-
-        .gameImage {
-            width: 100%;
-            height: 180px;
-            object-fit: cover;
-            border: 2px solid #ff0000;
-            margin-bottom: 10px;
-            background: #000;
-            max-width: 100%;
-            transition: all 0.3s ease;
-        }
-
-        .gameImage:hover {
-            box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
-            transform: scale(1.02);
-        }
-
-        .card-title {
-            font-size: 16px;
-            text-align: center;
-            letter-spacing: 2px;
-            text-shadow: 0 0 8px #ff0000;
-            margin-bottom: 5px;
-        }
-
-        .card-title::before {
-            content: '『 ';
-        }
-
-        .card-title::after {
-            content: ' 』';
-        }
-
-        .card-description {
-            font-size: 11px;
-            line-height: 1.4;
-            color: #cc0000;
-            text-align: center;
-            flex-grow: 1;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            display: -webkit-box;
-            -webkit-line-clamp: 4;
-            line-clamp: 4;
-            -webkit-box-orient: vertical;
-        }
-
-        .card-button {
-            width: 100%;
-            background: #000;
-            border: 2px solid #ff0000;
-            color: #ff0000;
-            padding: 8px;
-            font-family: 'Courier New', monospace;
-            font-size: 12px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            min-height: 40px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .card-button::before {
-            content: '▶ ';
-        }
-
-        .card-button::after {
-            content: ' ◀';
-        }
-
-        .card-button:hover {
-            background: #ff0000;
-            color: #000;
-            box-shadow: 0 0 15px rgba(255, 0, 0, 0.8);
-            transform: translateY(-2px);
-        }
-
-        .skittlebug {
-            color: whitesmoke;
-            text-decoration: wavy;
-            animation: skittleWave 2s ease-in-out infinite;
-        }
-
-        @keyframes skittleWave {
-            0%, 100% { text-decoration: wavy; }
-            50% { text-decoration: underline wavy #ff0000; }
-        }
-
-        @media (max-width: 1366px) {
+        /* Responsive Design */
+        @media (max-width: 1200px) {
             #gamesContainer, #exploitsContainer {
-                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+                gap: 25px;
             }
 
             .card {
-                height: 340px;
-                max-width: 280px;
-            }
-
-            .gameImage {
-                height: 160px;
+                height: 400px;
             }
         }
 
         @media (max-width: 768px) {
-            #loginForm {
-                flex-direction: column;
-                gap: 10px;
-            }
-
-            input[type="text"] {
-                width: 100%;
-                max-width: 250px;
-                font-size: 12px;
-            }
-
             .navbar-inner {
-                padding: 10px 15px;
-                flex-direction: column;
-                gap: 10px;
+                grid-template-columns: 1fr;
+                padding: 15px 20px;
+                gap: 15px;
+            }
+
+            .session-status {
+                grid-column: 1;
+                justify-content: center;
             }
 
             .navbar-brand {
-                min-width: auto;
+                grid-column: 1;
                 order: 2;
             }
 
-            #navbarTitle {
-                font-size: 16px;
-                letter-spacing: 1px;
+            .navbar-actions {
+                grid-column: 1;
+                order: 3;
+                justify-content: center;
             }
 
-            #navbarDesc {
-                font-size: 9px;
+            #navbarTitle {
+                font-size: 20px;
+                letter-spacing: 2px;
             }
 
             .nav-tabs {
                 order: 1;
+                grid-column: 1;
                 width: 100%;
-                justify-content: center;
-                gap: 6px;
                 max-width: none;
             }
 
             .tab-button {
                 font-size: 11px;
-                padding: 6px 12px;
-                min-width: 80px;
-            }
-
-            .main-content {
-                margin-top: 100px;
-                padding: 10px;
-            }
-
-            #gamesContainer, #exploitsContainer {
-                grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-                gap: 15px;
-            }
-
-            .card {
-                height: 320px;
-                max-width: 240px;
-            }
-
-            .gameImage {
-                height: 140px;
-            }
-
-            .card-title {
-                font-size: 14px;
-            }
-
-            .card-description {
-                font-size: 10px;
-            }
-
-            .card-button {
-                font-size: 11px;
-                padding: 6px;
-            }
-
-            #proxy-ui {
-                padding: 15px;
-            }
-
-            #url-bar {
-                font-size: 12px;
-                padding: 10px;
-            }
-
-            #proxy-frame {
-                height: calc(100vh - 350px);
-                min-height: 400px;
-            }
-
-            #proxy-controls {
-                gap: 8px;
-            }
-
-            .proxy-button {
                 padding: 8px 15px;
-                font-size: 11px;
-                min-width: 70px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .navbar-inner {
-                padding: 8px 10px;
-            }
-
-            #navbarTitle {
-                font-size: 14px;
-            }
-
-            #navbarDesc {
-                font-size: 8px;
-            }
-
-            .nav-tabs {
-                flex-wrap: wrap;
-                gap: 4px;
-            }
-
-            .tab-button {
-                font-size: 10px;
-                padding: 5px 10px;
-                min-width: 70px;
+                min-width: 100px;
             }
 
             .main-content {
-                margin-top: 90px;
-                padding: 5px;
+                margin-top: 140px;
+                padding: 20px;
             }
 
             #gamesContainer, #exploitsContainer {
                 grid-template-columns: 1fr;
-                gap: 15px;
+                gap: 20px;
             }
 
             .card {
-                height: 300px;
-                max-width: 100%;
+                height: 380px;
             }
 
-            .gameImage {
-                height: 120px;
-            }
-
-            #proxy-ui {
-                gap: 10px;
-                padding: 10px;
-            }
-
-            #url-bar {
-                min-width: 100%;
-                font-size: 11px;
-            }
-
-            #proxy-controls {
-                justify-content: center;
-                gap: 6px;
-            }
-
-            .proxy-button {
-                padding: 6px 12px;
-                font-size: 10px;
-                min-width: 60px;
-            }
-
-            #proxy-frame {
-                height: calc(100vh - 380px);
-                min-height: 350px;
+            input[type="text"] {
+                width: 100%;
+                max-width: 300px;
             }
         }
 
-        html {
-            scroll-behavior: smooth;
-        }
-
+        /* Accessibility */
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after {
                 animation-duration: 0.01ms !important;
@@ -1047,37 +913,66 @@
                 transition-duration: 0.01ms !important;
             }
         }
+
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 0, 0, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--primary-red);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
+    <div id="particles"></div>
+
     <div id="welcomeScreen">
         <div class="welcome-box">
-            <pre id="welcomeAscii">
-            <!-- PASTE YOUR WELCOME ASCII FRAMES HERE -->
-            </pre>
             <div id="welcomeText">WELCOME BACK TO EYEDOPE, USER <span id="welcomeUserId"></span></div>
+            <div id="sessionInfo">
+                Session ID: <span id="sessionId"></span><br>
+                Active Sessions: <span id="activeSessions"></span>
+            </div>
         </div>
     </div>
 
     <div id="lockScreen">
         <pre id="asciiArt"></pre>
         <form id="loginForm">
-            <input type="text" id="nameInput" placeholder="YOU KNOW WHAT TO PUT HERE" autocomplete="off">
-            <button type="submit">SUBMIT</button>
+            <div id="browserFingerprint">Browser Fingerprint: <span id="fingerprintDisplay">Calculating...</span></div>
+            <input type="text" id="nameInput" placeholder="ENTER ACCESS CODE" autocomplete="off" maxlength="20">
+            <button type="submit">
+                <span class="loading" style="display: none;"></span>
+                <span class="btn-text">AUTHENTICATE</span>
+            </button>
         </form>
     </div>
 
     <div id="mainScreen">
         <nav id="navbar">
             <div class="navbar-inner">
-                <div class="nav-tabs">
-                    <button id="leftTabButton" class="tab-button"></button>
-                    <button id="rightTabButton" class="tab-button"></button>
+                <div class="session-status">
+                    <div class="status-indicator"></div>
+                    <span>SESSION ACTIVE</span>
                 </div>
                 <div class="navbar-brand">
-                    <h1 id="navbarTitle">LOADING...</h1>
-                    <p id="navbarDesc">Initializing systems...</p>
+                    <h1 id="navbarTitle">EYEDOPE</h1>
+                    <p id="navbarDesc">Loading...</p>
                 </div>
+                <div class="navbar-actions">
+                    <button class="logout-btn" id="logoutBtn">LOGOUT</button>
+                </div>
+            </div>
+            <div class="nav-tabs">
+                <button id="leftTabButton" class="tab-button"></button>
+                <button id="rightTabButton" class="tab-button"></button>
             </div>
         </nav>
 
@@ -1096,23 +991,6 @@
                             <button id="back" class="proxy-button">◄ BACK</button>
                             <button id="forward" class="proxy-button">FORWARD ►</button>
                             <button id="reload" class="proxy-button">⟳ RELOAD</button>
-                            <button id="diagBtn" class="proxy-button">DIAGNOSTICS</button>
-                            <div style="position: relative;">
-                                <button id="options" class="proxy-button">⚙ OPTIONS</button>
-                                <div id="options-dropdown">
-                                    <div onclick="alert('Cookies view not implemented yet.')">View Cookies</div>
-                                    <div onclick="clearCache()">Clear Cache</div>
-                                    <div onclick="alert('Site details not implemented yet.')">Site Details</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div id="proxy-error"></div>
-                        <div id="proxy-diagnostics" style="display:none; margin-top:12px; background:#0a0000; border:1px solid #ff0000; padding:10px; color:#ff6666; max-height:200px; overflow:auto;">
-                            <div id="diagResults">Diagnostics will appear here.</div>
-                            <div style="margin-top:8px; display:flex; gap:8px;">
-                                <button id="diagRetry" class="proxy-button">Retry Probe</button>
-                                <button id="diagOpenDirect" class="proxy-button">Open Direct Example</button>
-                            </div>
                         </div>
                     </div>
                     <iframe id="proxy-frame"></iframe>
@@ -1124,1387 +1002,7 @@
         </div>
     </div>
 
-    <!-- Browser.js Scripts: dynamic loader will probe candidate paths. Removed unconditional script tag and eager SW registration to avoid 404s when artifacts are missing -->
-    <script>
-            (async function() {
-                // Preferred locations for Browser.js bundle and service worker
-                const bundleCandidates = [
-                    '/browser.js/dist/browser.bundle.js',
-                    '/static/browser.bundle.js',
-                    '/browser.bundle.js'
-                ];
-                const swCandidates = [
-                    '/browser.js/static/sw.js',
-                    '/static/sw.js',
-                    '/sw.js'
-                ];
-
-                async function probeUrl(url) {
-                    try {
-                        const res = await fetch(url, { method: 'GET', cache: 'no-cache' });
-                        if (!res.ok) return false;
-                        const ct = (res.headers.get('content-type') || '').toLowerCase();
-                        // Accept js content-types and fall back to ok status for some static hosts
-                        if (ct.includes('javascript') || ct.includes('application/javascript') || ct.includes('text/javascript') || res.status === 200) return true;
-                    } catch (e) {
-                        // ignore
-                    }
-                    return false;
-                }
-
-                // Try to load the bundle from the first candidate that exists
-                let bundleLoaded = false;
-                for (const candidate of bundleCandidates) {
-                    if (await probeUrl(candidate)) {
-                        const s = document.createElement('script');
-                        s.src = candidate;
-                        s.async = true;
-                        document.head.appendChild(s);
-                        console.log('Loaded Browser.js bundle from', candidate);
-                        bundleLoaded = true;
-                        break;
-                    }
-                }
-                if (!bundleLoaded) {
-                    // Don't show the on-screen proxy error to avoid spamming the user UI with 404s.
-                    console.warn('Browser.js bundle not found at expected locations. Proxy functionality will be reduced.');
-                }
-
-                // Register service worker only if the sw script is reachable
-                if ('serviceWorker' in navigator) {
-                    for (const sw of swCandidates) {
-                        if (!(await probeUrl(sw))) continue;
-                        try {
-                            const reg = await navigator.serviceWorker.register(sw, { scope: '/' });
-                            console.log('Service Worker registered from', sw, reg.scope);
-                            break;
-                        } catch (err) {
-                            console.warn('Service Worker registration failed for', sw, err);
-                            // try next candidate
-                        }
-                    }
-                }
-
-                // Keep error logging for failed script loads but avoid altering UI to prevent the visible notification
-                window.addEventListener('error', (event) => {
-                    try {
-                        if (event.target && event.target.src && event.target.src.includes('browser.bundle.js')) {
-                            console.error('Failed to load Browser.js script. Check that the bundle exists and server serves it with the correct MIME type.');
-                        }
-                    } catch (e) { /* ignore */ }
-                }, true);
-            })();
-
-                           const asciiArts = [
-            `
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀⣀⣀⣀⣠⣤⣤⣤⣀⣀⣀⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣤⣶⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣶⣦⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣴⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣶⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣼⣿⣿⣿⣿⣿EYEDOPE⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣇⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡆⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿EYEDOPE⣿⣿⣿⣿⢯⣿⣿⣿⡄⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡟⣿⣿⣿⣿⣷⡀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⡄⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⢹⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡟⣿⣯⣿⣿⣿⣿⠟⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡏⢉⠵⢋⣿⣿⣿⣿⣿⡀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢹⣿⣿EYEDOPE⣿⣿⣿⣿⣿⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣾⣾⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡌⠙⢻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣇⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠈⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣃⠀⠀⠀⠙⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡆⠀⠀⠀⠘⠿⠿⣿⣿⣿⣿⣿⣿⣿⣿⡿⢟⠟⠁⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠷⠀⠀⠀⠀⠀⠀⢾⣌⡿⣿⣿⣿⣿⣷⣾⡇⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢹⣿⣿⣿⣿⣿⣿⣿⣿⣿⣟⣻⣍⣀⠀⠀⠀⠀⠀⠀⢻⣿⣧⣇⢠⢙⠿⣿⣿⠇⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⡀⠀⠀⠀⠀⢸⣿⣿⣿⣿⣼⣼⣷⠇⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⢿⠿⣿⣿⣿⣿⣟⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣼⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡀⠀⠀⠀⠀⠀⠀⠈⣿⠿⣿⣿⡿⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣵⡦⢀⣀⠀⠀⠀⠀⠀⠃⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⣰⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡏⠛⢿⣦⣀⣠⣤⣴⣾⣧⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⢀⣼⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠛⠛⢦⣄⠈⠻⢿⣿⣿⣿⡏⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⣠⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣧⠀⠀⠀⠀⠙⢦⣀⣀⣉⡛⠉⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⣀⣤⣶⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿EYEDOPE⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠈⠻⣿⣿⣿⣿⣿⣶⣶⣶⣶⣦⣤⣤⡀⠀
-⣴⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣦⣄⣀⡀⠀⠀⠀⠉⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣆
-⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡆⠀⠀⠀⠈⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
-⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣧⠀⠀⠀⠀⠘⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
-⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡀⠀⠀⠀⠀⠘⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
-⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⢹⣿⣿⣿⣿⣿⣿⣿⣿⣿
-⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀⢻⣿⣿⣿⣿⣿⣿⣿⣿
-⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⠀⠀⠀⠀⠀⠀⠘⣿⣿⣿⣿⣿⣿⣿⣿
-⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿EYEDOPE⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣄⠀⠀⠀⠀⠀⠀⢹⣿⣿⣿⣿⣿⣿⣿
-⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣦⡀⠀⠀⠀⠘⣿⣿⣿⣿⣿⣿⣿
-⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣦⣀⠀⠀⢹⣿⣿⣿⣿⣿⣿
-⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣄⠈⣿⣿⣿⣿⣿⣿
-⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣼⣿⣿⣿⣿⣿
-⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
-⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿EYEDOPE⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
-⣿⣿⣿⣿⣿⣿EYEDOPE⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
-⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿EYEDOPE⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
-            `,
-            
-            `
-⡭⢛⠭⡛⠼⡹⢜⡣⠝⡰⢀⠂⠔⢀⠒⡐⣂⠦⡑⢢⢉⠲⠍⠞⡸⢒⠍⡚⢭⠓⡽⠨⣽⠗⣬⠂⠈⡁⢋⠩⣙⢻⣛⣫⡀⠡⠂⠔⠑⢎⠒⡡⠒⣌⠰⠡⢎⠵⣩⠎⣱⠩
-⠢⠍⠐⡁⠂⢁⠂⠠⠁⠀⠀⠈⠀⠀⠀⠀⠀⠀⠀⠀⠀⠠⠈⠂⠤⢉⣦⡄⠀⠀⠀⢠⡿⠀⣽⠀⠀⠀⠂⠀⠁⠀⠀⠙⢷⡁⠈⠈⣄⠀⠠⠁⠐⠀⠀⠀⠀⠀⠀⠈⠅⢊
-⠁⠈⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⠀⠘⣧⠛⠲⢶⣾⣇⢠⣿⠀⠀⠀⠀⠀⢀⣀⣀⢀⣈⣳⣄⠀⢸⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠀
-⠀⠁⠀⠀⠀⠀⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⣧⡀⠀⠹⣿⣼⣿⠀⠀⠀⢀⣴⠋⠉⠉⠉⠉⠉⠛⠳⢾⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠻⢦⣴⣉⣻⣿⣇⠀⣴⠟⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠛⠻⢿⣿⣾⡃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⠀⠀⣠⡟⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣤⣤⣄⣠⣶⣶⣶⣦⣄⡀⠹⣿⣦⣄⣀⠀⠀⠀⣶⣄⠀⠀⣰⡿⠶⠛⠁⣶⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣧⣼⣿⣿⣿⣿⣤⣀⣿⢿⣿⣠⣿⣧⣼⣿⠿⠃⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⣾⣿⣿EYEDOPE⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣿⣿⣿⣿⡛⠋⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢰⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣹⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿EYEDOPE⣿⣿⣿⣿⣿⡆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⣿⣿⠿⣻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣦⣀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣼⣿⣏⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⢿⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣴⣿⣧⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠀⠈⠋⠙⢿⠿⣿⣿⢿⣿⣿⣿⡿⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣾⣿⣯⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠁⠀⠀⠀⠀⠀⠀⠈⣽⠀⣿⠁⠛⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣾⣿⣿⣿⣿⣿⣿⣿EYEDOPE⣿⣿⣿⣿⣿⣿⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠉⠛⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡟⢻⣿⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣴⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡟⠀⠘⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣼⣿⣿⣿⣿⢻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠟⠁⠀⠀⢹⣿⣿⣷⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⢀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣾⣿⣿⣿⡟⠁⢨⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠀⠀⠀⠀⠀⠀⢻⣿⣿⡆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⡀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣼⣾⣿⣿⣿⣿⠏⠀⠀⢀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⡀⠀⠀⠀⠀⠀⠘⣿⣿⣧⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⡄⠁⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿⣿⣿⣿⣿⠀⠀⣰⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣆⠀⠀⠀⠀⢸⣿⣿⣿⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠡⠐⠀⠀⠀⠀⠀⠀⠀⠘⣿⣿⣿⣿⣿⣿⠀⢠⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣦⡀⠀⠀⠸⣿⣿⣿⣧⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠡⠀⠀⠀⠀⠀⠀⠀⠀⠀⠹⣿⣿⣿⣿⣿⣆⢸⣿⣿⣿⣿⣿⣿⣿EYEDOPE⣿⣿⣿⣿⡄⠀⠀⢻⣿⣿⣿⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⡅⢣⠑⠀⠀⠀⠀⠀⠀⠀⠀⠘⢿⣿⣿⣿⣿⡀⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡀⠀⠀⠹⣿⣿⣷⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⡜⡡⠌⠀⠂⠀⠀⠀⠀⠀⠠⢀⠀⢻⣿⣿⣿⣷⡘⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣧⠀⠀⠀⠹⣿⣿⣷⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⡲⣑⢎⠠⡀⠀⠀⠀⠀⢈⠱⢊⡜⡀⢹⣿⣿⣿⣷⣼⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡀⠀⠀⠀⠘⣿⣿⣷⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⡳⣍⢎⠡⣐⠀⠀⠀⡡⠀⠌⠐⠈⡐⠀⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠛⢻⣿⣿⣿⣿⣿⠃⠀⠀⠀⠀⠘⣿⣿⣿⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠵⣪⢎⠳⡤⠃⠀⠠⠀⠘⠀⠀⠀⢈⣀⠀⢹⣿⣿⣿EYEDOPE⣿⣿⣿⡏⢀⣴⣾⣿⣿⣿⣿⣆⠀⠀⠀⠀⠀⠈⢿⣿⣿⣇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⣷⠦⣍⢂⡴⡠⣍⡡⠜⡐⢢⠾⠛⠛⠙⠃⠒⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠃⣿⣿⣿⣿⣿⣿⠟⠁⠀⠀⠀⠀⠀⠀⠀⢻⣿⣿⣷⣤⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⣯⣷⢯⣶⣱⢳⡜⡰⣬⠴⡀⠀⠀⠀⠀⣀⣴⣿⣿⣿⣿⣿⣿⣯⡉⢉⢉⡀⡀⠹⢿⣿⣿⣿⣧⡄⠀⠂⠀⡁⠀⢀⡀⡀⠈⢻⣿⣿⣿⣿⣶⣄⡀⡀⠠⢀⡀⢠⢄⣠⢠⠄
-⣿⣯⣟⣯⣷⣟⣾⣳⣭⢶⣡⢆⡔⡂⢀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣦⢍⡺⢱⠒⡄⡈⠿⣿⣿⣿⣦⣓⠶⣴⣛⡦⣔⡩⢊⠥⣙⣿⣿⣿⣿⣿⣿⣷⣓⠮⣭⣙⣮⣵⣋⡾
-⣿⡿⢿⣿⡿⣿⢯⣷⣾⣧⣷⣾⣴⣧⣼⣿⣿⣿⣿⣯⣿⣿⣽⣯⣿⡿⣿⣼⣧⣿⣶⣿⣶⡽⢿⣿⣿⣿⣿⣷⣿⣻⣽⣿⣿⢿⡽⣾⣿⣿⣿⣿⣿⣿⢯⣿⣟⡿⣳⠿⣽⣛
-⣿⡽⣳⡼⢶⠭⡙⠮⢱⢋⠟⣫⠽⣯⢏⣿⣿⣿⣿⣯⢛⣿⣿⣷⣿⣿⣿⣿⣿⠿⣯⢷⣷⣾⣿⣿⣿⣿⣿⡽⢿⣿⣿⣾⣽⣯⣿⣷⣻⣿⣿⣿⣿⣿⣯⠷⣾⡽⣹⢟⡶⢯
-⣷⣿⣷⣿⡽⣷⠿⠷⢧⠾⢾⡴⣝⠦⣠⣸⣿⣿⣿⣿⡀⢿⣿⣽⣿⣷⣿⣿⣿⣿⡜⡧⢞⣭⡷⣯⣿⣿⣿⣿⣿⣮⣝⣣⣽⣭⡽⣩⣳⣿⣟⣿⣿⣿⣾⣿⣦⣵⣍⡛⠸⢋
-⢿⡹⣎⡷⣽⣒⡯⣟⣬⢛⡖⡠⠌⣠⣔⣼⣿⣿⣿⣿⣷⠚⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣼⣿⣽⣿⣿⣿⣿⣿⣿⣿⣧⣝⣦⣳⣷⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣦
-⣷⣿⠙⣾⣵⣮⢳⡇⡎⡖⠒⠃⠀⠀⢠⣼⣿⣿⣿⣿⣿⡌⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡟⣿⣿⠛⡟⢻⣿⠋⡝⢻⣿⣿⣿⣿⣿⣿
-⡳⣎⠟⣍⡳⣉⣖⣨⠜⠁⠀⠀⠄⠀⠠⢸⣿⣿⣿⣿⣿⣗⣸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣭⡋⠛⠳⠿⠛⠀⣀⡙⠻⣏⠙⢏⡛⣛
-⣟⡛⠫⠝⣉⠉⠀⡀⠀⠉⠌⡁⢦⣩⢆⣡⠹⣿⣿⣿⣿⣿⣷⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿EYEDOPE⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡑⠻⢬⣥⢈⣉⠱⣠⠊⡤⢙⡒
-⣮⢵⢋⡑⣬⡴⢎⠽⣙⣋⡭⢬⣷⣻⢾⣷⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⢿⡷⢭⠓⠎⢖⠳⠦⠶⣤⣣⣜⡡⣚
-⠷⣬⠶⣭⣳⡾⣬⣶⣶⡿⣾⣷⣿⣿⣿⣿EYEDOPE⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣯⣜⡳⢾⣧⣽⣾⣞⣶⣷⣳⣆⣶⣮⣷⣶
-⣿⣼⣿⣾⣽⣿⣿⣿⣿⣿⣿⣽⣻⡿⢿⣿⡿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿EYEDOPE⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣾⣽⣧⣿⣯⣿⣟⡿⣾⣽⣻⣯⣿⢯⣿
-⣿⣿⣿⣿⣟⣿⡽⣿⣿⡿⣿⣻⣽⣿⣷⣲⣝⣦⣭⣟⡿⣿⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⡿⣽⣟⡿⣿⡽⣿⣟⡿⣯⣟
-⢟⣻⣯⣟⣿⣿⣿⣯⣻⡽⣷⣿⣿⢾⣟⣿⣾⣷⣻⣿⣿⣽⣯⣟⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⢿⣻⣟⡻⢿⣿⣿⣦⣝⡸⢣⠛⢧⢻⣽⣳⢾
-       `,
-
-            `
-⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡄
-⢻⣦⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣀⠤⠤⠴⢶⣶⡶⠶⠤⠤⢤⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣠⣾⠁
-⠀⠻⣯⡗⢶⣶⣶⣶⣶⢶⣤⣄⣀⣀⡤⠒⠋⠁⠀⠀⠀⠀⠚⢯⠟⠂⠀⠀⠀⠀⠉⠙⠲⣤⣠⡴⠖⣲⣶⡶⣶⣿⡟⢩⡴⠃⠀
-⠀⠀⠈⠻⠾⣿⣿⣬⣿⣾⡏⢹⣏⠉⠢⣄⣀⣀⠤⠔⠒⠊⠉⠉⠉⠉⠑⠒⠀⠤⣀⡠⠚⠉⣹⣧⣝⣿⣿⣷⠿⠿⠛⠉⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠈⣹⠟⠛⠿⣿⣤⡀⣸⠿⣄⠀⠀ EYEDOPE⠀⠀⣠⠾⣇⢰⣶⣿⠟⠋⠉⠳⡄⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⢠⡞⠁⠀⠀⡠⢾⣿⣿⣯⠀⠈⢧⡀⠀⠀⠀⠀⠀⠀⠀⢀⡴⠁⢀⣿⣿⣯⢼⠓⢄⠀⢀⡘⣦⡀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⣰⣟⣟⣿⣀⠎⠀⠀⢳⠘⣿⣷⡀⢸⣿⣶⣤⣄⣀⣤⢤⣶⣿⡇⢀⣾⣿⠋⢀⡎⠀⠀⠱⣤⢿⠿⢷⡀⠀⠀⠀⠀
-⠀⠀⠀⠀⣰⠋⠀⠘⣡⠃⠀⠀⠀⠈⢇⢹⣿⣿⡾⣿⣻⣖⠛⠉⠁⣠⠏⣿⡿⣿⣿⡏⠀⡼⠀⠀⠀⠀⠘⢆⠀⠀⢹⡄⠀⠀⠀
-⠀⠀⠀⢰⠇⠀⠀⣰⠃⠀⠀⣀⣀⣀⣼⢿⣿⡏⡰⠋⠉⢟⠁⠀⠀⢸⠿⣼⡃⣿⣿⣿⡿⣇⣀⣀⣀⣉⣓⣦⣀⣸⣿⣿⣼⠁⠀
-⠀⠀⠸⡏⠙⠁⢹⠋⠉⠉⠉⠉⠉⠙⢿⣿⣅⠀⢿⡿⠦⠀⠁⠀⢰⡃⠰⠺⣿⠏⢀⣽⣿⡟⠉⠉⠉⠀⠈⠁⢈⡇⠈⠇⣼⠀⠀
-⠀⠀⠀⢳⠀⠀⠀⢧⠀⠀⠀⠀⠀⠀⠈⢿⣿⣷⣌⠧⡀⢲⠄⠀⠀⢴⠃⢠⢋⣴⣿⣿⠏⠀⠀⠀⠀⠀⠀⠀⡸⠀⠀⢠⠇⠀⠀
-⠀⠀⠀⠈⢧⠀⠀⠈⢦⠀⠀⠀⠀⠀⠀⠈⠻⣿⣿⣧⠐⠸⡄⢠⠀⢸⠀⢠⣿⣟⡿⠋⠀⠀⠀⠀⠀⠀⠀⡰⠁⠀⢀⡟⠀⠀⠀
-⠀⠀⠀⠀⠈⢧⠀⠀⠀⠣⡀⠀⠀⠀⠀⠀⠀⠈⠛⢿⡇⢰⠁⠸⠄⢸⠀⣾⠟⠉⠀⠀⠀⠀⠀⠀⠀⢀⠜⠁⠀⢀⡞⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠈⢧⡀⠀⠀⠙⢄⠀⠀⠀⠀⠀⠀⠀⢨⡷⣜⠀⠀⠀⠘⣆⢻⠀⠀⠀⠀⠀⠀⠀⠀⡴⠋⠀⠀⣠⠎⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠑⢄⠀⠀⠀⠑⠦⣀⠀⠀⠀⠀⠈⣷⣿⣦⣤⣤⣾⣿⢾⠀⠀⠀⠀⠀⣀⠴⠋⠀⠀⢀⡴⠃⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠈⠑⢄⡀⢸⣶⣿⡑⠂⠤⣀⡀⠱⣉⠻⣏⣹⠛⣡⠏⢀⣀⠤⠔⢺⡧⣆⠀⢀⡴⠋⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠳⢽⡁⠀⠀⠀⠀⠈⠉⠙⣿⠿⢿⢿⠍⠉⠀⠀⠀⠀⠉⣻⡯⠛⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠑⠲⠤⣀⣀⡀⠀⠈⣽⡟⣼⠀⣀⣀⣠⠤⠒⠋⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠉⠉⢻⡏⠉⠉⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠀EYEDOPE
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀EYEDOPE 
-      `,
-
-            `
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡀⠀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠂⠀⠀⠀⠀⠀⠀⠁⠀⠀⢀⠀⠈⠀⠀⠠⢠⡂⠲⢀⠀⢀⢈⡀⢰⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⠐⠂⢄⠐⠀⠅⠂⠈⢀⢠⠃⢏⡰⠆⠠⣤⣥⢘⡹⡇⠋⠉⠐⠂⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠎⠡⠒⠋⢚⡠⣠⠑⠦⡴⢦⣱⣚⡔⣂⠰⠈⠙⠢⠆⡀⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠠⠀⠀⠀⠀⢂⣀⣀⢀⡼⣷⡾⡏⡳⣬⣿⡦⣶⣦⡿⠀⠹⠒⠂⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠨⠈⠈⣸⣿⣕⠨⣿⣿⣿⣿⠗⠈⠁⠈⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠓⠀⣂⡘⠱⠒⣘⣪⢭⡾⠒⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠀⠀⠆⣱⣾⢿⡀⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠐⠰⢜⠉⢅⠄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠰⠀⠀⡆⠀⠀⠀⠀⠀⠀⠀⠀⠀EYEDOPE⠀⠀⠀⠀⠀⠀⠀⠀⠀⡆⠀⠰⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠀⠐⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠑⠀⠈⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⣤⡀⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⡀⠀⠠⠀⠠⢀⡀⠂⠶⢰⣂⠙⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⢀⠀⢀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠰⠣⢤⠤⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠈⢀⡤⢰⡷⢶⣼⣿⡎⠏⠀⠀⠀⠀⠀⠀⠀⠀⠀⢈⣵⣾⣧⣂⣮⣔⡂⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠰⢪⠬⠀⠂⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠉⠐⠚⢂⡙⠛⡹⡿⠫⡔⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠸⡟⣛⠿⡯⠒⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠙⢂⠃⠌⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⡐⠁⣼⠮⣪⣍⠫⠁⢄⠠⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠁⠈⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⠉⠀⠄⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⣀⣈⢫⣠⠉⠉⠡⢀⠠⡌⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠀⠀⠀⠀⠀⠁⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⡀⢛⢋⠙⠁⠀⠈⠈⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡀⠀⠀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠐⢂⠀⠀⠀⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠐⠄⠀⠚⠃⠉⠁⠀⠰⠄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠰⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠐⠀⠣⠖⠔⠀⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠠⠀⠀⢠⣶⣶⡄⠀⠀⣼⣿⡖⠀⠀⢀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡤⠀⠀⢢⠠⠠⣽⣿⡯⠀⠈⣿⣿⠇⠀⠀⡽⠀⠠⠌⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠀⠀⠀⠀⠀⣄⣉⣓⠡⢄⣀⡈⣩⣄⠀⠈⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠶⢰⣿⣿⢉⣿⣇⢸⣿⣏⢹⣿⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⠁⠉⠙⠛⠈⠛⠉⠈⠉⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠐⠈⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡀⠀⠀⠠⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠤⢄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠁⠀⠀⠂⠘⠀EYEDOPE⠀⠀⠀⠆⠀⠀⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠁⠀⠀⠁⠀⠀⠀⠀⠀⠀⠀⠄⠀⠂⠀⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⠀⢀⠀⠀⠀⠀⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠐⠀⡀⠉⠈⠀⠀⠢⠄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠩⠀⠀⠈⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-     `,
-
-            `⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡤⣦⢟⡼⢻⣾⢏⣳⢉⡓⣋⢿⠹⣥⣤⣤⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀⡴⣞⡯⣷⣫⣿⣿⣷⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣶⣆⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣴⡻⢾⡽⣞⣷⣿⣿⣿⣿⣿⣿EYEDOPE⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣶⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⠰⡊⡝⣦⡝⣷⣻⣽⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣧⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⡰⡈⠥⢣⡙⣰⢻⣼⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿EYEDOPE⣿⣿⣿⣿⡿⣷⢦⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠐⡌⠔⡡⢊⡕⣸⢰⣫⣾⣿⣿⣿⣿⣿⣿EYEDOPE⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡷⣏⠿⣝⣂⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢂⠀⢰⢡⢣⠞⣥⣿⣽⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣽⡾⡱⢎⡆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠐⠠⠀⢣⣋⢮⣝⡯⢻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡄⢫⠔⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠄⠣⠁⢨⣿⣔⣯⡇⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿EYEDOPE⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⡿⣜⡌⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡐⠢⢱⣼⣿⣿⣟⣡⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠛⠛⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣟⣷⢮⡁⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⠀⠀⣼⡾⣿⣃⣼⣿⣿⡿⠋⠉⠁⠀⠁⠈⠻⠿⣿⣿⣿⣿⣿⣿⣿⣿⠛⠉⠀⠀⠀⠀⠈⠙⠿⣿⣿⣿⣿⣿⣿⣿⣿⢶⡂⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠂⠀⣜⣻⣧⣯⣜⢿⠟⠋⠀⠀⠀⠀⠀⠀⠀⠀⢄⣹⣿⣿⣿⣿⣿⣿⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠙⣿⣿⣿⣯⣝⣛⢳⠧⡄⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⢀⠐⠀⡐⣮⢽⣿⣿⣿⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢰⣿⣿⣿⣿⣿⣿⣿⠄⠀⠀⠀EYEDOPE⠀⠀⣠⣼⣿⣿⣿⢿⣗⢸⣟⠶⡀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠆⣢⠎⣠⣷⣻⣿⣿⣿⣿⣦⣤⣄⠀⠀⠀⠀⠀⣀⣀⣿⣿⣿⣿⣿⣿⣿⣿⣮⣄⠀⠀⠀⠀⠀⢀⣠⣴⣾⣿⣿⣿⣿⣿⠘⣿⠘⢯⣻⡔⡀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⣀⢖⣺⠄⠐⢰⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣶⣶⣶⣾⣿⣿⣿⠟⠋⠙⠛⠛⠉⠻⣿⣿⣿⣦⣤⣴⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣦⣽⣷⣄⡉⠳⣡⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⢀⡼⣱⣾⠋⢀⣤⣿⣿EYEDOPE⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⢀⣿⣿⣿EYEDOPE⣿⣿⣿⣿⣿⣿⣿⠟⠿⠿⣿⣿⣦⡘⢧⠄⠀⠀⠀⠀
-⠀⠀⢠⠞⡴⠋⢀⣴⣿⣿⠿⠿⠿⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣶⣄⣤⣿⣿⣄⡀⣴⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠟⠋⠀⠀⠀⠀⠙⣿⣿⣷⣼⡯⡄⠀⠀⠀
-⠀⡈⣏⠿⠀⢰⣿⠉⠁⠁⠀⠀⠀⠀⠈⠉⠹⠿⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠏⠉⠀⠀⠀⠀⠀⠀⠀⢀⣸⣿⣿⣿⣿⣱⠆⠀⠀
-⠀⣭⡇⢠⡆⣿⡅⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠉⠙⠻EYEDOPE⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠿⠛⠛⠋⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⣸⣾⣿⣿⣿⣿⣷⣏⠀⠀
-⠀⢾⣿⣾⡇⠘⣷⣴⡀⠀⠀⠀⠀⠀⠀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠛⠛⠿⠿⠿⣿⣿⣿⣿⣿⡿⠛⠋⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣾⣿⣿⣿⣿⣿⣿⣿⣯⠀⠀
-⠀⢹⡿⣿⣏⠀⠻⣿⣿⣧⡀⠀⠀⠀⠀⠀⠀⠑⢲⡀⢀⡀⣀⠀⠀⠀⠀⠀⠀⠀⠈⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⡤⠀⠀⠀⠈⠀⠀⠀⠀⣠⣿⣿⣿⢿⣿⣿⣿⣿⣿⣟⠀⠀
-⠀⠀⠃⢹⣿⡀⣷⡈⢻⣿⣿⣶⣄⠀⠀⠀⠀⠀⠀⠈⠀⢉⡼⣡⠀⢀⠦⡡⠀⠀⠀⠀⠀⠀⠀⠀⠠⢡⠀⠀⠀⢞⡐⠀⠀⠀⠀⠀⢀⣴⣿⣿⣿⠟⢁⣸⣿⣿⣿⣿⣿⠃⠀⠀
-⠀⠀⠀⠀⠹⠷⣿⡿⣤⡉⠻⣿⣿⣷⣦⡀⠀⠀⠀⠀⠀⠀⠀⠁⠀⢩⣶⣳⠁⠀⢠⣻⣕⠂⠀⠀⠰⠁⠀⠀⠈⠀⠀⠀⠀⠀⣠⣼⣿⣿⠟⠋⡁⣀⣭⣿⣿⣿⣿⣟⠣⠈⠀⠀
-⠀⠀⠀⠀⠀⠀⠹⢽⣳⢻⡶⣌⠻⣿⣿⣿⣷⣄⠀⠀⠀⠀⠀⠀⠀⠀⣟⡷⠀⠀⢣⣿⣼⠋⠀⠀⠂⠁⠀⠀⠀⠀⠀⠀⣠⣾⣿⣿⠟⢡⣾⣿⣿⣿⣿⣿⡿⠟⠉⠄⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠈⠁⠧⡙⠶⣶⣤⣭⣿⣿⣿⣷⣄⠀⠀⠀⠀⠀⠀⠐⠡⠀⠀⠀⠚⠌⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⣼⣿⣿⣿⢁⡸⣿⣿⣿⣿⣿⡿⠋⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠱⢎⠻⡽⣛⠿⣻⣟⣿⣷⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⣿⣿⣿⣿⣡⣾⣿⣿⣿⣿⠟⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⠣⡱⣌⡱⢧⣻⣽⣳⡭⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡙⢧⢴⣾⣿⣿⣿⣿⣿⣿⣿⣿⡿⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠰⠑⣾⣽⣷⣻⣾⣿⣮⠅⠀⠀⢀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣼⣿⣿⣿⣿⣿⣿⣿⣿⠏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⡜⣿⣿⣿⣟⣿⣯⡗⡀⠀⠊⠅⠂⠀⠀⣄⢦⡀⢠⡙⡄⠀⠀⠀⣠⣿⣿⣿⣿⣿⣿⣿⣿⡏⠁⠀⠀⡀⠄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⢻⣿⣿⣿⣿⡻⣥⠀⠀⠀⠀⠀⠐⣮⠷⡁⠀⢚⠰⠀⠀⢀⣿⣿⣿⣿⣿⣿⣿⣿⡟⠀⠀⠌⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠋⡿⣿⣿⣿⣿⣿⣦⠀⠀⠀⠀⠀⠊⠃⠀⠀⠀⠀⠀⢠⣾⣿EYEDOPE⣿⣿⠃⠀⠆⠂⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠱⠈⢿⣿⣿⣿⣿⣷⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⣾⣿⣿⣿⣿⣿⣿⣿⣿⣷⠀⠍⠂⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠐⠀⠻⣿⣿⣿⣞⡷⣠⠀⠀⠀⠀⠀⠀⣀⣤⣿⣿⣿⣿⣿⣿⣿⣿⣿⡉⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠆⠘⣿⢟⣯⣟⡵⢯⣶⡄⠀⣤⣴⣾⣿⣻⣿⣿⣿⣿⣿⣿⡏⠉⠈⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠻⢻⣯⣿⣿⣿⣿⣶⣿⣿⣿⣿⣿⣿⣿⡿⢿⠷⠻⠁⠈⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠂⠸⠿⠿⠿⣿⡿⣿⣿⣿⣿⣿⡿⠿⠟⠅⠡⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-           
-           `
-        ];
-
-
-        const welcomeAsciiFrames = [
-            // LEAVE BLANK - USER WILL PASTE WELCOME ASCII ANIMATION FRAMES HERE
-            `
-                                                     ........                                         
-                                      ............................                                    
-                                 ...................................                                  
-                                 ....................................                                 
-                            ..............................................                            
-                            ................:::::...:-::::::..............                            
-                         ..................:::-:::..:--::::::.::.............                         
-                      .............:::::::::----::..::-:----:::::::...........                        
-                     ............::-------::::::......::::------:::::..........                       
-                    ...........::-------=-::::...........::::------:::..........                      
-                    .........:::--=======-:.................::-------:::.........                     
-                  ...........::--=======-:...................::-------::..........                    
-                 ...........::---=+====--:.....................:-----::::..........                   
-                ...........::---==+++=--.......................::----:-::::..........                 
-               ..........::--====++*+=-:.........................:-------:::.........                 
-               .........:--==+==++**+-:..........................::--------:::........                
-               ........:--==+++++**+=:............................:----===---::........               
-              ........:--==++++++**+-:.............................:----====--::........              
-             .......::---=++++++**+=:...............................:---=====--::........             
-            ........:---=++*******+-...........:-:...:........::....:--=======--::........            
-           ........:-===+++******+=:..........:=+-.::-:.......:-:...::-========--::........           
-           ........:-==+++*****++=-...........-+*=::-=:.......--:....:-========---::.........         
-           ........:-=+++******++=-...........:-=:..::........::.....:-========---::.........         
-           .......:-==++*******++=:.............:....................:--=======----::..........       
-           ......::-==++*******++-:..................................:--=======----::..........       
-         ........:-===+++******++-....................................:-=======----::...........      
-         ........:-==+++++++**++=-....................................:-=======---:::.............    
-         ........:-==+++++++++++=-....................................:-=======---:::.............    
-         .......:--==+++++++++++=-....................................:-=======---:::..............   
-         .......:-====++++++++++=-....................................:-=======---:::...............  
-         .....:::-=====+++++++++=-:...................................--======-----::................ 
-        .....::::--=======++++++=-:..................................:---=====-----:::......::........
-       ......:::::-=========+++++=:..................................:----====-----::::.....:-:.......
-       ......:::::---=======+++++=-..................................:-------=-----:::::....::........
-         ....:::::----=====++++++=-:................................::-------------:::::.:............
-         .....::::-----===========--................................:--------------:::................
-         ......::------============-:...............................:-------------:::...........:.....
-          .....:::------============-:.............................:--------------:::...........::....
-           ....:::-----==============-:...........................::--------------:::...........:.....
-           .....::-----==============-:..........................::---------------:::.................
-           ......::-----==============-:.........................:----------------::..................
-            .....::::----==============-::......................:--------------::::.................. 
-            .......:::----===============:.....................:-------------:::::.................   
-              ......::-----==============--:.................:::-----------::::::..................   
-              .......::------==============-::.............::::-----------:::::..................     
-               .......::------==============--::.........::::-----------::::::...............         
-               ........::::------============---::::.:::::---------::::::::..................         
-                  ......::::--------==========----:::::-----------::::::..................            
-                   ........:::----------=---===--------------:::::::::...................             
-                    ........::::::::---------=====------:---:::::::....................               
-                      ..........:::::::::-----====-:::::::-:::::................                      
-                      ..............:::::::::-----::::::..:....................                       
-                       ..................::::::::::...........................                        
-                          .............................................                               
-                           ...........................................                                
-                               ..............................                                         
-                                     ................                                                 
-                                      ...............                                                 
-            `,
-            `
-                                            ..   ........                                         
-                                      ............................                                    
-                                 ..............:::...::.............                                  
-                                 ............::::::::--:::::.........                                 
-                            ............:..::----:::--------::::::........                            
-                            .......:::::-:::--=------======--::::::.......                            
-                         ........::----------===-----=======------:::........                         
-                      .........::--=======---===-------=======------::........                        
-                     ........::---=++===+==------:::::::---======----::........                       
-                    ........::---=+++++++==--::::.......:::-=======----::.......                      
-                    .......::---==+++++++==-:..............:--=======---::.......                     
-                  .........:--===++++++++=::.................:-=======---::.......                    
-                 .........:--===++++++++=-....................:-=======---::.......                   
-                ........::-====++*****+=:......................:-========--:::.......                 
-               ........::-=+++++*****+=-........................:--========--::......                 
-               ......::--=+++*+******=-..........................:--=========--:......                
-               .....:---==+*********+-:...........................:-==========--:......               
-              ......:--==++********+=:.............................:-==========--:......              
-             ......:-===++*********=-...............................:-=========--::......             
-            .......:===++*********+=:..........:-:...:........::....:-==========--::......            
-           .......:-==++**********=-..........:=+-.::-:.......:-:...:--=========---::......           
-           .......:-=+++*********+=...........-+*=::-=:.......--:....:-==========--::........         
-           .......:-=++**********=-...........:-=:..:-........::.....:-==========---::.......         
-           ......::==+++********+=:.............:....................:--========----::.........       
-           ......:-==+++*******++=:..................................:--========----::.........       
-         ........:-==++++******++-:...................................:-=======----:::..........      
-         ........:===+++++++**+++-:...................................:-=======----:::............    
-         .......:-===++++++++++++-....................................:-=======----::::...........    
-         .....:::-===++++++++++++-:...................................:-=======----::.:............   
-         ....::---====+++++++++++-:...................................:-=======----::...............  
-         ....:::--=====+++++++++=-:...................................--======------:................ 
-        .....::::--=======++++++=-:...................................---=====-----:::......::........
-       ......::::--=========+++++=:..................................:----====-----::::..:..:-:.......
-       ......::::----=======+++++=-:.................................:-------=-----:::::....::........
-         .....::::----=====++++++=-:................................::--------------::::.:............
-         .....::::-----===========--:...............................:---------------::..........:::...
-         ......::------============-:...............................:-------------:::...........:::...
-          .....:::------============-:.............................:--------------:::...........::....
-           ....:::------=============-:...........................::--------------:::.................
-           .....::------=============-:..........................::---------------:::.................
-           ......::-----==============-:.........................:----------------::..................
-            .....::::----==============-::......................:--------------::::.................. 
-            .......:::----===============:.....................:-------------:::::.................   
-              ......::-------============--:..................::-----------::::::..................   
-              .......::-------=============-::.............::::-----------:::::..................     
-               .......::------==============--::.........::::-----------::::::...............         
-               ........::::------============---::::.:::::---------::::::::..................         
-                  ......::::--------==========----:::::-----------::::::..................            
-                   ........:::--------------===-----::-------:::::::::...................             
-                    ........::::::::---------=====-::::-:--:::::::.....................               
-                      ..........:::::::::-:---===--::::::::::::.................                      
-                      ..............:::::::::::--:::::.:.......................                       
-                       ........................::.:...........................                        
-                          .............................................                               
-                           ...........................................                                
-                               ..............................                                         
-                                     ................                                                 
-                                      ...............                                                 
-            `,
-            `
-                                                ...  ........                                         
-                                      ............................                                    
-                                 ..............::::..::.............                                  
-                                 ............::::::::--:::::.........                                 
-                            ............:...:------:--------::::::........                            
-                            .......:::::--::--=-------=====---:::::.......                            
-                         ........::----------====----=======------:::........                         
-                      .........::---=======--====------=======------:::.......                        
-                     ........::----=+===++===----:::::::---======----::........                       
-                    .........:---==+++++++==---:::......:::-=======----::.......                      
-                    ........:---==++++++++==-::............:--=======---:::......                     
-                  .........::-===++++++++=-::................:-=======----::......                    
-                 .........:--===+++++++++-:...................:-=======----:.......                   
-                ........:::-===++******+-:.....................::-=======---::.......                 
-               ........::--=+++++*****+-:.......................::-========---:......                 
-               .......:--==++*+*******=:.........................:--=========--::.....                
-               ......:---=+**********=-...........................:-==========--:......               
-              ......:--==++*********+-:............................:-==========--:......              
-             .......:===++*********+=:..............................:-=========--::......             
-            .......:-==++**********+-...........-:..............:...:-==========--::......            
-           ........:-=++***********=:..........:+=:..::........:-:...:-=========---::......           
-           ........-=+++**********+-...........-*+-.:=-:......:-=:...:-==========--::........         
-           .......:-=++***********=:...........:=-:.:--:.......::.....:==========---::.......         
-           .......:-=+++*********+=:............:.....................:-========----::.........       
-           ......:-==+++********+=-...................................:-========----::.........       
-         ........:-==++++*******+=-...................................:--========--:::..........      
-         ........:-==+++++++***++=-...................................:--=======---:::............    
-         ........:===++++++++++++=:....................................--=======---::::...........    
-         .....:::-===++++++++++++=:....................................--=======---::.:............   
-         .....:---====+++++++++++=-...................................:-========----::..............  
-         .....::--=====++++++++++=-...................................:---====------::............... 
-        .....::::--=======+++++++=-...................................:----===-----:::......:.........
-       .......:::--=========+++++=-:..................................:---====-----::::.....::-:......
-       .......:::----=======+++++=-:..................................:------=-----:::::.....::.......
-         .....::::----======+++++==-.................................::-------------::::.:........::..
-         ......:::-----============-:................................:--------------::...........:-::.
-         ......::-------============-...............................::-------------::...........::::..
-          .....:::------============-:..............................:--------------::............::...
-           .....::-------============-:............................::-------------:::.................
-           ......::------=============-:..........................::--------------:::.................
-           .......::-----=============--..........................:---------------::..................
-            ......:::-----=============-::.......................:-------------::::.................. 
-            ........::------=============-:.....................::-----------:::::.................   
-              .......::-------============-:...................::----------::::::..................   
-              ........::-------============-::...............:::----------:::::..................     
-               ........::------=============--::..........:::-----------::::::...............         
-               ........::::-------===========---::::....:::--------::::::::..................         
-                  ......:::::-------==========----:::::::---------::::::..................            
-                   ........:::--------------===-----::-------:::::::::...................             
-                    ........::::::::---------=====--:::-:---::::::.....................               
-                      ..........:::::::::-:---====-:::::::-:::::................                      
-                      ..............::::::::::----::::.:.......................                       
-                       .....................:::::::...........................                        
-                          .............................................                               
-                           ...........................................                                
-                               ..............................                                         
-                                     ................                                                 
-                                      ...............                                                 
-            `,
-            `
-                                                . .  ........                                         
-                                      ............................                                    
-                                 ...................................                                  
-                                 ...............:::....:.............                                 
-                            ..................::::-::::::::::.............                            
-                            .................::----:::-------::...........                            
-                         ...........::::::::::--=-------------:::::..........                         
-                      ............::-----------==------=======---:::::........                        
-                     ..........::::-===-===-----=--::------====----::::........                       
-                    ..........::---==+======-----::::::::---======----:::.......                      
-                    ..........:----=+++++++==--::.........::--=====----::........                     
-                  ...........:---==+++++++==-::.............::-=======---::.......                    
-                 ...........::-====+++++++=-:.................:-======----::.......                   
-                ...........::--===+++++++=-:...................::-=======--:::.......                 
-               ..........:::-====++***++=-:.....................::-======---:::......                 
-               .........::--=+++++****+=-........................::-=======----:......                
-               ........::--=++**+*****+-:.........................:--=========--:......               
-              ........:---=++********+-:...........................:-==========--:......              
-             ........:--===+*********=:.............................:-=========--::......             
-            ........:--===+*********+-:.............................::-=========--::......            
-           .........:-==+++********+=:..........:::...:.........:....:-=========---::......           
-           .........:==+++*********+-..........:+*+:.:-:.......:=:....:-==========--:........         
-           ........:-==++**********=:..........:+++..:--.......:-:....:-==========--::.......         
-           ........:-=+++*********+-:..........:==-..:-:........::....:-========----::.........       
-           ........:-=+++*********+-...................................:-=======-----::........       
-         .........:-==+++********+=:...................................:-========--:::..........      
-         .........:-=++++********+=:...................................:-=======----::............    
-         ........:--=+++++++*+*+++=:...................................:-========--::::...........    
-         ........:-==+++++++++++++=:...................................:-=======---::.:............   
-         ........:-===++++++++++++=:...................................:-=======----::..............  
-         ......::--====+++++++++++=:...................................:--======----:::.............. 
-        ......:::--=====+=+++++++==:...................................:---=====----:::...............
-       ........::--=====++==+++++==-...................................:--======-----::......:::......
-       ........::----=======+++++==-:.................................::-----=-------:::.....:::......
-         .......::----======++++++=-:.................................:-------------::::.:...:::...:..
-         .......::-----=============:.................................:-------------:::...........::::
-         .......:::-----========+===-:...............................::------------::::..........::::.
-          .......:-------===========-::..............................:-------------:::...........::::.
-           ......::------============-:.............................::-------------:::...........:::..
-           ......:::-:---=============-:............................:--------------:::................
-           .......:::----=============--...........................::--------------::.................
-            ......:::-----=============-::........................::--------------:::................ 
-            ........::------=============:.......................::-------------::::...............   
-              .......:::------===========--:....................::------------:::::................   
-              ........::-------============-::.................:::----------:::::................     
-               ........::------=============-::...............::----------::::.:.............         
-               ........::::------============--::..........:::-----:--:::::::................         
-                  ......:::::-------==========---:::....:::::-----::::::::::..............            
-                   ........:::----------=======---::::::-----:::::::::::::...............             
-                    ........::::::::----------=-----:::-:----:::::::...................               
-                      .........:::::::::------===---::::::---:::................                      
-                      .............:::::::-::--====-:::::::::..................                       
-                       .................:::::::----::.........................                        
-                          .......................:.....................                               
-                           ...........................................                                
-                               ..............................                                         
-                                     ................                                                 
-                                      ...............                                                 
-            `
-        ];
-
-        const wrongAscii = [
-            `
-            ▀███▀▀▀██████▀   ▀███▀ ▄▄█▀▀▀█▄█████▀ ▀███▀    ▀███▀   ▀██▀ ▄▄█▀▀██▄ ▀███▀   ▀███▀
-              ██    ▀███       █ ▄██▀     ▀█ ██   ▄█▀        ███   ▄█ ▄██▀    ▀██▄██       █  
-              ██   █  ██       █ ██▀       ▀ ██ ▄█▀           ███ ▄█  ██▀      ▀████       █  
-              ██▀▀██  ██       █ ██          █████▄            ████   ██        ████       █  
-              ██   █  ██       █ ██▄         ██  ███            ██    ██▄      ▄████       █  
-              ██      ██▄     ▄█ ▀██▄     ▄▀ ██   ▀██▄          ██    ▀██▄    ▄██▀██▄     ▄█  
-            ▄████▄     ▀██████▀▀   ▀▀█████▀▄████▄   ███▄      ▄████▄    ▀▀████▀▀   ▀██████▀▀
-
-            USE SCUHA NOT US!
-                                                                                     
-            > Rest in piss ScuhaMeds. [Visit the Archive at https://scuhameds.xyz]
-            `
-        ];
-
-        const validNames = ['6969', '16569', '15590', '14421', '17682', '14966', '17656', '20990', '17717', '16559', '15744', '18290'];
-
-        const games = [
-            {
-                title: '2048',
-                description: 'Combine tiles to reach 2048 in this merging puzzle game.',
-                image: './files/2048/logo.png',
-                path: './files/2048/'
-            },
-            {
-                title: '3DASH',
-                description: 'Geometry Dash Fan Game, similar concept and movement.',
-                image: './files/slide in the woods/logo.png',
-                path: './files/slide in the woods/'
-            },
-            {
-                title: 'A DAY IN THE OFFICE',
-                description: 'Indie Story Horror game taking place in an office, experience in 2D.',
-                image: './files/a day in the office/logo.png',
-                path: './files/a day in the office/'
-            },
-            {
-                title: 'BAD PARENTING',
-                description: 'A popular story horror game, now actually functioning.',
-                image: './files/bad-parenting/logo.png',
-                path: './files/bad-parenting/'
-            },
-            {
-                title: 'BASEBALL BROS',
-                description: 'Take your skills out on the baseball diamond.',
-                image: './files/baseball bros/logo.png',
-                path: './files/baseball bros/'
-            },
-            {
-                title: 'BOUNCE BACK',
-                description: 'Focus on your boomerang and win the game.',
-                image: './files/bounce back/logo.png',
-                path: './files/bounce back/'
-            },
-            {
-                title: 'CSGO SURF',
-                description: 'Surf the levels and try to beat the game in this CSGO themed game.',
-                image: './files/csgo surf/logo.png',
-                path: './files/csgo surf/'
-            },
-            {
-                title: 'DREADER',
-                description: 'A 3D horror puzzle game, taking place in a computer game?',
-                image: './files/slide in the woods/logo.png',
-                path: './files/slide in the woods/'
-            },
-            {
-                title: 'DRIVE MAD',
-                description: 'Complete all the levels in this unique driving obstacle game.',
-                image: './files/drivemad/logo.png',
-                path: './files/drivemad/'
-            },
-            {
-                title: 'EDY\'S CAR SIMULATOR',
-                description: 'Driving/Car simulator.',
-                image: './files/slender multiplayer/logo.png',
-                path: './files/slender multiplayer/'
-            },
-            {
-                title: 'EXTREME RUN 3D',
-                description: 'Dodge obstacles and reach the finish line in this endless runner. How far can you go?',
-                image: './files/extremerun3d/logo.png',
-                path: './files/extremerun3d/'
-            },
-            {
-                title: 'FEARS TO FATHOM',
-                description: 'Embark on the Home Alone story from the popular game series Fears To Fathom.',
-                image: './files/fearstofathom/logo.png',
-                path: './files/fearstofathom/'
-            },
-            {
-                title: 'FIVE NIGHTS AT FREDDY\'S',
-                description: 'Survive 5 nights at Freddy\'s. Can you handle the animatronics?',
-                image: './files/fnaf/logo.png',
-                path: './files/fnaf/'
-            },
-            {
-                title: 'FIVE NIGHTS AT FREDDY\'S 2',
-                description: 'Survive 5 more nights with new animatronics and challenges.',
-                image: './files/fnaf2/logo.png',
-                path: './files/fnaf2/'
-            },
-            {
-                title: 'FLIGHT SIM',
-                description: 'Take your skills to the pilot seat in an airplane.',
-                image: './files/flight sim/logo.png',
-                path: './files/flight sim/'
-            },
-            {
-                title: 'GRANNY',
-                description: 'Escape granny\'s house without getting caught.',
-                image: './files/granny/logo.png',
-                path: './files/granny/'
-            },
-            {
-                title: 'HALF LIFE',
-                description: 'Half Life Game I hope..',
-                image: './files/half life/logo.png',
-                path: './files/half life/'
-            },
-            {
-                title: 'JELLY DRIFT',
-                description: 'Drift around the tracks, upgrade cars, and reach new levels in this addicting drifting and driving game.',
-                image: './files/jelly drift/logo.png',
-                path: './files/jelly drift/'
-            },
-            {
-                title: 'MARIO',
-                description: 'Yep.',
-                image: './files/mari0/logo.png',
-                path: './files/mari0/'
-            },
-            {
-                title: 'OBBY BUT YOU\'RE ON A BIKE',
-                description: 'Self Explanatory.',
-                image: './files/obby but your on a bike/logo.png',
-                path: './files/obby but your on a bike/'
-            },
-            {
-                title: 'OBBY ROBBY: ONLY UP',
-                description: 'Only up gameplay in an Obby Robby game.',
-                image: './files/obby robby only up/logo.png',
-                path: './files/obby robby only up/'
-            },
-            {
-                title: 'PICO 8 GAMES',
-                description: 'An experience list of pico 8\'s games.',
-                image: './files/pico 8 games/logo.png',
-                path: './files/pico 8 games/'
-            },
-            {
-                title: 'PIXEL COMBAT 2',
-                description: 'FPS Game, pixel based similar to pixel gun 3D.',
-                image: './files/pixel combat 2/logo.png',
-                path: './files/pixel combat 2/'
-            },
-            {
-                title: 'QWOP',
-                description: 'Something interesting',
-                image: './files/qwop/logo.png',
-                path: './files/qwop/'
-            },
-            {
-                title: 'RETRO BOWL',
-                description: 'Play American football in this retro-style game. Lead your team to victory.',
-                image: './files/retrobowl/logo.png',
-                path: './files/retrobowl/'
-            },
-            {
-                title: 'RODHA',
-                description: 'jump,RUN,leap,idk',
-                image: './files/rodha/logo.png',
-                path: './files/rodha/'
-            },
-            {
-                title: 'ROOFTOP SNIPERS 2',
-                description: 'Two - One player fun battle game with snipers/weapons and unique movement.',
-                image: './files/rooftop snipers 2/logo.png',
-                path: './files/rooftop snipers 2/'
-            },
-            {
-                title: 'SLENDER [MAYBE BROKEN]',
-                description: 'Slenderman horror experience multiplayr edition',
-                image: './files/slender multiplayer/logo.png',
-                path: './files/slender multiplayer/'
-            },
-            {
-                title: 'SLIDE IN THE WOODS',
-                description: 'Just a normal slide in the woods...?',
-                image: './files/slide in the woods/logo.png',
-                path: './files/slide in the woods/'
-            },
-            {
-                title: 'SPRUNKED',
-                description: 'No clue what this is. Sorry.',
-                image: './files/sprunked/logo.png',
-                path: './files/sprunked/'
-            },
-            {
-                title: 'STACKBALL.IO',
-                description: 'Break through the tiles, and beat each level.',
-                image: './files/stackball.io/logo.png',
-                path: './files/stackball.io/'
-            },
-            {
-                title: 'STACKTRIS',
-                description: 'A tetris styled game, drop and aim. Accuracy is key.',
-                image: './files/stacktris/logo.png',
-                path: './files/stacktris/'
-            },
-            {
-                title: 'STATION 141',
-                description: 'Indie Story Horror game taking place in a station, experience the terror.',
-                image: './files/station 141/logo.png',
-                path: './files/station 141/'
-            },
-            {
-                title: 'STEAL A BRAINROT',
-                description: 'Steal A Brainrot ripoff, but offline. Still decent.',
-                image: './files/steal brainrot/logo.png',
-                path: './files/steal brainrot/'
-            },
-            {
-                title: 'STICKMAN GTA',
-                description: 'Cheap & Horrible Stickman style GTA ripoff.',
-                image: './files/STICKMAN GTA/logo.png',
-                path: './files/STICKMAN GTA/'
-            },
-            {
-                title: 'THE MAN FROM THE WINDOW',
-                description: 'A tetris styled game, drop and aim. Accuracy is key.',
-                image: './files/the man from the window/logo.png',
-                path: './files/the man from the window/'
-            },
-            {
-                title: 'TRAFFIC JAM 3D',
-                description: 'A fun \'traffic swimming\' simulator, swerve through traffic and upgrade.',
-                image: './files/traffic jam 3d/logo.png',
-                path: './files/traffic jam 3d/'
-            },
-            {
-                title: 'ULTIMATE CAR DRIVING',
-                description: 'A Miscellanious Car Driving Simulator.',
-                image: './files/ultimate car driving/logo.png',
-                path: './files/ultimate car driving/'
-            }
-        ].sort((a, b) => a.title.localeCompare(b.title));
-
-        const exploits = [
-            {
-                title: 'Explode your computer with the click of a button',
-                description: 'Will detonate your computer instantly. Very dangerous, so dangerous in fact it may even collapse the universe.',
-                code: 'alert("boom goes the dynamite")'
-            }
-        ];
-
-        let userNameVar = '';
-        let welcomeAsciiInterval;
-        let loginAsciiInterval;
-
-        const tabsConfig = {
-            games: {
-                title: 'EYEDOPE',
-                desc: 'Welcome, <span id="userName"></span> | The best crystalized <span class="skittlebug">DOPE</span> for the eyes.',
-                others: ['proxies', 'exploits']
-            },
-            proxies: {
-                title: 'EYEDOPE PROXIES',
-                desc: 'Discover the proxies. [Powered by Browser.js]',
-                others: ['games', 'exploits']
-            },
-            exploits: {
-                title: 'EYEDOPE EXPLOITS',
-                desc: 'Discover the exploits. [Massive Work-In-Progress]',
-                others: ['games', 'proxies']
-            }
-        };
-
-        const creepyPhrases = [
-            'we-lurk-we-watch-we-hear',
-            'the-boujang-is-here',
-            'eyedope-run-eyedope-fun',
-            'nowhere-to-fun-like-eyedope',
-            'enter-your-name-please-we-like-selling-your-personal-information-to-chinese-spies',
-            'we-hate-north-korea-because-they-exist',
-            'satan-is-here-666-satan-is-owned',
-            'religions-are-just-mindfuck-traps',
-            'love-doesnt-come-from-within',
-            'fuck-linewize-fuck-securly-fuck-them-all',
-            'dub-me-a-bunny',
-            'LOL-YOU-CANT-ESCAPE-THE-EYEDOPE',
-            'EYEDOPE-IS-A-TEACHERS-TARGET',
-            'think-outside-of-the-box',
-            'thevisualsarescarringthevisualsarehaunting',
-            'money-leaves-money-trees-meta-sea',
-            'enter-your-personal-credentials',
-            'please-do-not-enter-your-name'
-        ];
-
-        function getRandomAscii() {
-            if (asciiArts.length === 0) return '';
-            return asciiArts[Math.floor(Math.random() * asciiArts.length)] || '';
-        }
-
-        function displayRandomLoginAscii() {
-            if (asciiArts.length === 0) return;
-            const asciiElement = document.getElementById('asciiArt');
-            const randomArt = getRandomAscii();
-            if (randomArt) {
-                asciiElement.textContent = randomArt;
-                asciiElement.classList.add('flickering');
-            }
-        }
-
-        function startLoginAsciiFlicker() {
-            displayRandomLoginAscii();
-            loginAsciiInterval = setInterval(() => {
-                const asciiElement = document.getElementById('asciiArt');
-                const randomArt = getRandomAscii();
-                if (randomArt && asciiElement) {
-                    asciiElement.textContent = randomArt;
-                }
-            }, Math.random() * 3000 + 2000);
-        }
-
-        function stopLoginAsciiFlicker() {
-            if (loginAsciiInterval) {
-                clearInterval(loginAsciiInterval);
-                loginAsciiInterval = null;
-            }
-            const asciiElement = document.getElementById('asciiArt');
-            if (asciiElement) {
-                asciiElement.classList.remove('flickering');
-                asciiElement.style.display = 'none';
-            }
-        }
-
-        function setCookie(name, value, days) {
-            const d = new Date();
-            d.setTime(d.getTime() + (days * 24 * 60 * 60 * 1000));
-            const expires = "expires=" + d.toUTCString();
-            document.cookie = name + "=" + value + ";" + expires + ";path=/";
-        }
-
-        function getCookie(name) {
-            const nameEQ = name + "=";
-            const ca = document.cookie.split(';');
-            for (let i = 0; i < ca.length; i++) {
-                let c = ca[i];
-                while (c.charAt(0) === ' ') c = c.substring(1, c.length);
-                if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
-            }
-            return null;
-        }
-
-        function animateWelcomeAscii() {
-            if (welcomeAsciiFrames.length > 0) {
-                let frameIndex = 0;
-                const asciiElement = document.getElementById('welcomeAscii');
-                welcomeAsciiInterval = setInterval(() => {
-                    asciiElement.textContent = welcomeAsciiFrames[frameIndex];
-                    frameIndex = (frameIndex + 1) % welcomeAsciiFrames.length;
-                }, 200);
-            }
-        }
-
-        function showWelcomeScreen(name) {
-            stopLoginAsciiFlicker();
-            document.getElementById('lockScreen').style.display = 'none';
-            document.getElementById('welcomeUserId').textContent = name.toUpperCase();
-            const welcomeScreen = document.getElementById('welcomeScreen');
-            welcomeScreen.classList.add('active');
-            animateWelcomeAscii();
-
-            setTimeout(() => {
-                clearInterval(welcomeAsciiInterval);
-                welcomeScreen.classList.add('fadeOut');
-                setTimeout(() => {
-                    welcomeScreen.classList.remove('active', 'fadeOut');
-                    showMainScreen(name);
-                }, 1000);
-            }, 2000);
-        }
-
-        function showMainScreen(name) {
-            userNameVar = name.toUpperCase();
-            stopCreepyEffects();
-            stopLoginAsciiFlicker();
-            document.getElementById('lockScreen').style.display = 'none';
-            const mainScreen = document.getElementById('mainScreen');
-            mainScreen.classList.add('active');
-
-            initNavbarScrollEffects();
-            loadGames();
-            setupTabNavigation();
-        }
-
-        function initNavbarScrollEffects() {
-            window.addEventListener('scroll', () => {
-                const navbar = document.getElementById('navbar');
-                if (window.scrollY > 50) {
-                    navbar.classList.add('scrolled');
-                } else {
-                    navbar.classList.remove('scrolled');
-                }
-                
-                const title = document.getElementById('navbarTitle');
-                const scrollPercent = (window.scrollY / 500) * -1;
-                title.style.transform = `translateY(${Math.max(scrollPercent, -5)}px)`;
-            });
-        }
-
-        function loadGames() {
-            const container = document.getElementById('gamesContainer');
-            container.innerHTML = '';
-            games.forEach((game, index) => {
-                const card = document.createElement('div');
-                card.className = 'card';
-                card.style.animationDelay = `${index * 0.1}s`;
-                card.innerHTML = `
-                    <img src="${game.image}" alt="${game.title}" class="gameImage" onerror="this.style.display='none'">
-                    <div class="card-title">${game.title}</div>
-                    <div class="card-description">${game.description}</div>
-                    <button class="card-button" onclick="window.location.href='focus.html?game=${encodeURIComponent(game.path)}&title=${encodeURIComponent(game.title)}'">EXPERIENCE IT</button>
-                `;
-                container.appendChild(card);
-            });
-        }
-
-        function loadProxies() {
-            const container = document.getElementById('proxiesContainer');
-            
-            // Wait for service worker to be ready
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.ready.then(registration => {
-                    console.log('Service Worker ready, proxy initialized');
-                }).catch(error => {
-                    console.error('Service Worker not ready:', error);
-                    const errorEl = document.getElementById('proxy-error');
-                    if (errorEl) {
-                        errorEl.classList.add('active');
-                        errorEl.textContent = '⚠ Proxy service not ready. Please refresh the page.';
-                    }
-                });
-            }
-
-            const iframe = document.getElementById('proxy-frame');
-            const urlBar = document.getElementById('url-bar');
-            const optionsBtn = document.getElementById('options');
-            const dropdown = document.getElementById('options-dropdown');
-            const errorEl = document.getElementById('proxy-error');
-            const diagBtn = document.getElementById('diagBtn');
-            const diagPanel = document.getElementById('proxy-diagnostics');
-            const diagResults = document.getElementById('diagResults');
-            const diagRetry = document.getElementById('diagRetry');
-            const diagOpenDirect = document.getElementById('diagOpenDirect');
-
-            // diagnostic helpers
-            const bundleCandidates = ['/browser.js/dist/browser.bundle.js', '/static/browser.bundle.js', '/browser.bundle.js'];
-            const swCandidates = ['/browser.js/static/sw.js', '/static/sw.js', '/sw.js'];
-
-            async function probeUrl(url) {
-                try {
-                    const res = await fetch(url, { method: 'GET', cache: 'no-cache' });
-                    return res && res.ok;
-                } catch (e) {
-                    return false;
-                }
-            }
-
-            async function runDiagnostics() {
-                diagResults.innerHTML = 'Probing...';
-                const results = [];
-                let foundBundle = null;
-                for (const b of bundleCandidates) {
-                    const ok = await probeUrl(b);
-                    results.push(`${b}: ${ok ? 'OK' : 'NOT FOUND'}`);
-                    if (ok && !foundBundle) foundBundle = b;
-                }
-                let foundSw = null;
-                for (const s of swCandidates) {
-                    const ok = await probeUrl(s);
-                    results.push(`${s}: ${ok ? 'OK' : 'NOT FOUND'}`);
-                    if (ok && !foundSw) foundSw = s;
-                }
-                diagResults.innerHTML = '<pre>' + results.join('\n') + '</pre>';
-                return { foundBundle, foundSw };
-            }
-
-            diagBtn && diagBtn.addEventListener('click', async (e) => {
-                if (diagPanel.style.display === 'none') diagPanel.style.display = 'block';
-                const { foundBundle, foundSw } = await runDiagnostics();
-                if (foundBundle) console.log('Bundle reachable at', foundBundle);
-                if (foundSw) console.log('Service worker reachable at', foundSw);
-            });
-
-            diagRetry && diagRetry.addEventListener('click', async () => {
-                diagResults.innerHTML = 'Retrying...';
-                await runDiagnostics();
-            });
-
-            diagOpenDirect && diagOpenDirect.addEventListener('click', async () => {
-                // Attempt to open a direct test site via Browser.js proxy if available, else use server-side /proxy/
-                const testUrl = 'https://example.com';
-                const bjsProxy = '/browser.js/proxy/' + encodeURIComponent(testUrl);
-                const serverProxy = '/proxy/' + encodeURIComponent(testUrl);
-                // probe bjsProxy script first by checking the bundle availability
-                const probeBjs = await probeUrl('/browser.js/dist/browser.bundle.js');
-                iframe.src = (probeBjs ? bjsProxy : serverProxy);
-                iframe.classList.add('active');
-                urlBar.value = testUrl;
-            });
-
-            // Make iframe visible when it starts loading and show status
-            iframe.addEventListener('loadstart', () => {
-                iframe.classList.add('active');
-            });
-            iframe.addEventListener('load', () => {
-                iframe.classList.add('active');
-                const proxyStatus = document.getElementById('proxy-status');
-                if (proxyStatus) {
-                    proxyStatus.classList.add('active');
-                    proxyStatus.textContent = 'Page loaded in proxy iframe.';
-                    setTimeout(() => proxyStatus.classList.remove('active'), 3000);
-                }
-            });
-
-            // Handle "Go" button
-            document.getElementById('go').addEventListener('click', () => {
-                let url = urlBar.value.trim();
-                if (!url) {
-                    errorEl.classList.add('active');
-                    errorEl.textContent = '⚠ Please enter a URL';
-                    setTimeout(() => errorEl.classList.remove('active'), 3000);
-                    return;
-                }
-                
-                errorEl.classList.remove('active');
-                
-                if (!url.startsWith('http://') && !url.startsWith('https://')) {
-                    url = 'https://' + url;
-                }
-                
-                try {
-                    // Browser.js uses the service worker to proxy requests
-                    // The URL format depends on how sw.js is configured
-                    // Typically it intercepts requests made through the iframe
-                    const proxiedUrl = '/proxy/' + encodeURIComponent(url);
-                    iframe.src = proxiedUrl;
-                    urlBar.value = url;
-                } catch (error) {
-                    console.error('URL encoding error:', error);
-                    errorEl.classList.add('active');
-                    errorEl.textContent = '⚠ Failed to load URL: ' + error.message;
-                }
-            });
-
-            // Handle Enter key in URL bar
-            urlBar.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    document.getElementById('go').click();
-                }
-            });
-
-            // Back button
-            document.getElementById('back').addEventListener('click', () => {
-                try {
-                    if (iframe.contentWindow && iframe.contentWindow.history) {
-                        iframe.contentWindow.history.back();
-                    }
-                } catch (error) {
-                    console.warn('Cannot access iframe history:', error);
-                }
-            });
-
-            // Forward button
-            document.getElementById('forward').addEventListener('click', () => {
-                try {
-                    if (iframe.contentWindow && iframe.contentWindow.history) {
-                        iframe.contentWindow.history.forward();
-                    }
-                } catch (error) {
-                    console.warn('Cannot access iframe history:', error);
-                }
-            });
-
-            // Reload button
-            document.getElementById('reload').addEventListener('click', () => {
-                if (iframe.src) {
-                    iframe.src = iframe.src;
-                } else {
-                    errorEl.classList.add('active');
-                    errorEl.textContent = '⚠ No page loaded to reload';
-                    setTimeout(() => errorEl.classList.remove('active'), 3000);
-                }
-            });
-
-            // Options button
-            optionsBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                dropdown.classList.toggle('active');
-            });
-
-            // Close dropdown when clicking outside
-            document.addEventListener('click', (e) => {
-                if (!optionsBtn.contains(e.target) && !dropdown.contains(e.target)) {
-                    dropdown.classList.remove('active');
-                }
-            });
-
-            // Update URL bar when iframe loads
-            iframe.addEventListener('load', () => {
-                try {
-                    // Try to get the current URL from the iframe
-                    // Note: This may be restricted by CORS
-                    const currentSrc = iframe.src;
-                    if (currentSrc && currentSrc.includes('/proxy/')) {
-                        const encoded = currentSrc.split('/proxy/')[1];
-                        if (encoded) {
-                            const decoded = decodeURIComponent(encoded);
-                            urlBar.value = decoded;
-                        }
-                    }
-                } catch (error) {
-                    console.warn('URL parse error:', error);
-                }
-            });
-
-            // Clear cache function
-            window.clearCache = function() {
-                if (confirm('This will reload the page. Continue?')) {
-                    if ('caches' in window) {
-                        caches.keys().then(names => {
-                            names.forEach(name => caches.delete(name));
-                        });
-                    }
-                    location.reload(true);
-                }
-            };
-        }
-
-        function loadExploits() {
-            const container = document.getElementById('exploitsContainer');
-            container.innerHTML = '';
-            exploits.forEach((exploit, index) => {
-                const card = document.createElement('div');
-                card.className = 'card';
-                card.style.animationDelay = `${index * 0.1}s`;
-                card.innerHTML = `
-                    <div class="card-title">${exploit.title}</div>
-                    <div class="card-description">${exploit.description}</div>
-                    <button class="card-button" onclick="copyToClipboard('${encodeURIComponent(exploit.code)}')">COPY EXPLOIT CODE</button>
-                `;
-                container.appendChild(card);
-            });
-        }
-
-        function copyToClipboard(encodedCode) {
-            const code = decodeURIComponent(encodedCode);
-            navigator.clipboard.writeText(code).then(() => {
-                const button = event.target;
-                const originalText = button.innerHTML;
-                button.innerHTML = '✓ COPIED!';
-                button.style.background = '#00ff00';
-                button.style.color = '#000';
-                setTimeout(() => {
-                    button.innerHTML = originalText;
-                    button.style.background = '#000';
-                    button.style.color = '#ff0000';
-                }, 1500);
-            }).catch(err => {
-                console.error('Failed to copy: ', err);
-                alert('Failed to copy code.');
-            });
-        }
-
-        function switchTab(tabId) {
-            document.querySelectorAll('.tab-button').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.classList.remove('active');
-            });
-
-            const targetTab = document.getElementById(tabId);
-            if (targetTab) {
-                targetTab.classList.add('active');
-            }
-
-            const config = tabsConfig[tabId];
-            document.getElementById('navbarTitle').innerHTML = '▓▒░ ' + config.title + ' ░▒▓';
-            document.getElementById('navbarDesc').innerHTML = config.desc;
-
-            const userSpan = document.getElementById('userName');
-            if (userSpan) {
-                userSpan.textContent = userNameVar;
-            }
-
-            const leftButton = document.getElementById('leftTabButton');
-            const rightButton = document.getElementById('rightTabButton');
-            leftButton.textContent = config.others[0].toUpperCase();
-            leftButton.dataset.tab = config.others[0];
-            rightButton.textContent = config.others[1].toUpperCase();
-            rightButton.dataset.tab = config.others[1];
-
-            const activeButton = document.querySelector(`[data-tab="${tabId}"]`);
-            if (activeButton) {
-                activeButton.classList.add('active');
-            } else {
-                leftButton.classList.add('active');
-            }
-
-            if (tabId === 'games') {
-                loadGames();
-            } else if (tabId === 'proxies') {
-                loadProxies();
-            } else if (tabId === 'exploits') {
-                loadExploits();
-            }
-        }
-
-        function setupTabNavigation() {
-            const leftButton = document.getElementById('leftTabButton');
-            const rightButton = document.getElementById('rightTabButton');
-
-            const defaultTab = 'games';
-            const config = tabsConfig[defaultTab];
-            leftButton.textContent = config.others[0].toUpperCase();
-            leftButton.dataset.tab = config.others[0];
-            rightButton.textContent = config.others[1].toUpperCase();
-            rightButton.dataset.tab = config.others[1];
-            leftButton.classList.add('tab-button');
-            rightButton.classList.add('tab-button');
-            leftButton.classList.add('active');
-
-            leftButton.addEventListener('click', () => {
-                switchTab(leftButton.dataset.tab);
-            });
-            rightButton.addEventListener('click', () => {
-                switchTab(rightButton.dataset.tab);
-            });
-
-            const buttons = [leftButton, rightButton];
-            buttons.forEach(button => {
-                button.addEventListener('mouseenter', () => {
-                    buttons.forEach(btn => {
-                        if (btn !== button && !btn.classList.contains('active')) {
-                            btn.classList.add('dim');
-                        }
-                    });
-                });
-                button.addEventListener('mouseleave', () => {
-                    buttons.forEach(btn => {
-                        if (!btn.classList.contains('active')) {
-                            btn.classList.remove('dim');
-                        }
-                    });
-                });
-            });
-
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'ArrowLeft') {
-                    switchTab(leftButton.dataset.tab);
-                } else if (e.key === 'ArrowRight') {
-                    switchTab(rightButton.dataset.tab);
-                }
-            });
-
-            switchTab(defaultTab);
-        }
-
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const input = document.getElementById('nameInput').value.trim().toUpperCase();
-            stopLoginAsciiFlicker();
-            if (validNames.includes(input)) {
-                setCookie('accessName', input, 365);
-                showWelcomeScreen(input);
-            } else {
-                const asciiElement = document.getElementById('asciiArt');
-                asciiElement.classList.add('jitter');
-                asciiElement.textContent = wrongAscii[0];
-                asciiElement.style.display = 'block';
-                setTimeout(() => {
-                    asciiElement.classList.remove('jitter');
-                    asciiElement.style.display = 'none';
-                    window.location.href = '/alovingfamily.html';
-                }, 3000);
-            }
-            document.getElementById('nameInput').value = '';
-        });
-
-        let urlInterval;
-        let titleInterval;
-
-        function getRandomChar() {
-            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;:,.<>?§¶†‡°¢£¥€';
-            return chars[Math.floor(Math.random() * chars.length)];
-        }
-
-        function generateRandomTitle() {
-            let title = '';
-            const length = Math.floor(Math.random() * 20) + 10;
-            for (let i = 0; i < length; i++) {
-                title += getRandomChar();
-            }
-            return title;
-        }
-
-        function startCreepyEffects() {
-            urlInterval = setInterval(() => {
-                const phrase = creepyPhrases[Math.floor(Math.random() * creepyPhrases.length)];
-                const randomSuffix = Math.random().toString(36).substring(2, 8);
-                history.replaceState(null, '', `?${phrase}-${randomSuffix}`);
-            }, 300);
-
-            titleInterval = setInterval(() => {
-                document.title = generateRandomTitle();
-            }, 100);
-        }
-
-        function stopCreepyEffects() {
-            if (urlInterval) clearInterval(urlInterval);
-            if (titleInterval) clearInterval(titleInterval);
-            document.title = ':::CORDYCEP RESEARCH:::';
-            history.replaceState(null, '', window.location.pathname);
-        }
-
-        function checkAccess() {
-            const savedName = getCookie('accessName');
-            if (savedName && validNames.includes(savedName.toUpperCase())) {
-                showWelcomeScreen(savedName);
-            } else {
-                document.getElementById('lockScreen').style.display = 'flex';
-                if (asciiArts.length > 0) {
-                    startLoginAsciiFlicker();
-                }
-                startCreepyEffects();
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            checkAccess();
-            
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.style.animationPlayState = 'running';
-                    }
-                });
-            }, { threshold: 0.1 });
-
-            setTimeout(() => {
-                document.querySelectorAll('.card').forEach(card => {
-                    observer.observe(card);
-                });
-            }, 1000);
-        });
-
-        document.addEventListener('contextmenu', e => e.preventDefault());
-    </script>
+    <script src="session-manager.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
